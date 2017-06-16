@@ -1,0 +1,6 @@
+name: GameChest
+version: 1.0
+author: ByteList
+website: https://bytelist.de/
+
+main: de.gamechest.GameChest

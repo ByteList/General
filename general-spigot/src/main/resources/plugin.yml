@@ -1,0 +1,16 @@
+name: GameChest
+version: 1.0
+author: ByteList
+website: https://bytelist.de/
+
+main: de.gamechest.GameChest
+
+loadbefore: [ClickAttack, Lobby, ShulkerDefence, DeathRun, JumpDuell, Survival, SurvivalPlus, BuildManager]
+
+commands:
+  chatlog:
+    aliases: [cl, chatreport, cr]
+  opme:
+  serverid:
+    aliases: [sid]
+  nick:
