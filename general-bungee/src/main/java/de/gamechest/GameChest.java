@@ -24,6 +24,8 @@ import java.util.UUID;
 
 /**
  * Created by ByteList on 09.04.2017.
+ *
+ * Copyright by ByteList - https://bytelist.de/
  */
 public class GameChest extends Plugin {
 
@@ -44,6 +46,7 @@ public class GameChest extends Plugin {
     public String pr_ban = "§cBan §8\u00BB ";
     public String pr_bug = "§9BugReport §8\u00BB ";
     public final String pr_msg = "§f§o[§c§oPrivat§f§o] ";
+
 
     public HashMap<ProxiedPlayer, ProxiedPlayer> TELL_FROM_TO = new HashMap<>();
 

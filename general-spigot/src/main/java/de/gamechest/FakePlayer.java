@@ -65,7 +65,7 @@ public class FakePlayer {
 			 * in 1.9 = w.set(DataWatcherRegistry.c.a(6),18F);
 			 */
             watcher.register(new DataWatcherObject<>(6, DataWatcherRegistry.c), 3F);
-            watcher.register(new DataWatcherObject<>(10, DataWatcherRegistry.a), (byte) 127);
+            watcher.register(new DataWatcherObject<>(13, DataWatcherRegistry.a), (byte) 127);
             set(packet, "h", watcher);
 //            set(reflector, "i", watcher);
             addToTabList();
