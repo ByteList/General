@@ -24,7 +24,7 @@ public class FakePlayer {
 
     public FakePlayer(Player p, Location loc, String displayname) {
         this.p = p;
-        this.loc = loc;
+        this.loc = loc.clone();
         this.displayname = displayname;
         this.profile = new GameProfile(UUID.randomUUID(), displayname);
         this.id = (int) Math.ceil(Math.random() * 10000) + 20000;
@@ -65,7 +65,7 @@ public class FakePlayer {
 			 * in 1.9 = w.set(DataWatcherRegistry.c.a(6),18F);
 			 */
             watcher.register(new DataWatcherObject<>(6, DataWatcherRegistry.c), 3F);
-            watcher.register(new DataWatcherObject<>(13, DataWatcherRegistry.a), (byte) 127);
+//            watcher.register(new DataWatcherObject<>(13, DataWatcherRegistry.a), (byte) 127);
             set(packet, "h", watcher);
 //            set(reflector, "i", watcher);
             addToTabList();

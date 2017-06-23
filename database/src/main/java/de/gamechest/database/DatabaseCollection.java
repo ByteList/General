@@ -18,8 +18,6 @@ public enum DatabaseCollection {
 
     NICKNAMES("nicknames"),
 
-    SHOP_ITEMS("shop-items"),
-
     CA_STATISTICS("ca-statistics"),
     SD_STATISTICS("sd-statistics"),
     DR_STATISTICS("dr-statistics"),
