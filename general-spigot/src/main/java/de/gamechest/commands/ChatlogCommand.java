@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 
 public class ChatlogCommand implements CommandExecutor {
 
-	ChatLog chatLog = GameChest.getInstance().getChatLog();
+	private ChatLog chatLog = GameChest.getInstance().getChatLog();
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label,

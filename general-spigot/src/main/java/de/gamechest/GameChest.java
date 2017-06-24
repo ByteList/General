@@ -102,4 +102,8 @@ public class GameChest extends JavaPlugin {
         return databasePlayer.existsPlayer() && Objects.equals(databasePlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt(), rank.getId());
     }
 
+    public boolean isCloudEnabled() {
+        return getServer().getPluginManager().isPluginEnabled("ByteCloudAPI");
+    }
+
 }

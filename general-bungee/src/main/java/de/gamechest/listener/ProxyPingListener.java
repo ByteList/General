@@ -32,7 +32,7 @@ public class ProxyPingListener implements Listener {
          */
 
         if(pc.getVersion() < 100) {
-            protocol.setName("§4ByteCloud 1.9 - 1.11");
+            protocol.setName("§4ByteCloud");
             protocol.setProtocol(2);
             serverPing.setVersion(protocol);
             serverPing.setDescription(firstLine+"§cBitte verwende eine Minecraft-Version ab 1.9!");

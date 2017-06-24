@@ -32,7 +32,7 @@ public class ServerCommand extends GCCommand {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if (gameChest.getProxy().getPluginManager().getPlugin("ByteCloud-Master") == null) return;
+        if (!gameChest.isCloudEnabled()) return;
         if(sender instanceof ProxiedPlayer) {
             ProxiedPlayer pp = (ProxiedPlayer) sender;
             if(!gameChest.hasRank(pp.getUniqueId(), Rank.SUPPORTER)) {

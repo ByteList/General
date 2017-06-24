@@ -24,7 +24,7 @@ public class JoinCommand extends GCCommand {
         if(!(sender instanceof ProxiedPlayer))
             sender.sendMessage(ByteCloudMaster.getInstance().prefix+"§cDu bist die Konsole und kannst diesen Befehl nicht ausführen!");
         else {
-            if(gameChest.getProxy().getPluginManager().getPlugin("ByteCloud-Master") == null) return;
+            if(!gameChest.isCloudEnabled()) return;
             ProxiedPlayer pp = (ProxiedPlayer) sender;
             if(!gameChest.hasRank(pp.getUniqueId(), Rank.BUILDER)) {
                 pp.sendMessage(ByteCloudMaster.getInstance().prefix+"§cDu hast keine Berechtigung für diesen Befehl!");

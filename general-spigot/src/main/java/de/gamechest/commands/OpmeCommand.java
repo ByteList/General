@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 
 public class OpmeCommand implements CommandExecutor {
 
-	GameChest gameChest = GameChest.getInstance();
+	private GameChest gameChest = GameChest.getInstance();
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {

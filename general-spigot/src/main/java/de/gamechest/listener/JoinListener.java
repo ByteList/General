@@ -39,14 +39,14 @@ public class JoinListener {
         DatabaseOnlinePlayer databaseOnlinePlayer = gameChest.getDatabaseManager().createCachedDatabaseOnlinePlayer(p.getUniqueId(), p.getName());
         if(databaseOnlinePlayer.getDatabaseElement(DatabaseOnlinePlayerObject.SERVER_ID).getObject() != null)
             databaseOnlinePlayer.setDatabaseObject(DatabaseOnlinePlayerObject.PREVIOUS_SERVER_ID, databaseOnlinePlayer.getDatabaseElement(DatabaseOnlinePlayerObject.SERVER_ID).getAsString());
-        if(Bukkit.getPluginManager().isPluginEnabled("ByteCloud-Core"))
+        if(gameChest.isCloudEnabled())
             databaseOnlinePlayer.setDatabaseObject(DatabaseOnlinePlayerObject.SERVER_ID, ByteCloudCore.getInstance().getCloudHandler().getServerId());
         else
             databaseOnlinePlayer.setDatabaseObject(DatabaseOnlinePlayerObject.SERVER_ID, Bukkit.getServerName());
 
         BountifulAPI.sendTabTitle(p,
                 " §6Game-Chest§f.§6de §8[§b1.9 §f§l- §c1.11§8]  \n"+ //§eSurvival §f& §eSpielmodi
-                        "§fAktueller Server: §e"+ (Bukkit.getPluginManager().isPluginEnabled("ByteCloud-Core") ? ByteCloudCore.getInstance().getCloudHandler().getServerId() : Bukkit.getServerName()),
+                        "§fAktueller Server: §e"+ (gameChest.isCloudEnabled() ? ByteCloudCore.getInstance().getCloudHandler().getServerId() : Bukkit.getServerName()),
 
                 "§7Willkommen, §c"+p.getName()+"§7!\n"+
                         "  §fInformationen findest du unter §a/help§f!  ");

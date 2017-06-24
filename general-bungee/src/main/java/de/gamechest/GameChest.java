@@ -114,6 +114,10 @@ public class GameChest extends Plugin {
                         "§6Unser Regelwerk findest du unter: §agame-chest.de/regelwerk";
     }
 
+    public boolean isCloudEnabled() {
+        return getProxy().getPluginManager().getPlugin("ByteCloudAPI") != null;
+    }
+
 //    private void insertNicks() {
 //        System.out.println("Init Nicks...");
 //        HashMap<String, String> list = new HashMap<>();

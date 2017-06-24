@@ -43,7 +43,7 @@ public class MsgCommand extends GCCommand {
             DatabasePlayer tDatabasePlayer = gameChest.getDatabaseManager().getDatabasePlayer(tp.getUniqueId());
 
             if(databasePlayer.getDatabaseElement(DatabasePlayerObject.CONFIGURATIONS).getAsDocument().getInteger(DatabasePlayerObject.Configurations.MSG) == 1) {
-                sender.sendMessage(gameChest.prefix+"§cDu hast die privaten Nachrichten ausgeschalten!");
+                sender.sendMessage(gameChest.prefix+"§cDu hast privaten Nachrichten ausgeschalten!");
                 return;
             }
 

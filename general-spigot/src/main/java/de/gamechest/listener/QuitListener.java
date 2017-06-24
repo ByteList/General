@@ -12,7 +12,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 public class QuitListener {
 
     public static void callLastOnQuit(PlayerQuitEvent e) {
-        callFirstOnQuit(e);
+        OLD_callFirstOnQuit(e);
     }
 
     /**
@@ -23,7 +23,7 @@ public class QuitListener {
      * @param e
      */
     @Deprecated
-    public static void callFirstOnQuit(PlayerQuitEvent e) {
+    public static void OLD_callFirstOnQuit(PlayerQuitEvent e) {
 
         if(Bukkit.getServerName().contains("nonBungee")) {
             delete(e.getPlayer());
