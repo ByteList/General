@@ -33,48 +33,46 @@ public class CommandHandler {
      * This method is only for the GCGeneral#onEnable() method.
      */
     public static void registerAllCommands() {
-        registerCommand(new GotoCommand());
-        registerCommand(new JoinCommand());
-        registerCommand(new ServerCommand());
-        registerCommand(new StopCommand());
 
-        registerCommand(new BanCommand());
-        registerCommand(new KickCommand());
-        registerCommand(new UnbanCommand());
+        GCCommand[] commands = {
+                new GotoCommand(),
+                new JoinCommand(),
+                new ServerCommand(),
+                new StopCommand(),
 
-        registerCommand(new NickListCommand());
-//        registerCommand(new NickHistoryCommand());
+                new BanCommand(),
+                new KickCommand(),
+                new UnbanCommand(),
 
-        registerCommand(new PremiumCommand());
-        registerCommand(new RankCommand());
-        registerCommand(new ToggleRankCommand());
+                new NickListCommand(),
+        //        new NickHistoryCommand(),
 
-        registerCommand(new MsgCommand());
-        registerCommand(new RCommand());
+                new PremiumCommand(),
+                new RankCommand(),
+                new ToggleRankCommand(),
 
-        registerCommand(new CoinsCommand());
-        registerCommand(new GcgCommand());
-        registerCommand(new HelpCommand());
-        registerCommand(new HubCommand());
-        registerCommand(new ListCommand());
-        registerCommand(new OnlineTimeCommand());
-        registerCommand(new PingCommand());
-        registerCommand(new StatsCommand());
-        registerCommand(new PlayerinfoCommand());
-        registerCommand(new VersionCommand());
+                new MsgCommand(),
+                new RCommand(),
 
-        registerCommand(new BugReportCommand());
-        registerCommand(new BugInfoCommand());
-        registerCommand(new PlayerReportCommand());
-    }
+                new MeCommand(),
 
-    /**
-     * Unregister all general and cloud commands.
-     * This method is only for the GCGeneral#onDisable() method.
-     */
-    public static void unregisterAllCommands() {
-        for(GCCommand command : commands)
-            unregisterCommand(command);
+                new CoinsCommand(),
+                new GcgCommand(),
+                new HelpCommand(),
+                new HubCommand(),
+                new ListCommand(),
+                new OnlineTimeCommand(),
+                new PingCommand(),
+                new StatsCommand(),
+                new PlayerinfoCommand(),
+                new VersionCommand(),
+
+                new BugReportCommand(),
+                new BugInfoCommand(),
+                new PlayerReportCommand()
+        };
+
+        for(GCCommand command : commands) registerCommand(command);
     }
 
     /**

@@ -22,13 +22,15 @@ import java.util.Calendar;
 
 /**
  * Created by ByteList on 09.04.2017.
+ *
+ * Copyright by ByteList - https://bytelist.de/
  */
 public class JoinListener {
 
+    private static GameChest gameChest = GameChest.getInstance();
 
     public static void callFirstOnJoin(PlayerJoinEvent e) {
         Player p = e.getPlayer();
-        GameChest gameChest = GameChest.getInstance();
 
         if(Bukkit.getServerName().contains("nonBungee")) {
             create(p);
@@ -37,12 +39,12 @@ public class JoinListener {
         gameChest.getPacketInjector().addPlayer(p);
 
         DatabaseOnlinePlayer databaseOnlinePlayer = gameChest.getDatabaseManager().createCachedDatabaseOnlinePlayer(p.getUniqueId(), p.getName());
-        if(databaseOnlinePlayer.getDatabaseElement(DatabaseOnlinePlayerObject.SERVER_ID).getObject() != null)
+        if(databaseOnlinePlayer.getDatabaseElement(DatabaseOnlinePlayerObject.SERVER_ID).getObject() == null) {
+            setServerId(databaseOnlinePlayer);
+        } else {
             databaseOnlinePlayer.setDatabaseObject(DatabaseOnlinePlayerObject.PREVIOUS_SERVER_ID, databaseOnlinePlayer.getDatabaseElement(DatabaseOnlinePlayerObject.SERVER_ID).getAsString());
-        if(gameChest.isCloudEnabled())
-            databaseOnlinePlayer.setDatabaseObject(DatabaseOnlinePlayerObject.SERVER_ID, ByteCloudCore.getInstance().getCloudHandler().getServerId());
-        else
-            databaseOnlinePlayer.setDatabaseObject(DatabaseOnlinePlayerObject.SERVER_ID, Bukkit.getServerName());
+            setServerId(databaseOnlinePlayer);
+        }
 
         BountifulAPI.sendTabTitle(p,
                 " §6Game-Chest§f.§6de §8[§b1.9 §f§l- §c1.11§8]  \n"+ //§eSurvival §f& §eSpielmodi
@@ -57,9 +59,15 @@ public class JoinListener {
             nick.nick(p, nick.getNick(p.getUniqueId()));
         }
     }
+
+    private static void setServerId(DatabaseOnlinePlayer databaseOnlinePlayer) {
+        if(gameChest.isCloudEnabled())
+            databaseOnlinePlayer.setDatabaseObject(DatabaseOnlinePlayerObject.SERVER_ID, ByteCloudCore.getInstance().getCloudHandler().getServerId());
+        else
+            databaseOnlinePlayer.setDatabaseObject(DatabaseOnlinePlayerObject.SERVER_ID, Bukkit.getServerName());
+    }
     
-    public static void create(Player p) {
-        GameChest gameChest = GameChest.getInstance();
+    private static void create(Player p) {
         DatabaseManager databaseManager = gameChest.getDatabaseManager();
         DatabasePlayer databasePlayer = databaseManager.getDatabasePlayer(p.getUniqueId());
         databasePlayer.createPlayer();

@@ -21,6 +21,8 @@ import java.util.UUID;
 
 /**
  * Created by ByteList on 09.04.2017.
+ *
+ * Copyright by ByteList - https://bytelist.de/
  */
 public class GameChest extends JavaPlugin {
 

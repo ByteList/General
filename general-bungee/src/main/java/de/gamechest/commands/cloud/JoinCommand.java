@@ -56,7 +56,7 @@ public class JoinCommand extends GCCommand {
                     pp.sendMessage(ByteCloudMaster.getInstance().prefix+"§cDer Server existiert nicht!");
                     return;
                 }
-                pp.sendMessage(ByteCloudMaster.getInstance().prefix+"§cError: Konnte keine richtige ID finden: "+con);
+                pp.sendMessage(ByteCloudMaster.getInstance().prefix+"§cError: ("+con+") Konnte keine richtige ID finden.");
                 return;
             }
             if(args.length == 2) {
@@ -97,7 +97,7 @@ public class JoinCommand extends GCCommand {
                     pp.sendMessage(ByteCloudMaster.getInstance().prefix+"§cDer Server existiert nicht!");
                     return;
                 }
-                pp.sendMessage(ByteCloudMaster.getInstance().prefix+"§cError: Konnte keine richtige ID finden: "+con);
+                pp.sendMessage(ByteCloudMaster.getInstance().prefix+"§cError: ("+con+") Konnte keine richtige ID finden.");
                 return;
             }
             pp.sendMessage(ByteCloudMaster.getInstance().prefix+"§c/join <Server> (Spieler)");

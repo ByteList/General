@@ -12,6 +12,9 @@ public enum DatabaseCollection {
     PREMIUM_PLAYER("premium-player"),
     UUID_BUFFER("uuid-buffer"),
 
+    PARTY("party"),
+    PARTY_REQUESTS("party-requests"),
+
     BANS("bans"),
     BAN_HISTORY("ban-history"),
     CHAT_REPORTS("chat-reports"),

@@ -68,7 +68,6 @@ public class DatabaseBan {
                 .append(DatabaseBanObject.STAFF_ONLY.getName(), onlyStaff);
 
         databaseManager.getCollection(databaseCollection).insertOne(document);
-        databaseManager.getCollection(databaseCollection).count();
     }
 
     public void unBan(UUID uuid) {
