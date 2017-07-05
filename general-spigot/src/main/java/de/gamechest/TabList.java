@@ -10,10 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by ByteList on 16.04.2017.
@@ -44,56 +41,22 @@ public class TabList {
         asParty(player, partyList);
     }
 
-    public static void onlyUpdatePlayers(Player player) {
-        Scoreboard board = player.getScoreboard();
-        if(board == null) {
-            board = Bukkit.getScoreboardManager().getNewScoreboard();
-            player.setScoreboard(board);
-        }
-        for(UUID uuid : Collections.unmodifiableSet(playerModes.keySet())) {
-            if(uuid != player.getUniqueId()) {
-                Player all = Bukkit.getPlayer(uuid);
-                if (all != null) {
-                    TabListMode tabListMode = playerModes.get(uuid);
-                    String s;
-                    Team team;
-                    String prefix;
-                    if (tabListMode.isRank()) {
-                        Rank rank;
-                        DatabasePlayer databasePlayer = GameChest.getInstance().getDatabaseManager().getDatabasePlayer(uuid);
-                        Nick nick = GameChest.getInstance().getNick();
-                        if (!nick.isNicked(uuid)) {
-                            rank = Rank.getRankById(databasePlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt());
-                        } else {
-                            rank = Rank.SPIELER;
-                        }
-                        s = rank.getId() + rank.getShortName();
-                        team = board.getTeam(s);
-                        prefix = rank.getPrefix();
-                    } else {
-                        prefix = "§"+tabListMode.getColorCode();
-                        s = prefix+"color";
-                        team = board.getTeam(s);
-                    }
-
-                    if(team == null) {
-                        team = board.registerNewTeam(s);
-                        team.setPrefix(prefix);
-                        team.setSuffix("§r");
-                        team.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
-                    }
-                    team.addEntry(all.getName());
-
-                } else if(playerModes.containsKey(uuid)) {
-                    playerModes.remove(uuid);
-                }
-            }
-        }
-    }
+    /**
+     * Removed because added to as-methods.
+     * @param player was used
+     */
+    @Deprecated
+    public static void onlyUpdatePlayers(Player player) {}
 
     private static void asRank(Player player, Rank rank) {
         String prefix = rank.getPrefix();
         String s = rank.getId()+rank.getShortName();
+
+        Scoreboard playerBoard = player.getScoreboard();
+        if(playerBoard == null) {
+            playerBoard = Bukkit.getScoreboardManager().getNewScoreboard();
+            player.setScoreboard(playerBoard);
+        }
 
         for(Player all : Bukkit.getOnlinePlayers()) {
             Scoreboard board = all.getScoreboard();
@@ -109,6 +72,38 @@ public class TabList {
                 team.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
             }
             team.addEntry(player.getName());
+
+            if(all != player) {
+                TabListMode atabListMode = playerModes.get(all.getUniqueId());
+                String as;
+                Team ateam;
+                String aprefix;
+                if (atabListMode.isRank()) {
+                    Rank arank;
+                    DatabasePlayer databasePlayer = GameChest.getInstance().getDatabaseManager().getDatabasePlayer(all.getUniqueId());
+                    Nick nick = GameChest.getInstance().getNick();
+                    if (!nick.isNicked(all.getUniqueId())) {
+                        arank = Rank.getRankById(databasePlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt());
+                    } else {
+                        arank = Rank.SPIELER;
+                    }
+                    as = arank.getId() + arank.getShortName();
+                    ateam = playerBoard.getTeam(s);
+                    aprefix = arank.getPrefix();
+                } else {
+                    aprefix = "§"+atabListMode.getColorCode();
+                    as = aprefix+"color";
+                    ateam = playerBoard.getTeam(s);
+                }
+
+                if(ateam == null) {
+                    ateam = playerBoard.registerNewTeam(as);
+                    ateam.setPrefix(aprefix);
+                    ateam.setSuffix("§r");
+                    ateam.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
+                }
+                ateam.addEntry(all.getName());
+            }
         }
         playerModes.put(player.getUniqueId(), TabListMode.RANK);
     }
@@ -119,6 +114,12 @@ public class TabList {
         }
         String prefix = tabListMode.getColorCode();
         String s = prefix+"color";
+
+        Scoreboard playerBoard = player.getScoreboard();
+        if(playerBoard == null) {
+            playerBoard = Bukkit.getScoreboardManager().getNewScoreboard();
+            player.setScoreboard(playerBoard);
+        }
 
         for(Player all : Bukkit.getOnlinePlayers()) {
             Scoreboard board = all.getScoreboard();
@@ -134,6 +135,40 @@ public class TabList {
                 team.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
             }
             team.addEntry(player.getName());
+
+            if(all != player) {
+                if(playerModes.containsKey(all.getUniqueId())) {
+                    TabListMode atabListMode = playerModes.get(all.getUniqueId());
+                    String as;
+                    Team ateam;
+                    String aprefix;
+                    if (atabListMode.isRank()) {
+                        Rank arank;
+                        DatabasePlayer databasePlayer = GameChest.getInstance().getDatabaseManager().getDatabasePlayer(all.getUniqueId());
+                        Nick nick = GameChest.getInstance().getNick();
+                        if (!nick.isNicked(all.getUniqueId())) {
+                            arank = Rank.getRankById(databasePlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt());
+                        } else {
+                            arank = Rank.SPIELER;
+                        }
+                        as = arank.getId() + arank.getShortName();
+                        ateam = playerBoard.getTeam(s);
+                        aprefix = arank.getPrefix();
+                    } else {
+                        aprefix = "§" + atabListMode.getColorCode();
+                        as = prefix + "color";
+                        ateam = playerBoard.getTeam(s);
+                    }
+
+                    if (ateam == null) {
+                        ateam = playerBoard.registerNewTeam(as);
+                        ateam.setPrefix(aprefix);
+                        ateam.setSuffix("§r");
+                        ateam.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
+                    }
+                    ateam.addEntry(all.getName());
+                }
+            }
         }
         playerModes.put(player.getUniqueId(), tabListMode);
     }

@@ -20,7 +20,7 @@ public class PingCommand extends GCCommand {
     public void execute(CommandSender sender, String[] args) {
 
         if(!(sender instanceof ProxiedPlayer))
-            sender.sendMessage(gameChest.prefix+"§7Dein aktueller Ping zum Server: §21");
+            sender.sendMessage(gameChest.prefix+"§7Dein aktueller Ping: §21");
         else {
             ProxiedPlayer pp = (ProxiedPlayer) sender;
             String color;
@@ -34,7 +34,7 @@ public class PingCommand extends GCCommand {
             else color = "§7";
 
 
-            pp.sendMessage(gameChest.prefix+"§7Dein aktueller Ping zum Server: "+color+ping);
+            pp.sendMessage(gameChest.prefix+"§7Dein aktueller Ping: "+color+ping);
         }
     }
 }

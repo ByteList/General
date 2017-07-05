@@ -31,7 +31,7 @@ public class NickListCommand extends GCCommand {
         }
 
         ProxiedPlayer pp = (ProxiedPlayer) sender;
-        if (gameChest.hasRank(pp.getUniqueId(), Rank.SUPPORTER)) {
+        if (!gameChest.hasRank(pp.getUniqueId(), Rank.SUPPORTER)) {
             pp.sendMessage(gameChest.prefix + "§cDu hast keine Berechtigung für diesen Befehl!");
         } else {
             if (gameChest.getNick().getNickedPlayers().isEmpty()) {

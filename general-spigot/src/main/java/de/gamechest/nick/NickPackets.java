@@ -10,8 +10,8 @@ import org.bukkit.craftbukkit.v1_9_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 class NickPackets {
 
@@ -22,26 +22,18 @@ class NickPackets {
     }
 
     public void nickPlayer(Player p, String nickname) throws Exception {
-//        getField(GameProfile.class, "name").set(((CraftPlayer) p).getProfile(), p.getCustomName());
-//        nick.setSkin(p.getUniqueId(), nickname);
-//        updatePlayer(p);
         CraftPlayer cp = ((CraftPlayer) p);
 
         GameProfile gp = cp.getProfile();
         gp.getProperties().clear();
 
-        List<Player> players = new ArrayList<>();
-        players.addAll(Bukkit.getOnlinePlayers());
+        List<Player> players = Bukkit.getOnlinePlayers().stream().filter(player -> player.canSee(p)).collect(Collectors.toList());
         players.remove(p);
 
         getField(GameProfile.class, "name").set(cp.getProfile(), nickname);
 
-        new Thread(()-> nick.setSkin(p.getUniqueId(), nickname), "Nick-"+p.getUniqueId().toString().replace("-", "")+"-Thread").start();
+        nick.setSkin(p.getUniqueId(), nickname);
 
-//        for (Player all : Bukkit.getOnlinePlayers()) {
-//            p.hidePlayer(all);
-//            all.hidePlayer(p);
-//        }
 
         PacketPlayOutPlayerInfo remove = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, cp.getHandle());
         Reflection.sendAllPacket(remove);
@@ -49,13 +41,6 @@ class NickPackets {
         PacketPlayOutEntityDestroy destroy = new PacketPlayOutEntityDestroy(cp.getEntityId());
         Reflection.sendListPacket(players, destroy);
 
-//        PacketPlayOutEntity.PacketPlayOutRelEntityMoveLook packetPlayOutRelEntityMoveLook =
-//                new PacketPlayOutEntity.PacketPlayOutRelEntityMoveLook(p.getEntityId(),
-//                        (long) loc.getX(), (long) loc.getY(), (long) loc.getZ(),
-//                        (byte) loc.getYaw(), (byte) loc.getPitch(), p.isOnGround());
-//        Reflection.sendPlayerPacket(p, packetPlayOutRelEntityMoveLook);
-
-		nick.locs.put(p.getUniqueId(), p.getLocation());
         nick.performDeath(p);
 
         PacketPlayOutPlayerInfo add = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, cp.getHandle());
@@ -64,26 +49,7 @@ class NickPackets {
         PacketPlayOutNamedEntitySpawn spawn = new PacketPlayOutNamedEntitySpawn(cp.getHandle());
         Reflection.sendListPacket(players, spawn);
 
-//        for (org.bukkit.Chunk chunk : loc.getWorld().getLoadedChunks()) {
-//            PacketPlayOutMapChunk packetPlayOutMapChunk = new PacketPlayOutMapChunk(((CraftChunk) chunk).getHandle(), 20);
-//            Reflection.sendPlayerPacket(p, packetPlayOutMapChunk);
-//        }
-
-
-//        new BukkitRunnable() {
-//
-//
-//            @Override
-//            public void run() {
-//
-//                for (Player all : Bukkit.getOnlinePlayers()) {
-//                    p.showPlayer(all);
-//                    all.showPlayer(p);
-//                }
-//
-//            }
-//        }.runTaskLater(GameChest.getInstance(), 20L);
-        System.out.println("[GCG/Nick] Player " + p.getCustomName() + " is now nicked as " + nickname + " = " + p.toString());
+        System.out.println("[GCG/Nick] Player " + p.getCustomName() + " is now nicked as " + nickname);
     }
 
 
@@ -93,17 +59,11 @@ class NickPackets {
         GameProfile gp = cp.getProfile();
         gp.getProperties().clear();
 
-        List<Player> players = new ArrayList<>();
-        players.addAll(Bukkit.getOnlinePlayers());
+        List<Player> players = Bukkit.getOnlinePlayers().stream().filter(player -> player.canSee(p)).collect(Collectors.toList());
         players.remove(p);
 
         getField(GameProfile.class, "name").set(cp.getProfile(), p.getCustomName());
-        new Thread(()-> nick.resetSkin(p.getUniqueId()), "Unnick-"+p.getUniqueId().toString().replace("-", "")+"-Thread").start();
-
-//        for (Player all : Bukkit.getOnlinePlayers()) {
-//            p.hidePlayer(all);
-//            all.hidePlayer(p);
-//        }
+        nick.resetSkin(p.getUniqueId());
 
         PacketPlayOutPlayerInfo remove = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, cp.getHandle());
         Reflection.sendAllPacket(remove);
@@ -111,8 +71,6 @@ class NickPackets {
         PacketPlayOutEntityDestroy destroy = new PacketPlayOutEntityDestroy(cp.getEntityId());
         Reflection.sendListPacket(players, destroy);
 
-
-		nick.locs.put(p.getUniqueId(), p.getLocation());
         nick.performDeath(p);
 
         PacketPlayOutPlayerInfo add = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, cp.getHandle());
@@ -121,24 +79,7 @@ class NickPackets {
         PacketPlayOutNamedEntitySpawn spawn = new PacketPlayOutNamedEntitySpawn(cp.getHandle());
         Reflection.sendListPacket(players, spawn);
 
-//        for (org.bukkit.Chunk chunk : loc.getWorld().getLoadedChunks()) {
-//            PacketPlayOutMapChunk packetPlayOutMapChunk = new PacketPlayOutMapChunk(((CraftChunk) chunk).getHandle(), 20);
-//            Reflection.sendPlayerPacket(p, packetPlayOutMapChunk);
-//        }
-
-//        new BukkitRunnable() {
-//
-//            @Override
-//            public void run() {
-//                for (Player all : Bukkit.getOnlinePlayers()) {
-//                    p.showPlayer(all);
-//                    all.showPlayer(p);
-//                }
-//            }
-//        }.runTaskLater(GameChest.getInstance(), 20L);
-
-//		p.teleport(oldLoc);
-        System.out.println("[GCG/Nick] Player " + p.getName() + " is now unnicked = " + p.toString());
+        System.out.println("[GCG/Nick] Player " + p.getName() + " is now unnicked");
     }
 
     private Field getField(Class<?> clazz, String name) {

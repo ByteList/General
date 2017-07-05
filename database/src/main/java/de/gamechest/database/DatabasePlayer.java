@@ -73,13 +73,14 @@ public class DatabasePlayer {
         Document lobbyInventory = new Document();
         lobbyInventory.put("NORMAL_KEY", 0);
         lobbyInventory.put("NORMAL_CHEST", 0);
-        lobbyInventory.put("RARE_KEY", 0);
-        lobbyInventory.put("RARE_CHEST", 0);
+//        lobbyInventory.put("RARE_KEY", 0);
+//        lobbyInventory.put("RARE_CHEST", 0);
 
         Document shopItems = new Document();
         shopItems.put(DatabasePlayerObject.ActiveShopItems.HEAD.getName(), 0);
         shopItems.put(DatabasePlayerObject.ActiveShopItems.ARMOR.getName(), 0);
         shopItems.put(DatabasePlayerObject.ActiveShopItems.DUST.getName(), 0);
+        shopItems.put(DatabasePlayerObject.ActiveShopItems.GADGET.getName(), 0);
 
         Document configurations = new Document(); //302.5D,21.0D,2028.5D,2F,65F
         configurations.put(DatabasePlayerObject.Configurations.LOBBY_POS_X.getName(), 302.5);
@@ -112,5 +113,14 @@ public class DatabasePlayer {
             .append(DatabasePlayerObject.SKIN_TEXTURE.getName(), null);
 
         databaseManager.getCollection(databaseCollection).insertOne(document);
+    }
+
+    public void updatePlayer() {
+        Document shopItems = getDatabaseElement(DatabasePlayerObject.ACTIVE_SHOP_ITEMS).getAsDocument();
+        if(!shopItems.containsKey(DatabasePlayerObject.ActiveShopItems.GADGET.getName())) {
+            shopItems.put(DatabasePlayerObject.ActiveShopItems.GADGET.getName(), 0);
+            setDatabaseObject(DatabasePlayerObject.ACTIVE_SHOP_ITEMS, shopItems);
+        }
+
     }
 }

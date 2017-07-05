@@ -2,7 +2,6 @@ package de.gamechest.commands.cloud;
 
 import de.bytelist.bytecloud.bungee.ByteCloudMaster;
 import de.bytelist.bytecloud.database.DatabaseServerObject;
-import de.bytelist.bytecloud.network.NetworkManager;
 import de.bytelist.bytecloud.network.bungee.packet.PacketInStartServer;
 import de.bytelist.bytecloud.network.bungee.packet.PacketInStopServer;
 import de.gamechest.GameChest;
@@ -70,14 +69,14 @@ public class ServerCommand extends GCCommand {
             if(args[0].equalsIgnoreCase("start")) {
                 String group = args[1].toUpperCase();
                 PacketInStartServer packetInStartServer = new PacketInStartServer(group, sender.getName());
-                NetworkManager.getBungeeClient().sendPacket(packetInStartServer);
+                ByteCloudMaster.getInstance().getBungeeClient().sendPacket(packetInStartServer);
                 return;
             }
             if(args[0].equalsIgnoreCase("stop")) {
                 String serverId = ByteCloudMaster.getInstance().getCloudHandler().getUniqueServerId(args[1]);
 
                 PacketInStopServer packetInStopServer = new PacketInStopServer(serverId, sender.getName());
-                NetworkManager.getBungeeClient().sendPacket(packetInStopServer);
+                ByteCloudMaster.getInstance().getBungeeClient().sendPacket(packetInStopServer);
                 return;
             }
 

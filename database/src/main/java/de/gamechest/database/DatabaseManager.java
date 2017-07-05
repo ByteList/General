@@ -116,16 +116,13 @@ public class DatabaseManager {
     }
 
     public DatabasePlayer getDatabasePlayer(UUID uuid) {
-//        if(uuid != null) {
-//            String uid = uuid.toString();
-//            if (cachedPlayers.containsKey(uid)) {
-//                return cachedPlayers.get(uid);
-//            }
-//            DatabasePlayer databasePlayer = new DatabasePlayer(this, uid);
-//            cachedPlayers.put(uid, databasePlayer);
-//            return databasePlayer;
-//        }
-        return new DatabasePlayer(this, uuid);
+        String uid = uuid.toString();
+        if(!cachedPlayers.containsKey(uid)) {
+            DatabasePlayer databaseOnlinePlayer = new DatabasePlayer(this, uuid);
+            cachedPlayers.put(uid, databaseOnlinePlayer);
+            return databaseOnlinePlayer;
+        }
+        return cachedPlayers.get(uid);
     }
 
     public void removeCachedDatabasePlayer(UUID uuid) {

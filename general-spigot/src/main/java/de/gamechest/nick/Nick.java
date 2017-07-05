@@ -11,17 +11,18 @@ import de.gamechest.database.nick.DatabaseNickObject;
 import de.gamechest.database.onlineplayer.DatabaseOnlinePlayerObject;
 import de.gamechest.nick.event.UserNickEvent;
 import de.gamechest.nick.event.UserUnnickEvent;
-import net.minecraft.server.v1_9_R2.PacketPlayInClientCommand;
+import net.minecraft.server.v1_9_R2.EntityPlayer;
+import net.minecraft.server.v1_9_R2.PacketPlayOutRespawn;
 import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_9_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,8 +32,6 @@ import java.util.UUID;
 public class Nick {
 
     private NickPackets packets;
-    public List<UUID> list = new ArrayList<>();
-    public HashMap<UUID, Location> locs = new HashMap<>();
 
     private final DatabaseManager databaseManager;
 
@@ -108,64 +107,24 @@ public class Nick {
         return databaseManager.getDatabaseNick().getRandomNickname();
     }
 
-    public void performDeath(Player p){
-//        list.add(p.getUniqueId());
-//
-//        p.setHealth(0.0D);
-//
-//        PacketPlayInClientCommand packet = new PacketPlayInClientCommand(PacketPlayInClientCommand.EnumClientCommand.PERFORM_RESPAWN);
-//        ((CraftPlayer) p).getHandle().playerConnection.a(packet);
-//        list.remove(p.getUniqueId());
-//        locs.remove(p.getUniqueId());
-//        Location loc = p.getLocation();
-//        System.out.println("Flying:");
-//        try {
-//            PacketPlayInFlying packetPlayInFlying = new PacketPlayInFlying();
-//            Reflection.setValue(packetPlayInFlying, "x", loc.getX());
-//            Reflection.setValue(packetPlayInFlying, "y", loc.getY()+0.1);
-//            Reflection.setValue(packetPlayInFlying, "z", loc.getZ());
-//            Reflection.setValue(packetPlayInFlying, "yaw", loc.getYaw());
-//            Reflection.setValue(packetPlayInFlying, "pitch", loc.getPitch());
-//            Reflection.sendPlayerPacket(p, packetPlayInFlying);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-////        }
-//        Location loc = locs.get(p.getUniqueId());
-//        try {
-//
-////            PacketPlayOutEntity.PacketPlayOutRelEntityMove
-////            PacketPlayOutEntity.PacketPlayOutRelEntityMoveLook
-////            PacketPlayOutUpdateTime
-//
-////            PacketPlayOutUnloadChunk packetPlayOutUnloadChunk = new PacketPlayOutUnloadChunk(loc.getChunk().getX(), loc.getChunk().getZ());
-////            Reflection.sendPlayerPacket(p, packetPlayOutUnloadChunk);
-//
-////            PacketPlayOutEntity.PacketPlayOutRelEntityMoveLook packetPlayOutRelEntityMoveLook =
-////                    new PacketPlayOutEntity.PacketPlayOutRelEntityMoveLook(p.getEntityId(),
-////                            (long) loc.getX(), (long) loc.getY(), (long) loc.getZ(),
-////                            (byte) loc.getYaw(), (byte) loc.getPitch(), p.isOnGround());
-//
-//
-////            Reflection.sendPlayerPacket(p, packetPlayOutRelEntityMoveLook);
-//
-//            p.setHealth(0.0D);
-//            p.spigot().respawn();
-//
-//            updatePlayer(p);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-        this.list.add(p.getUniqueId());
+    public void performDeath(Player p) {
+        EntityPlayer entityPlayer = ((CraftPlayer)p).getHandle();
 
         double oldHealth = p.getHealth();
         double maxHealth = getHealth(p);
         double healthScale = p.getHealthScale();
 
-        p.setHealth(0.0D);
+        ItemStack[] armorContents = p.getInventory().getArmorContents();
 
-        PacketPlayInClientCommand packet = new PacketPlayInClientCommand(PacketPlayInClientCommand.EnumClientCommand.PERFORM_RESPAWN);
-        ((CraftPlayer)p).getHandle().playerConnection.a(packet);
+        p.getInventory().setArmorContents(null);
 
+        PacketPlayOutRespawn packet = new PacketPlayOutRespawn(p.getWorld().getEnvironment().getId(),
+                entityPlayer.getWorld().getDifficulty(), entityPlayer.getWorld().getWorldData().getType(), entityPlayer.playerInteractManager.getGameMode());
+
+        entityPlayer.playerConnection.sendPacket(packet);
+        entityPlayer.playerConnection.teleport(new Location(p.getWorld(), entityPlayer.locX, entityPlayer.locY+0.1, entityPlayer.locZ, entityPlayer.yaw, entityPlayer.pitch));
+
+        p.getInventory().setArmorContents(armorContents);
         p.updateInventory();
 
         p.getInventory().setHeldItemSlot(p.getInventory().getHeldItemSlot());
@@ -175,13 +134,7 @@ public class Nick {
         p.setMaxHealth(maxHealth);
         p.setHealth(oldHealth);
 
-        p.setItemInHand(p.getItemInHand());
         p.setWalkSpeed(p.getWalkSpeed());
-
-        this.list.remove(p.getUniqueId());
-        this.locs.remove(p.getUniqueId());
-//        ((CraftPlayer) p).getHandle().playerConnection.teleport();
-//        list.remove(p.getUniqueId());
     }
 
     public void setSkin(UUID uuid, String nick) {

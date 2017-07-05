@@ -87,6 +87,7 @@ public class LoginListener implements Listener {
         }
 
         databasePlayer.createPlayer();
+        databasePlayer.updatePlayer();
 
         // checking name update
         DatabaseUuidBuffer databaseUuidBuffer = databaseManager.getDatabaseUuidBuffer();

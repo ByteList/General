@@ -20,6 +20,8 @@ public class DatabaseOnlinePlayer {
     private final String name;
     private final FindIterable<Document> find;
 
+    private Document cache;
+
     public DatabaseOnlinePlayer(DatabaseManager databaseManager, String uuid, String name) {
         this.databaseManager = databaseManager;
         this.uuid = uuid;

@@ -9,13 +9,11 @@ import de.gamechest.database.ban.DatabaseBan;
 import de.gamechest.database.ban.DatabaseBanObject;
 import de.gamechest.database.ban.Reason;
 import de.gamechest.database.rank.Rank;
-import de.gamechest.listener.LoginListener;
-import de.gamechest.listener.PlayerDisconnectListener;
-import de.gamechest.listener.PostLoginListener;
-import de.gamechest.listener.ProxyPingListener;
+import de.gamechest.listener.*;
 import de.gamechest.nick.Nick;
 import lombok.Getter;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 
 import java.util.HashMap;
@@ -64,10 +62,15 @@ public class GameChest extends Plugin {
 
 //        insertNicks();
 
-        getProxy().getPluginManager().registerListener(this, new LoginListener());
-        getProxy().getPluginManager().registerListener(this, new PlayerDisconnectListener());
-        getProxy().getPluginManager().registerListener(this, new PostLoginListener());
-        getProxy().getPluginManager().registerListener(this, new ProxyPingListener());
+        Listener[] listeners = {
+                new LoginListener(),
+                new PlayerDisconnectListener(),
+                new PostLoginListener(),
+                new ProxyPingListener(),
+                new ServerListener()
+        };
+        for(Listener listener : listeners)
+            getProxy().getPluginManager().registerListener(this, listener);
 
         getProxy().getConsole().sendMessage(prefix+"§aEnabled!");
     }

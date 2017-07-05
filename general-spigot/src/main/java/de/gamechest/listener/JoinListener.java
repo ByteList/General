@@ -47,7 +47,7 @@ public class JoinListener {
         }
 
         BountifulAPI.sendTabTitle(p,
-                " §6Game-Chest§f.§6de §8[§b1.9 §f§l- §c1.11§8]  \n"+ //§eSurvival §f& §eSpielmodi
+                " §6Game-Chest§f.§6de §8[§b1.9 §f§l- §c1.12§8]  \n"+ //§eSurvival §f& §eSpielmodi
                         "§fAktueller Server: §e"+ (gameChest.isCloudEnabled() ? ByteCloudCore.getInstance().getCloudHandler().getServerId() : Bukkit.getServerName()),
 
                 "§7Willkommen, §c"+p.getName()+"§7!\n"+
@@ -71,6 +71,7 @@ public class JoinListener {
         DatabaseManager databaseManager = gameChest.getDatabaseManager();
         DatabasePlayer databasePlayer = databaseManager.getDatabasePlayer(p.getUniqueId());
         databasePlayer.createPlayer();
+        databasePlayer.updatePlayer();
 
         // checking name update
         DatabaseUuidBuffer databaseUuidBuffer = databaseManager.getDatabaseUuidBuffer();

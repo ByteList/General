@@ -14,7 +14,7 @@ public class VersionCommand extends GCCommand {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        String ver = "This server is running ChestSpigot version 1.2.1 (Minecraft version 1.9.x-1.11.x, modified by ByteList)";
+        String ver = "This server is running ChestSpigot version 1.2.2 (Minecraft version 1.9-1.12, modified by ByteList)";
         sender.sendMessage(ver);
     }
 

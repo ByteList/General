@@ -10,6 +10,8 @@ import net.md_5.bungee.event.EventHandler;
 
 /**
  * Created by ByteList on 12.02.2017.
+ *
+ * Copyright by ByteList - https://bytelist.de/
  */
 public class ProxyPingListener implements Listener {
 
@@ -25,14 +27,14 @@ public class ProxyPingListener implements Listener {
 
         ConnectManager.ConnectState connectState = connectManager.getConnectState();
 
-        String firstLine = "§6Game-Chest§f.§6de §7\u00BB §eSurvival §f& §eSpielmodi §8[§b1.9 §f- §c1.11§8]\n";
+        String firstLine = "§6Game-Chest§f.§6de §7\u00BB §eSurvival §f& §eSpielmodi §8[§b1.9 §f- §c1.12§8]\n";
 
         /*
          * 315 - 1.11 | 210 - 1.10 | 107 - 1.9
          */
 
         if(pc.getVersion() < 100) {
-            protocol.setName("§4ByteCloud");
+            protocol.setName("§4ChestBungee");
             protocol.setProtocol(2);
             serverPing.setVersion(protocol);
             serverPing.setDescription(firstLine+"§cBitte verwende eine Minecraft-Version ab 1.9!");

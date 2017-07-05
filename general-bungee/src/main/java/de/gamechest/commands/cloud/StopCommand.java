@@ -1,12 +1,12 @@
 package de.gamechest.commands.cloud;
 
 import de.bytelist.bytecloud.bungee.ByteCloudMaster;
-import de.bytelist.bytecloud.network.NetworkManager;
 import de.bytelist.bytecloud.network.bungee.packet.PacketInStopServer;
 import de.gamechest.GameChest;
 import de.gamechest.commands.base.GCCommand;
 import de.gamechest.database.rank.Rank;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 /**
@@ -32,10 +32,20 @@ public class StopCommand extends GCCommand {
                 return;
             }
 
-            String serverId = pp.getServer().getInfo().getName();
+            ServerInfo currentServer = pp.getServer().getInfo();
+            ServerInfo randomLobby = GameChest.getInstance().getProxy().getServerInfo(ByteCloudMaster.getInstance().getCloudHandler().getRandomLobbyId(currentServer.getName()));
 
-            PacketInStopServer packetInStopServer = new PacketInStopServer(serverId, sender.getName());
-            NetworkManager.getBungeeClient().sendPacket(packetInStopServer);
+            for(ProxiedPlayer player : currentServer.getPlayers()) {
+                player.sendMessage("§6Verbinde zur Lobby...");
+                player.connect(randomLobby);
+            }
+
+            while (true) {
+                if(currentServer.getPlayers().size() == 0) break;
+            }
+
+            PacketInStopServer packetInStopServer = new PacketInStopServer(currentServer.getName(), sender.getName());
+            ByteCloudMaster.getInstance().getBungeeClient().sendPacket(packetInStopServer);
         }
     }
 }

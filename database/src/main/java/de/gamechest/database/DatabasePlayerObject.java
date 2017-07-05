@@ -37,7 +37,8 @@ public enum DatabasePlayerObject {
 
         HEAD("HEAD"),
         ARMOR("ARMOR"),
-        DUST("DUST");
+        DUST("DUST"),
+        GADGET("GADGET");
 
         @Getter
         private String name;
