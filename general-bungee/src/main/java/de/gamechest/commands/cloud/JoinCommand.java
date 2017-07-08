@@ -3,6 +3,7 @@ package de.gamechest.commands.cloud;
 import de.bytelist.bytecloud.bungee.ByteCloudMaster;
 import de.gamechest.GameChest;
 import de.gamechest.commands.base.GCCommand;
+import de.gamechest.database.DatabasePlayer;
 import de.gamechest.database.DatabasePlayerObject;
 import de.gamechest.database.rank.Rank;
 import net.md_5.bungee.api.CommandSender;
@@ -10,6 +11,8 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 /**
  * Created by ByteList on 21.11.2016.
+ *
+ * Copyright by ByteList - https://bytelist.de/
  */
 public class JoinCommand extends GCCommand {
 
@@ -67,9 +70,9 @@ public class JoinCommand extends GCCommand {
                     pp.sendMessage(ByteCloudMaster.getInstance().prefix+"§cDer Spieler ist nicht online!");
                     return;
                 }
-                int rankId = GameChest.getInstance().getDatabaseManager().getDatabasePlayer(pp.getUniqueId()).getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt();
+                int rankId = new DatabasePlayer(gameChest.getDatabaseManager(), pp.getUniqueId()).getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt();
                 if(rankId > Rank.DEVELOPER.getId() &&
-                        GameChest.getInstance().getDatabaseManager().getDatabasePlayer(target.getUniqueId()).getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt()
+                        new DatabasePlayer(gameChest.getDatabaseManager(), target.getUniqueId()).getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt()
                         < rankId) {
                     pp.sendMessage(ByteCloudMaster.getInstance().prefix+"§cDu hast keine Berechtigung diesen Spieler zu verschieben!");
                     return;

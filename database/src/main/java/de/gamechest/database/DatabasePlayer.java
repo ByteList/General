@@ -21,9 +21,12 @@ public class DatabasePlayer {
     private final UUID uuid;
     private final FindIterable<Document> find;
 
+    private int exists;
+
     public DatabasePlayer(DatabaseManager databaseManager, UUID uuid) {
         this.databaseManager = databaseManager;
         this.uuid = uuid;
+        this.exists = -1;
         if(uuid != null)
             this.find = databaseManager.getCollection(databaseCollection).find(Filters.eq(DatabasePlayerObject.UUID.getName(), uuid.toString()));
         else
@@ -38,16 +41,6 @@ public class DatabasePlayer {
         databaseManager.getCollection(databaseCollection).updateOne(basicDBObject, doc);
     }
 
-//    public void setDatabaseObjects(HashMap<DatabaseObject, Object> objects) {
-//        BasicDBObject doc = new BasicDBObject();
-//        for(DatabaseObject databaseObject : objects.keySet()) {
-//            doc.append("$set", new BasicDBObject().append(databaseObject.getName(), objects.get(databaseObject)));
-//        }
-//
-//        BasicDBObject basicDBObject = new BasicDBObject().append(DatabaseObject.UUID.getName(), uuid);
-//        databaseManager.getCollection(databaseCollection).updateOne(basicDBObject, doc);
-//    }
-
     public DatabaseElement getDatabaseElement(DatabasePlayerObject databasePlayerObject) {
         if(find == null) return null;
         Document document = find.first();
@@ -58,13 +51,27 @@ public class DatabasePlayer {
     }
 
     public boolean existsPlayer() {
-        if(find == null) return false;
-        Document document = find.first();
-        return document != null;
+        if(exists == -1) {
+            if(find == null) {
+                this.exists = 0;
+                return false;
+            }
+            Document document = find.first();
+            if(document != null) {
+                this.exists = 1;
+                return true;
+            }
+        } else {
+            if(exists == 1)
+                return true;
+        }
+        return false;
     }
 
     public void createPlayer() {
         if(existsPlayer()) return;
+
+
 
         Calendar now = Calendar.getInstance();
         SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm");
@@ -73,8 +80,6 @@ public class DatabasePlayer {
         Document lobbyInventory = new Document();
         lobbyInventory.put("NORMAL_KEY", 0);
         lobbyInventory.put("NORMAL_CHEST", 0);
-//        lobbyInventory.put("RARE_KEY", 0);
-//        lobbyInventory.put("RARE_CHEST", 0);
 
         Document shopItems = new Document();
         shopItems.put(DatabasePlayerObject.ActiveShopItems.HEAD.getName(), 0);

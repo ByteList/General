@@ -30,12 +30,12 @@ public class DatabasePremiumPlayer {
         return document != null;
     }
 
-    public void createPlayer(UUID uuid, String endingDate) {
+    public void createPlayer(UUID uuid, long end) {
         if(existsPlayer(uuid)) return;
 
         Document document = new Document()
                 .append(DatabasePremiumPlayerObject.UUID.getName(), uuid.toString())
-                .append(DatabasePremiumPlayerObject.ENDING_DATE.getName(), endingDate);
+                .append(DatabasePremiumPlayerObject.ENDING_DATE.getName(), end);
 
 
         databaseManager.getCollection(databaseCollection).insertOne(document);

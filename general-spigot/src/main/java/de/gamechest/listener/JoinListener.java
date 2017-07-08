@@ -5,7 +5,6 @@ import de.gamechest.BountifulAPI;
 import de.gamechest.GameChest;
 import de.gamechest.Skin;
 import de.gamechest.database.DatabaseManager;
-import de.gamechest.database.DatabasePlayer;
 import de.gamechest.database.DatabasePlayerObject;
 import de.gamechest.database.nick.DatabaseNickObject;
 import de.gamechest.database.onlineplayer.DatabaseOnlinePlayer;
@@ -31,6 +30,7 @@ public class JoinListener {
 
     public static void callFirstOnJoin(PlayerJoinEvent e) {
         Player p = e.getPlayer();
+        p.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
 
         if(Bukkit.getServerName().contains("nonBungee")) {
             create(p);
@@ -38,13 +38,14 @@ public class JoinListener {
 
         gameChest.getPacketInjector().addPlayer(p);
 
-        DatabaseOnlinePlayer databaseOnlinePlayer = gameChest.getDatabaseManager().createCachedDatabaseOnlinePlayer(p.getUniqueId(), p.getName());
-        if(databaseOnlinePlayer.getDatabaseElement(DatabaseOnlinePlayerObject.SERVER_ID).getObject() == null) {
-            setServerId(databaseOnlinePlayer);
-        } else {
-            databaseOnlinePlayer.setDatabaseObject(DatabaseOnlinePlayerObject.PREVIOUS_SERVER_ID, databaseOnlinePlayer.getDatabaseElement(DatabaseOnlinePlayerObject.SERVER_ID).getAsString());
-            setServerId(databaseOnlinePlayer);
-        }
+        gameChest.getDatabaseManager().getAsync().getOnlinePlayer(p.getUniqueId(), databaseOnlinePlayer -> {
+            if(databaseOnlinePlayer.getDatabaseElement(DatabaseOnlinePlayerObject.SERVER_ID).getObject() == null) {
+                setServerId(databaseOnlinePlayer);
+            } else {
+                databaseOnlinePlayer.setDatabaseObject(DatabaseOnlinePlayerObject.PREVIOUS_SERVER_ID, databaseOnlinePlayer.getDatabaseElement(DatabaseOnlinePlayerObject.SERVER_ID).getAsString());
+                setServerId(databaseOnlinePlayer);
+            }
+        });
 
         BountifulAPI.sendTabTitle(p,
                 " §6Game-Chest§f.§6de §8[§b1.9 §f§l- §c1.12§8]  \n"+ //§eSurvival §f& §eSpielmodi
@@ -69,45 +70,46 @@ public class JoinListener {
     
     private static void create(Player p) {
         DatabaseManager databaseManager = gameChest.getDatabaseManager();
-        DatabasePlayer databasePlayer = databaseManager.getDatabasePlayer(p.getUniqueId());
-        databasePlayer.createPlayer();
-        databasePlayer.updatePlayer();
 
-        // checking name update
-        DatabaseUuidBuffer databaseUuidBuffer = databaseManager.getDatabaseUuidBuffer();
-        String lastName = null;
-        if(databasePlayer.getDatabaseElement(DatabasePlayerObject.LAST_NAME).getObject() != null)
-            lastName = databasePlayer.getDatabaseElement(DatabasePlayerObject.LAST_NAME).getAsString();
+        gameChest.getDatabaseManager().getAsync().getPlayer(p.getUniqueId(), databasePlayer -> {
+            databasePlayer.createPlayer();
+            databasePlayer.updatePlayer();
 
-        if(lastName == null) {
-            databaseUuidBuffer.createPlayer(p.getName(), p.getUniqueId());
-        } else if(!lastName.equals(p.getName())) {
-            databaseUuidBuffer.removePlayer(lastName);
-            databaseUuidBuffer.createPlayer(p.getName(), p.getUniqueId());
-        }
+            // checking name update
+            DatabaseUuidBuffer databaseUuidBuffer = databaseManager.getDatabaseUuidBuffer();
+            String lastName = null;
+            if(databasePlayer.getDatabaseElement(DatabasePlayerObject.LAST_NAME).getObject() != null)
+                lastName = databasePlayer.getDatabaseElement(DatabasePlayerObject.LAST_NAME).getAsString();
 
-        // update database player
-        SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-        String onlineDate = formatter.format(Calendar.getInstance().getTime());
+            if(lastName == null) {
+                databaseUuidBuffer.createPlayer(p.getName(), p.getUniqueId());
+            } else if(!lastName.equals(p.getName())) {
+                databaseUuidBuffer.removePlayer(lastName);
+                databaseUuidBuffer.createPlayer(p.getName(), p.getUniqueId());
+            }
 
-        databasePlayer.setDatabaseObject(DatabasePlayerObject.LAST_LOGIN, onlineDate);
-        databasePlayer.setDatabaseObject(DatabasePlayerObject.LAST_NAME, p.getName());
-        databasePlayer.setDatabaseObject(DatabasePlayerObject.LAST_IP, p.getAddress().getHostString());
+            // update database player
+            SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+            String onlineDate = formatter.format(Calendar.getInstance().getTime());
 
-        // Skin texture update
-        Skin skin = new Skin(p.getUniqueId());
-        String value = skin.getSkinValue();
-        String signature = skin.getSkinSignature();
+            databasePlayer.setDatabaseObject(DatabasePlayerObject.LAST_LOGIN, onlineDate);
+            databasePlayer.setDatabaseObject(DatabasePlayerObject.LAST_NAME, p.getName());
+            databasePlayer.setDatabaseObject(DatabasePlayerObject.LAST_IP, p.getAddress().getHostString());
 
-        if(value != null && signature != null) {
-            Document skinTextures = new Document();
-            skinTextures.put(DatabaseNickObject.SkinObject.VALUE.getName(), value);
-            skinTextures.put(DatabaseNickObject.SkinObject.SIGNATURE.getName(), signature);
-            databasePlayer.setDatabaseObject(DatabasePlayerObject.SKIN_TEXTURE, skinTextures);
-        }
+            // Skin texture update
+            Skin skin = new Skin(p.getUniqueId());
+            String value = skin.getSkinValue();
+            String signature = skin.getSkinSignature();
+
+            if(value != null && signature != null) {
+                Document skinTextures = new Document();
+                skinTextures.put(DatabaseNickObject.SkinObject.VALUE.getName(), value);
+                skinTextures.put(DatabaseNickObject.SkinObject.SIGNATURE.getName(), signature);
+                databasePlayer.setDatabaseObject(DatabasePlayerObject.SKIN_TEXTURE, skinTextures);
+            }
+        });
 
         // Online player
-        DatabaseOnlinePlayer databaseOnlinePlayer = databaseManager.createCachedDatabaseOnlinePlayer(p.getUniqueId(), p.getName());
-        databaseOnlinePlayer.createOnlinePlayer();
+        gameChest.getDatabaseManager().getAsync().getOnlinePlayer(p.getUniqueId(), DatabaseOnlinePlayer::createOnlinePlayer);
     }
 }

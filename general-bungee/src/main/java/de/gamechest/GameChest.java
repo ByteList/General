@@ -1,6 +1,7 @@
 package de.gamechest;
 
 import com.voxelboxstudios.resilent.GCPacketServer;
+import de.gamechest.coins.Coins;
 import de.gamechest.commands.base.CommandHandler;
 import de.gamechest.database.DatabaseManager;
 import de.gamechest.database.DatabasePlayer;
@@ -8,16 +9,20 @@ import de.gamechest.database.DatabasePlayerObject;
 import de.gamechest.database.ban.DatabaseBan;
 import de.gamechest.database.ban.DatabaseBanObject;
 import de.gamechest.database.ban.Reason;
+import de.gamechest.database.onlineplayer.DatabaseOnlinePlayer;
+import de.gamechest.database.onlineplayer.DatabaseOnlinePlayerObject;
 import de.gamechest.database.rank.Rank;
 import de.gamechest.listener.*;
 import de.gamechest.nick.Nick;
+import de.gamechest.party.PartyManager;
 import lombok.Getter;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -35,15 +40,24 @@ public class GameChest extends Plugin {
     @Getter
     private Nick nick;
     @Getter
+    private Coins coins;
+    @Getter
     private ConnectManager connectManager;
+    @Getter
+    private PartyManager partyManager;
 
     public final String prefix = "§2GameChest §8\u00BB ";
-    public String pr_nick = "§5Nick §8\u00BB ";
-    public String pr_stats = "§6Stats §8\u00BB ";
-    public String pr_kick = "§cKick §8\u00BB ";
-    public String pr_ban = "§cBan §8\u00BB ";
-    public String pr_bug = "§9BugReport §8\u00BB ";
+    public final String pr_nick = "§5Nick §8\u00BB ";
+    public final String pr_stats = "§6Stats §8\u00BB ";
+    public final String pr_kick = "§cKick §8\u00BB ";
+    public final String pr_ban = "§cBan §8\u00BB ";
+    public final String pr_bug = "§9BugReport §8\u00BB ";
+    public final String pr_activate = "§6Activate §8\u00BB ";
+    public final String pr_party = "§cParty §8\u00BB ";
     public final String pr_msg = "§f§o[§c§oPrivat§f§o] ";
+    public final String pr_team = "§f§o[§c§oTeam§f§o] ";
+
+    public List<ProxiedPlayer> onlineTeam = new ArrayList<>();
 
 
     public HashMap<ProxiedPlayer, ProxiedPlayer> TELL_FROM_TO = new HashMap<>();
@@ -52,9 +66,12 @@ public class GameChest extends Plugin {
     public void onEnable() {
         instance = this;
 
-        this.nick = new Nick();
-        this.connectManager = new ConnectManager();
         initDatabase();
+
+        this.nick = new Nick();
+        this.coins = new Coins();
+        this.connectManager = new ConnectManager();
+        this.partyManager = new PartyManager();
 
         GCPacketServer.start();
 
@@ -91,13 +108,25 @@ public class GameChest extends Plugin {
     }
 
     public boolean hasRank(UUID uuid, Rank rank) {
-        DatabasePlayer databasePlayer = databaseManager.getDatabasePlayer(uuid);
-        return databasePlayer.existsPlayer() && databasePlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt() <= rank.getId();
+        DatabasePlayer dbPlayer = new DatabasePlayer(this.databaseManager, uuid);
+
+        return dbPlayer.existsPlayer() && dbPlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt() <= rank.getId();
     }
 
     public boolean equalsRank(UUID uuid, Rank rank) {
-        DatabasePlayer databasePlayer = databaseManager.getDatabasePlayer(uuid);
-        return databasePlayer.existsPlayer() && Objects.equals(databasePlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt(), rank.getId());
+        DatabasePlayer dbPlayer = new DatabasePlayer(this.databaseManager, uuid);
+
+        return dbPlayer.existsPlayer() && dbPlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt() == rank.getId();
+    }
+
+    public Rank getRank(UUID uuid) {
+        DatabasePlayer dbPlayer = new DatabasePlayer(this.databaseManager, uuid);
+        return Rank.getRankById(dbPlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt());
+    }
+
+    public boolean isRankToggled(UUID uuid) {
+        DatabaseOnlinePlayer databaseOnlinePlayer = new DatabaseOnlinePlayer(this.databaseManager, uuid);
+        return databaseOnlinePlayer.getDatabaseElement(DatabaseOnlinePlayerObject.TOGGLED_RANK).getAsBoolean();
     }
 
     public String getBanMessage(UUID uuid) {
@@ -109,7 +138,7 @@ public class GameChest extends Plugin {
         return
                 "§cDu wurdest bis zum §a"+(endDate.equals("-1") ? "§4permanent" : endDate)+"§c vom §6Game-Chest.de Netzwerk§c gebannt."
                         + "\n" + "\n" +
-                        "§cGrund: §e"+ Reason.getReason(databaseBan.getDatabaseElement(uuid, DatabaseBanObject.REASON).getAsString())
+                        "§cGrund: §e"+ Reason.getReason(databaseBan.getDatabaseElement(uuid, DatabaseBanObject.REASON).getAsString()).getReason()
                                         + (extra != null ? " ("+extra+")" : "")
                         + "\n" + "\n" +
                         "§7§oDu kannst einen §a§neinmaligen§7§o Entbannungsantrag im Support stellen."

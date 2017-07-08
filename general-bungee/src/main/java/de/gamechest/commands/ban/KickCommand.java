@@ -2,6 +2,7 @@ package de.gamechest.commands.ban;
 
 import com.google.common.collect.ImmutableSet;
 import de.gamechest.GameChest;
+import de.gamechest.UUIDFetcher;
 import de.gamechest.commands.base.GCCommand;
 import de.gamechest.database.onlineplayer.DatabaseOnlinePlayer;
 import de.gamechest.database.onlineplayer.DatabaseOnlinePlayerObject;
@@ -39,25 +40,27 @@ public class KickCommand extends GCCommand implements TabExecutor {
 
         if(args.length > 1) {
             String playername = args[0];
-            ProxiedPlayer tp = gameChest.getProxy().getPlayer(playername);
+            String onlyStaff = null;
+
+            if(gameChest.getNick().isNameANick(playername)) {
+                onlyStaff = " §7- §eNicked as §9"+playername;
+                playername = gameChest.getNick().getPlayernameFromNick(playername);
+            }
+            UUID uuid = UUIDFetcher.getUUID(playername);
+            ProxiedPlayer tp = gameChest.getProxy().getPlayer(uuid);
 
             if(tp == null) {
                 sender.sendMessage(gameChest.prefix+"§cDer User ist nicht online!");
                 return;
             }
-
-            UUID uuid = tp.getUniqueId();
-            DatabaseOnlinePlayer databaseOnlinePlayer = gameChest.getDatabaseManager().getDatabaseOnlinePlayer(uuid);
-
-            playername = databaseOnlinePlayer.getDatabaseElement(DatabaseOnlinePlayerObject.NAME).getAsString();
-            String reason = "";
+            StringBuilder reason = new StringBuilder();
 
             for (int i = 1; i < args.length; i++) {
-                reason = reason + args[i] + " ";
+                reason.append(args[i]).append(" ");
             }
-            reason += "#";
+            reason.append("#");
 
-            reason = reason.replace(" #", "");
+            reason = new StringBuilder(reason.toString().replace(" #", ""));
 
             tp.disconnect("§cDu wurdest vom §6Game-Chest.de Netzwerk§c gekickt."
                     + "\n" + "\n" +
@@ -67,7 +70,7 @@ public class KickCommand extends GCCommand implements TabExecutor {
             for (ProxiedPlayer player : gameChest.getProxy().getPlayers()) {
                 if (gameChest.hasRank(player.getUniqueId(), Rank.SUPPORTER)) {
                     player.sendMessage(gameChest.pr_kick + "§a" + sender + "§7 hat §c" + playername + "§7 gekickt");
-                    player.sendMessage(gameChest.pr_kick + "§7Grund: §e" + reason);
+                    player.sendMessage(gameChest.pr_kick + "§7Grund: §e" + reason + onlyStaff);
                 }
             }
             return;
@@ -97,7 +100,7 @@ public class KickCommand extends GCCommand implements TabExecutor {
             String search = args[0].toLowerCase();
             for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
                 if(gameChest.getNick().isNicked(player.getUniqueId())) {
-                    DatabaseOnlinePlayer databaseOnlinePlayer = gameChest.getDatabaseManager().getDatabaseOnlinePlayer(player.getUniqueId());
+                    DatabaseOnlinePlayer databaseOnlinePlayer = new DatabaseOnlinePlayer(gameChest.getDatabaseManager(), player.getUniqueId().toString(), player.getName());
                     String nick = databaseOnlinePlayer.getDatabaseElement(DatabaseOnlinePlayerObject.NICKNAME).getAsString();
                     if(nick.toLowerCase().startsWith(search)) {
                         matches.add(nick);

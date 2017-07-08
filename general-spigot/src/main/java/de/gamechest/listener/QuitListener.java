@@ -2,6 +2,7 @@ package de.gamechest.listener;
 
 import de.gamechest.GameChest;
 import de.gamechest.database.DatabaseManager;
+import de.gamechest.database.onlineplayer.DatabaseOnlinePlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -30,8 +31,6 @@ public class QuitListener {
         }
 
         GameChest gameChest = GameChest.getInstance();
-        gameChest.getDatabaseManager().removeCachedDatabaseOnlinePlayer(e.getPlayer().getUniqueId());
-        gameChest.getDatabaseManager().removeCachedDatabasePlayer(e.getPlayer().getUniqueId());
         gameChest.getPacketInjector().removePlayer(e.getPlayer());
     }
 
@@ -39,6 +38,6 @@ public class QuitListener {
         DatabaseManager databaseManager= GameChest.getInstance().getDatabaseManager();
         GameChest.getInstance().getNick().unnickOnDisconnect(p);
 
-        databaseManager.getDatabaseOnlinePlayer(p.getUniqueId()).removeOnlinePlayer();
+        databaseManager.getAsync().getOnlinePlayer(p.getUniqueId(), DatabaseOnlinePlayer::removeOnlinePlayer);
     }
 }

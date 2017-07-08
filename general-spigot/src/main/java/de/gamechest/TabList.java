@@ -1,7 +1,5 @@
 package de.gamechest;
 
-import de.gamechest.database.DatabasePlayer;
-import de.gamechest.database.DatabasePlayerObject;
 import de.gamechest.database.rank.Rank;
 import de.gamechest.nick.Nick;
 import lombok.Getter;
@@ -10,7 +8,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by ByteList on 16.04.2017.
@@ -24,12 +24,11 @@ public class TabList {
     public static void update(Player player, TabListMode tabListMode) {
         if(tabListMode.isRank()) {
             Rank rank;
-            DatabasePlayer databasePlayer = GameChest.getInstance().getDatabaseManager().getDatabasePlayer(player.getUniqueId());
             Nick nick = GameChest.getInstance().getNick();
-            if(!nick.isNicked(player.getUniqueId())) {
-                rank = Rank.getRankById(databasePlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt());
-            } else {
+            if(nick.isNicked(player.getUniqueId()) || GameChest.getInstance().isRankToggled(player.getUniqueId())) {
                 rank = Rank.SPIELER;
+            } else {
+                rank = GameChest.getInstance().getRank(player.getUniqueId());
             }
             asRank(player, rank);
         } else {
@@ -73,30 +72,28 @@ public class TabList {
             }
             team.addEntry(player.getName());
 
-            if(all != player) {
+            if(all.getUniqueId() != player.getUniqueId() && playerModes.containsKey(all.getUniqueId())) {
                 TabListMode atabListMode = playerModes.get(all.getUniqueId());
                 String as;
                 Team ateam;
                 String aprefix;
                 if (atabListMode.isRank()) {
                     Rank arank;
-                    DatabasePlayer databasePlayer = GameChest.getInstance().getDatabaseManager().getDatabasePlayer(all.getUniqueId());
                     Nick nick = GameChest.getInstance().getNick();
-                    if (!nick.isNicked(all.getUniqueId())) {
-                        arank = Rank.getRankById(databasePlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt());
-                    } else {
+                    if (nick.isNicked(all.getUniqueId()) || GameChest.getInstance().isRankToggled(all.getUniqueId())) {
                         arank = Rank.SPIELER;
+                    } else {
+                        arank = GameChest.getInstance().getRank(all.getUniqueId());
                     }
                     as = arank.getId() + arank.getShortName();
-                    ateam = playerBoard.getTeam(s);
                     aprefix = arank.getPrefix();
                 } else {
-                    aprefix = "§"+atabListMode.getColorCode();
-                    as = aprefix+"color";
-                    ateam = playerBoard.getTeam(s);
+                    aprefix = "§" + atabListMode.getColorCode();
+                    as = aprefix + "color";
                 }
 
-                if(ateam == null) {
+                ateam = playerBoard.getTeam(as);
+                if (ateam == null) {
                     ateam = playerBoard.registerNewTeam(as);
                     ateam.setPrefix(aprefix);
                     ateam.setSuffix("§r");
@@ -136,7 +133,7 @@ public class TabList {
             }
             team.addEntry(player.getName());
 
-            if(all != player) {
+            if(all.getUniqueId() != player.getUniqueId()) {
                 if(playerModes.containsKey(all.getUniqueId())) {
                     TabListMode atabListMode = playerModes.get(all.getUniqueId());
                     String as;
@@ -144,22 +141,20 @@ public class TabList {
                     String aprefix;
                     if (atabListMode.isRank()) {
                         Rank arank;
-                        DatabasePlayer databasePlayer = GameChest.getInstance().getDatabaseManager().getDatabasePlayer(all.getUniqueId());
                         Nick nick = GameChest.getInstance().getNick();
-                        if (!nick.isNicked(all.getUniqueId())) {
-                            arank = Rank.getRankById(databasePlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt());
-                        } else {
+                        if (nick.isNicked(all.getUniqueId()) || GameChest.getInstance().isRankToggled(all.getUniqueId())) {
                             arank = Rank.SPIELER;
+                        } else {
+                            arank = GameChest.getInstance().getRank(all.getUniqueId());
                         }
                         as = arank.getId() + arank.getShortName();
-                        ateam = playerBoard.getTeam(s);
                         aprefix = arank.getPrefix();
                     } else {
                         aprefix = "§" + atabListMode.getColorCode();
                         as = prefix + "color";
-                        ateam = playerBoard.getTeam(s);
                     }
 
+                    ateam = playerBoard.getTeam(as);
                     if (ateam == null) {
                         ateam = playerBoard.registerNewTeam(as);
                         ateam.setPrefix(aprefix);
@@ -179,12 +174,11 @@ public class TabList {
         for(UUID uuid : partyPlayers) {
             Player all = Bukkit.getPlayer(uuid);
             Rank rank;
-            DatabasePlayer databasePlayer = GameChest.getInstance().getDatabaseManager().getDatabasePlayer(uuid);
             Nick nick = GameChest.getInstance().getNick();
-            if(!nick.isNicked(uuid)) {
-                rank = Rank.getRankById(databasePlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt());
-            } else {
+            if (nick.isNicked(all.getUniqueId()) || GameChest.getInstance().isRankToggled(all.getUniqueId())) {
                 rank = Rank.SPIELER;
+            } else {
+                rank = GameChest.getInstance().getRank(all.getUniqueId());
             }
             String prefix = "§8[§cParty§8] "+rank.getColor();
             Scoreboard board = all.getScoreboard();

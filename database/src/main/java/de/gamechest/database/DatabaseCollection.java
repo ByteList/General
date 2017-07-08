@@ -11,9 +11,9 @@ public enum DatabaseCollection {
     ONLINE_PLAYER("online-player"),
     PREMIUM_PLAYER("premium-player"),
     UUID_BUFFER("uuid-buffer"),
+    ACTIVATE_CODES("activate-codes"),
 
     PARTY("party"),
-    PARTY_REQUESTS("party-requests"),
 
     BANS("bans"),
     BAN_HISTORY("ban-history"),

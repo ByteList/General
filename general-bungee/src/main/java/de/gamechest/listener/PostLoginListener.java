@@ -26,6 +26,9 @@ public class PostLoginListener implements Listener {
                 pp.sendMessage(gameChest.pr_bug+"§bEs existieren §e"+waiting+"§b offene Bug-Reports!");
             }
         }
+        if(gameChest.hasRank(pp.getUniqueId(), Rank.BUILDER)) {
+            gameChest.onlineTeam.add(pp);
+        }
     }
 
 }

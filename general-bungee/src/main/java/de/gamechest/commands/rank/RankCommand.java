@@ -27,9 +27,7 @@ public class RankCommand extends GCCommand {
         if (sender instanceof ProxiedPlayer) {
             ProxiedPlayer pp = (ProxiedPlayer) sender;
             if (!gameChest.hasRank(pp.getUniqueId(), Rank.DEVELOPER)) {
-                pp.sendMessage(gameChest.prefix+"§eDein aktueller Rang ist: "+
-                        Rank.getRankById(gameChest.getDatabaseManager().getDatabasePlayer(pp.getUniqueId()).getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt()).getColor()+
-                        Rank.getRankById(gameChest.getDatabaseManager().getDatabasePlayer(pp.getUniqueId()).getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt()).getName());
+                pp.sendMessage(gameChest.prefix+"§cDu hast keine Berechtigung für diesen Befehl.");
                 return;
             }
         }
@@ -47,7 +45,7 @@ public class RankCommand extends GCCommand {
             if(args[0].equalsIgnoreCase("info")) {
                 String name = args[1];
                 UUID uuid = UUIDFetcher.getUUID(name);
-                DatabasePlayer databasePlayer = gameChest.getDatabaseManager().getDatabasePlayer(uuid);
+                DatabasePlayer databasePlayer = new DatabasePlayer(gameChest.getDatabaseManager(), uuid);
 
                 if(!databasePlayer.existsPlayer()) {
                     sender.sendMessage(gameChest.prefix+"§cKonnte den User nicht in der Datenbank finden!");
@@ -65,7 +63,7 @@ public class RankCommand extends GCCommand {
             if(args[0].equalsIgnoreCase("set")) {
                 String name = args[1];
                 UUID uuid = UUIDFetcher.getUUID(name);
-                DatabasePlayer databasePlayer = gameChest.getDatabaseManager().getDatabasePlayer(uuid);
+                DatabasePlayer databasePlayer = new DatabasePlayer(gameChest.getDatabaseManager(), uuid);
                 String rankStr = args[2];
 
                 if(!Rank.existsRank(rankStr)) {
@@ -88,7 +86,7 @@ public class RankCommand extends GCCommand {
                 sender.sendMessage(gameChest.prefix+"§aRang geändert!");
                 sender.sendMessage("§8\u00BB §eRang von §7"+name+"§e: "+
                         Rank.getRankById(databasePlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt()).getColor()+
-                        Rank.getRankById(databasePlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt()).getColor());
+                        Rank.getRankById(databasePlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt()).getName());
                 if(gameChest.getProxy().getPlayer(name) != null) {
                     gameChest.getProxy().getPlayer(name).sendMessage(
                             gameChest.prefix+"§aDein Rang wurde geändert!");

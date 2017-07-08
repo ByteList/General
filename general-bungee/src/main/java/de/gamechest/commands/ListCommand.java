@@ -36,7 +36,7 @@ public class ListCommand extends GCCommand {
             String players = "";
 
             for (ProxiedPlayer player : playerCollection) {
-                DatabasePlayer databasePlayer = gameChest.getDatabaseManager().getDatabasePlayer(player.getUniqueId());
+                DatabasePlayer databasePlayer = new DatabasePlayer(gameChest.getDatabaseManager(), player.getUniqueId());
                 String color = Rank.getRankById(databasePlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt()).getColor();
                 players = players + color + player.getName() + "§7 (§e" + player.getServer().getInfo().getName() + "§7), ";
             }

@@ -4,7 +4,6 @@ import de.gamechest.GameChest;
 import de.gamechest.UUIDFetcher;
 import de.gamechest.commands.base.GCCommand;
 import de.gamechest.database.DatabasePlayerObject;
-import de.gamechest.database.DatabasePlayer;
 import de.gamechest.database.onlineplayer.DatabaseOnlinePlayer;
 import de.gamechest.database.onlineplayer.DatabaseOnlinePlayerObject;
 import net.md_5.bungee.api.CommandSender;
@@ -29,30 +28,28 @@ public class OnlineTimeCommand extends GCCommand implements TabExecutor {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if(args.length == 1) {
-            String name = args[0];
-            UUID uuid = UUIDFetcher.getUUID(name);
-            DatabaseOnlinePlayer databaseOnlinePlayer = gameChest.getDatabaseManager().getDatabaseOnlinePlayer(uuid);
-            DatabasePlayer databasePlayer = gameChest.getDatabaseManager().getDatabasePlayer(uuid);
-            if(databaseOnlinePlayer.getDatabaseElement(DatabaseOnlinePlayerObject.NICKNAME) != null) {
-                name = databaseOnlinePlayer.getDatabaseElement(DatabaseOnlinePlayerObject.NAME).getAsString();
-            } else
-                name = databasePlayer.getDatabaseElement(DatabasePlayerObject.LAST_NAME).getAsString();
+            final String[] name = {args[0]};
+            UUID uuid = UUIDFetcher.getUUID(name[0]);
 
-            if(!databasePlayer.existsPlayer()) {
+            if(uuid == null) {
                 sender.sendMessage(gameChest.prefix+"§cKonnte den User nicht in der Datenbank finden!");
                 return;
             }
 
-            Long seconds = databasePlayer.getDatabaseElement(DatabasePlayerObject.ONLINE_TIME).getAsLong();
+            gameChest.getDatabaseManager().getAsync().getPlayer(uuid, dbPlayer -> {
+                name[0] = dbPlayer.getDatabaseElement(DatabasePlayerObject.LAST_NAME).getAsString();
 
-            double minutes = seconds/60;
-            double hours = minutes/60;
+                Long seconds = dbPlayer.getDatabaseElement(DatabasePlayerObject.ONLINE_TIME).getAsLong();
 
-            DecimalFormat format = new DecimalFormat("0.00");
+                double minutes = seconds/60;
+                double hours = minutes/60;
 
+                DecimalFormat format = new DecimalFormat("0.00");
 
-            sender.sendMessage(gameChest.prefix+"§6"+name+"§a war bisher §6"+
-                    format.format(hours).replace(",", ".")+"§a Stunden online.");
+                sender.sendMessage(gameChest.prefix+"§6"+ name[0] +"§a war bisher §6"+
+                        format.format(hours).replace(",", ".")+"§a Stunden online.");
+            });
+
             return;
         }
 
@@ -61,16 +58,17 @@ public class OnlineTimeCommand extends GCCommand implements TabExecutor {
             return;
         }
         ProxiedPlayer pp = (ProxiedPlayer) sender;
-        DatabasePlayer databasePlayer = gameChest.getDatabaseManager().getDatabasePlayer(pp.getUniqueId());
+        gameChest.getDatabaseManager().getAsync().getPlayer(pp.getUniqueId(), dbPlayer -> {
+            Long seconds = dbPlayer.getDatabaseElement(DatabasePlayerObject.ONLINE_TIME).getAsLong();
 
-        Long seconds = databasePlayer.getDatabaseElement(DatabasePlayerObject.ONLINE_TIME).getAsLong();
+            double minutes = seconds/60;
+            double hours = minutes/60;
 
-        double minutes = seconds/60;
-        double hours = minutes/60;
+            DecimalFormat format = new DecimalFormat("0.00");
 
-        DecimalFormat format = new DecimalFormat("0.00");
-        sender.sendMessage(gameChest.prefix+"§aDu warst bisher §6"+
-                format.format(hours).replace(",", ".")+"§a Stunden online.");
+            sender.sendMessage(gameChest.prefix+"§aDu warst bisher §6"+
+                    format.format(hours).replace(",", ".")+"§a Stunden online.");
+        });
     }
 
     @Override
@@ -78,7 +76,7 @@ public class OnlineTimeCommand extends GCCommand implements TabExecutor {
         if (strings.length == 0) {
             ArrayList<String> tabs = new ArrayList<>();
             for (ProxiedPlayer pp : gameChest.getProxy().getPlayers()) {
-                DatabaseOnlinePlayer databaseOnlinePlayer = gameChest.getDatabaseManager().getDatabaseOnlinePlayer(pp.getUniqueId());
+                DatabaseOnlinePlayer databaseOnlinePlayer = new DatabaseOnlinePlayer(gameChest.getDatabaseManager(), pp.getUniqueId().toString(), pp.getName());
                 if (databaseOnlinePlayer.getDatabaseElement(DatabaseOnlinePlayerObject.NICKNAME) != null)
                     tabs.add(databaseOnlinePlayer.getDatabaseElement(DatabaseOnlinePlayerObject.NICKNAME).getAsString());
                 else tabs.add(pp.getName());

@@ -7,7 +7,6 @@ import de.gamechest.database.DatabaseManager;
 import de.gamechest.database.bug.BugReason;
 import de.gamechest.database.bug.BugState;
 import de.gamechest.database.bug.DatabaseBugreportObject;
-import de.gamechest.database.onlineplayer.DatabaseOnlinePlayer;
 import de.gamechest.database.onlineplayer.DatabaseOnlinePlayerObject;
 import de.gamechest.database.rank.Rank;
 import net.md_5.bungee.api.CommandSender;
@@ -160,33 +159,34 @@ public class BugReportCommand extends GCCommand implements TabExecutor {
                     return;
                 }
                 BugReason bugReason = BugReason.getBugReason(reasonStr);
-                DatabaseOnlinePlayer databaseOnlinePlayer = databaseManager.getDatabaseOnlinePlayer(pp.getUniqueId());
+                databaseManager.getAsync().getOnlinePlayer(pp.getUniqueId(), dbOPlayer-> {
+                    String extra = "";
 
-                String extra = "";
-
-                for (int i = 1; i < args.length; i++) {
-                    extra = extra + args[i] + " ";
-                }
-                extra = extra + "#";
-                extra = extra.replace(" #", "");
-
-                String bugId = "#BR" + (databaseManager.getDatabaseBugreport().getReportedBugs() + 2);
-                String serverId = pp.getServer().getInfo().getName();
-                String previousServerId = null;
-                if (databaseOnlinePlayer.getDatabaseElement(DatabaseOnlinePlayerObject.PREVIOUS_SERVER_ID).getObject() != null)
-                    previousServerId = databaseOnlinePlayer.getDatabaseElement(DatabaseOnlinePlayerObject.PREVIOUS_SERVER_ID).getAsString();
-
-                databaseManager.getDatabaseBugreport().createBugreport(bugId, bugReason, serverId, extra, pp.getUniqueId(), previousServerId);
-                sender.sendMessage(gameChest.pr_bug + "§aDein Bug-Report wurde erfolgreich erstellt!");
-                sender.sendMessage("§8\u00BB §7BugID: §e" + bugId);
-                sender.sendMessage("§8\u00BB §7Grund: §a" + bugReason.getBetterReason());
-                sender.sendMessage("§8\u00BB §7Deine Nachricht: §7" + extra);
-                sender.sendMessage("§8\u00BB §6Den Status kannst du unter §c/buginfo <BugId>§6 einsehen.");
-                for (ProxiedPlayer player : gameChest.getProxy().getPlayers()) {
-                    if (gameChest.hasRank(player.getUniqueId(), Rank.DEVELOPER)) {
-                        player.sendMessage(gameChest.pr_bug + "§a" + sender.getName() + "§b hat einen Bug reportet! §7(§c" + bugId + "§7)");
+                    for (int i = 1; i < args.length; i++) {
+                        extra = extra + args[i] + " ";
                     }
-                }
+                    extra = extra + "#";
+                    extra = extra.replace(" #", "");
+
+                    String bugId = "#BR" + (databaseManager.getDatabaseBugreport().getReportedBugs() + 2);
+                    String serverId = pp.getServer().getInfo().getName();
+                    String previousServerId = null;
+                    if (dbOPlayer.getDatabaseElement(DatabaseOnlinePlayerObject.PREVIOUS_SERVER_ID).getObject() != null)
+                        previousServerId = dbOPlayer.getDatabaseElement(DatabaseOnlinePlayerObject.PREVIOUS_SERVER_ID).getAsString();
+
+                    databaseManager.getDatabaseBugreport().createBugreport(bugId, bugReason, serverId, extra, pp.getUniqueId(), previousServerId);
+                    sender.sendMessage(gameChest.pr_bug + "§aDein Bug-Report wurde erfolgreich erstellt!");
+                    sender.sendMessage("§8\u00BB §7BugID: §e" + bugId);
+                    sender.sendMessage("§8\u00BB §7Grund: §a" + bugReason.getBetterReason());
+                    sender.sendMessage("§8\u00BB §7Deine Nachricht: §7" + extra);
+                    sender.sendMessage("§8\u00BB §6Den Status kannst du unter §c/buginfo <BugId>§6 einsehen.");
+                    for (ProxiedPlayer player : gameChest.getProxy().getPlayers()) {
+                        if (gameChest.hasRank(player.getUniqueId(), Rank.DEVELOPER)) {
+                            player.sendMessage(gameChest.pr_bug + "§a" + sender.getName() + "§b hat einen Bug reportet! §7(§c" + bugId + "§7)");
+                        }
+                    }
+                });
+
                 return;
             }
             sender.sendMessage(gameChest.prefix + "§7Bitte nutze diesen Befehl nur, um einen Bug zu reporten!");

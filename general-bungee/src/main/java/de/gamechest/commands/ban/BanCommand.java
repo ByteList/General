@@ -58,15 +58,12 @@ public class BanCommand extends GCCommand implements TabExecutor {
                 sender.sendMessage(gameChest.prefix + "§7Gebannte User:");
                 List<UUID> uuids = databaseBan.getBannedUuids();
 
-                String players = "";
+                StringBuilder players = new StringBuilder();
 
                 for (UUID uuid : uuids) {
-                    DatabasePlayer databasePlayer = gameChest.getDatabaseManager().getDatabasePlayer(uuid);
-
-                    String color = Rank.getRankById(databasePlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt()).getColor();
-                    players = players + color + databasePlayer.getDatabaseElement(DatabasePlayerObject.LAST_NAME)
-                            .getAsString() +
-                            "§7 (§e" + databaseBan.getDatabaseElement(uuid, DatabaseBanObject.REASON).getAsString() + "§7), ";
+                    players.append("§6").append(
+                            new DatabasePlayer(gameChest.getDatabaseManager(), uuid).getDatabaseElement(DatabasePlayerObject.LAST_NAME).getAsString())
+                            .append("§7 (§e").append(databaseBan.getDatabaseElement(uuid, DatabaseBanObject.REASON).getAsString()).append("§7), ");
                 }
                 sender.sendMessage("§8\u00BB " + players);
                 return;
@@ -77,7 +74,7 @@ public class BanCommand extends GCCommand implements TabExecutor {
             if (args[0].equalsIgnoreCase("info")) {
                 String playername = args[1];
                 UUID uuid = UUIDFetcher.getUUID(playername);
-                DatabasePlayer databasePlayer = gameChest.getDatabaseManager().getDatabasePlayer(uuid);
+                DatabasePlayer databasePlayer = new DatabasePlayer(gameChest.getDatabaseManager(), uuid);
 
                 if (!databasePlayer.existsPlayer()) {
                     sender.sendMessage(gameChest.prefix + "§cKonnte den User nicht in der Datenbank finden!");
@@ -97,22 +94,19 @@ public class BanCommand extends GCCommand implements TabExecutor {
             }
 
             String playername = args[0];
-            UUID uuid = UUIDFetcher.getUUID(playername); // TODO: 15.04.2017 update to uuidBuffer
-            DatabasePlayer databasePlayer = gameChest.getDatabaseManager().getDatabasePlayer(uuid);
-            String onlyStaff = null;
+            String onlyStaff = "";
 
-//
-//            if(gameChest.getNick().isNicked()) {
-//                onlyStaff = " §7- §eNicked as §9"+playername;
-//                playername = GCGeneral.getSqlHandler().getPlayerName(playername);
-//            }
+            if(gameChest.getNick().isNameANick(playername)) {
+                onlyStaff = " §7- §eNicked as §9"+playername;
+                playername = gameChest.getNick().getPlayernameFromNick(playername);
+            }
+            UUID uuid = UUIDFetcher.getUUID(playername);
+            DatabasePlayer databasePlayer = new DatabasePlayer(gameChest.getDatabaseManager(), uuid);
 
             if (!databasePlayer.existsPlayer()) {
                 sender.sendMessage(gameChest.prefix + "§cKonnte den User nicht in der Datenbank finden!");
                 return;
             }
-
-            playername = databasePlayer.getDatabaseElement(DatabasePlayerObject.LAST_NAME).getAsString();
 
             String reason = args[1];
 
@@ -128,7 +122,7 @@ public class BanCommand extends GCCommand implements TabExecutor {
                 for (ProxiedPlayer player : gameChest.getProxy().getPlayers()) {
                     if (gameChest.hasRank(player.getUniqueId(), Rank.SUPPORTER)) {
                         player.sendMessage(gameChest.pr_ban + "§a" + sender + "§7 hat §c" + playername + "§7 gebannt");
-                        player.sendMessage(gameChest.pr_ban + "§7Grund: §e" + reason + (onlyStaff));
+                        player.sendMessage(gameChest.pr_ban + "§7Grund: §e" + Reason.getReason(reason.toUpperCase()).name() + onlyStaff);
                     }
                 }
                 return;
@@ -140,45 +134,43 @@ public class BanCommand extends GCCommand implements TabExecutor {
 
         if (args.length > 2) {
             String playername = args[0];
-            UUID uuid = UUIDFetcher.getUUID(playername);
-            DatabasePlayer databasePlayer = gameChest.getDatabaseManager().getDatabasePlayer(uuid);
             String onlyStaff = "";
 
-//            if(GCGeneral.getSqlHandler().isNicked("NICK", playername)) {
-//                onlyStaff = " §7- §eNicked as §9"+playername;
-//                playername = GCGeneral.getSqlHandler().getPlayerName(playername);
-//            }
+            if(gameChest.getNick().isNameANick(playername)) {
+                onlyStaff = " §7- §eNicked as §9"+playername;
+                playername = gameChest.getNick().getPlayernameFromNick(playername);
+            }
+            UUID uuid = UUIDFetcher.getUUID(playername);
+            DatabasePlayer databasePlayer = new DatabasePlayer(gameChest.getDatabaseManager(), uuid);
 
             if (!databasePlayer.existsPlayer()) {
                 sender.sendMessage(gameChest.prefix + "§cKonnte den User nicht in der Datenbank finden!");
                 return;
             }
 
-            playername = databasePlayer.getDatabaseElement(DatabasePlayerObject.LAST_NAME).getAsString();
-
             String reason = args[1];
-            String extra = "";
+            StringBuilder extra = new StringBuilder();
 
             for (int i = 2; i < args.length; i++) {
-                extra = extra + args[i] + " ";
+                extra.append(args[i]).append(" ");
             }
-            extra += "#";
+            extra.append("#");
 
-            extra = extra.replace(" #", "");
+            extra = new StringBuilder(extra.toString().replace(" #", ""));
 
             if (Reason.getReasonsAsString().contains(reason.toUpperCase())) {
                 if (databaseBan.isBanned(uuid)) {
                     sender.sendMessage(gameChest.pr_ban + "§7Der Ban wurde geändert.");
                     onlyStaff = "§7 - §eBan edited";
                 }
-                databaseBan.ban(uuid, Reason.getReason(reason.toUpperCase()), extra, onlyStaff, sender.getName());
+                databaseBan.ban(uuid, Reason.getReason(reason.toUpperCase()), extra.toString(), onlyStaff, sender.getName());
                 ProxiedPlayer pp = gameChest.getProxy().getPlayer(uuid);
                 if(pp != null)
                     pp.disconnect(gameChest.getBanMessage(pp.getUniqueId()));
                 for (ProxiedPlayer player : gameChest.getProxy().getPlayers()) {
                     if (gameChest.hasRank(player.getUniqueId(), Rank.SUPPORTER)) {
                         player.sendMessage(gameChest.pr_ban + "§a" + sender + "§7 hat §c" + playername + "§7 gebannt");
-                        player.sendMessage(gameChest.pr_ban + "§7Grund: §e" + reason.toUpperCase() + " (" + extra + ")" + (onlyStaff));
+                        player.sendMessage(gameChest.pr_ban + "§7Grund: §e" + Reason.getReason(reason.toUpperCase()).toString() + " (" + extra + ")" + onlyStaff);
                     }
                 }
                 return;
@@ -214,7 +206,7 @@ public class BanCommand extends GCCommand implements TabExecutor {
             String search = args[0].toLowerCase();
             for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
                 if(gameChest.getNick().isNicked(player.getUniqueId())) {
-                    DatabaseOnlinePlayer databaseOnlinePlayer = gameChest.getDatabaseManager().getDatabaseOnlinePlayer(player.getUniqueId());
+                    DatabaseOnlinePlayer databaseOnlinePlayer = new DatabaseOnlinePlayer(gameChest.getDatabaseManager(), player.getUniqueId().toString(), player.getName());
                     String nick = databaseOnlinePlayer.getDatabaseElement(DatabaseOnlinePlayerObject.NICKNAME).getAsString();
                     if(nick.toLowerCase().startsWith(search)) {
                         matches.add(nick);
@@ -241,7 +233,7 @@ public class BanCommand extends GCCommand implements TabExecutor {
 
             if(args[0].equalsIgnoreCase("info")) {
                 for (UUID uuid : databaseBan.getBannedUuids()) {
-                    DatabasePlayer databasePlayer = gameChest.getDatabaseManager().getDatabasePlayer(uuid);
+                    DatabasePlayer databasePlayer = new DatabasePlayer(gameChest.getDatabaseManager(), uuid);
                     String lastName = databasePlayer.getDatabaseElement(DatabasePlayerObject.LAST_NAME).getAsString();
                     if (lastName.toLowerCase().startsWith(search)) {
                         matches.add(lastName);

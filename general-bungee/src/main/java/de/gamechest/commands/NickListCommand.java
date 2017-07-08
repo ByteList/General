@@ -4,7 +4,6 @@ import de.gamechest.GameChest;
 import de.gamechest.UUIDFetcher;
 import de.gamechest.commands.base.GCCommand;
 import de.gamechest.database.DatabasePlayerObject;
-import de.gamechest.database.DatabasePlayer;
 import de.gamechest.database.rank.Rank;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -42,11 +41,12 @@ public class NickListCommand extends GCCommand {
             sender.sendMessage(gameChest.pr_nick + "§7Momentan genickte User:");
             for (String name : gameChest.getNick().getNickedPlayers()) {
                 UUID uuid = UUIDFetcher.getUUID(name);
-                DatabasePlayer databasePlayer = gameChest.getDatabaseManager().getDatabasePlayer(uuid);
-                String nick = gameChest.getNick().getNick(uuid);
-                String rank = Rank.getRankById(databasePlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt()).getName();
+                gameChest.getDatabaseManager().getAsync().getPlayer(uuid, dbPlayer -> {
+                    String nick = gameChest.getNick().getNick(uuid);
+                    String rank = Rank.getRankById(dbPlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt()).getName();
 
-                sender.sendMessage("§8\u00BB §e" + name + "§7 (" + rank + ") §cspielt als §b" + nick);
+                    sender.sendMessage("§8\u00BB §e" + name + "§7 (" + rank + ") §cspielt als §b" + nick);
+                });
             }
         }
     }

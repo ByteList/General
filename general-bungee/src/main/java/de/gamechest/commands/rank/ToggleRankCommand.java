@@ -2,7 +2,6 @@ package de.gamechest.commands.rank;
 
 import de.gamechest.GameChest;
 import de.gamechest.commands.base.GCCommand;
-import de.gamechest.database.onlineplayer.DatabaseOnlinePlayer;
 import de.gamechest.database.onlineplayer.DatabaseOnlinePlayerObject;
 import de.gamechest.database.rank.Rank;
 import net.md_5.bungee.api.CommandSender;
@@ -27,7 +26,6 @@ public class ToggleRankCommand extends GCCommand {
             return;
         }
         ProxiedPlayer pp = (ProxiedPlayer) sender;
-        DatabaseOnlinePlayer databaseOnlinePlayer = gameChest.getDatabaseManager().getDatabaseOnlinePlayer(pp.getUniqueId());
 
         if(!gameChest.hasRank(pp.getUniqueId(), Rank.PREMIUM)) {
             pp.sendMessage(gameChest.prefix+"§cDu hast keine Berechtigung für diesen Befehl!");
@@ -39,13 +37,14 @@ public class ToggleRankCommand extends GCCommand {
             return;
         }
 
-        if(!databaseOnlinePlayer.getDatabaseElement(DatabaseOnlinePlayerObject.TOGGLED_RANK).getAsBoolean()) {
-            pp.sendMessage(gameChest.prefix+"§aDein Rang ist nun in den Minigames unsichtbar.");
-            databaseOnlinePlayer.setDatabaseObject(DatabaseOnlinePlayerObject.TOGGLED_RANK, true);
-        } else {
-            pp.sendMessage(gameChest.prefix + "§eDein Rang ist nun in den Minigames sichtbar.");
-            databaseOnlinePlayer.setDatabaseObject(DatabaseOnlinePlayerObject.TOGGLED_RANK, false);
-        }
-
+        gameChest.getDatabaseManager().getAsync().getOnlinePlayer(pp.getUniqueId(), dbOPlayer-> {
+            if(!dbOPlayer.getDatabaseElement(DatabaseOnlinePlayerObject.TOGGLED_RANK).getAsBoolean()) {
+                pp.sendMessage(gameChest.prefix+"§aDein Rang ist nun in den Minigames unsichtbar.");
+                dbOPlayer.setDatabaseObject(DatabaseOnlinePlayerObject.TOGGLED_RANK, true);
+            } else {
+                pp.sendMessage(gameChest.prefix + "§eDein Rang ist nun in den Minigames sichtbar.");
+                dbOPlayer.setDatabaseObject(DatabaseOnlinePlayerObject.TOGGLED_RANK, false);
+            }
+        });
     }
 }

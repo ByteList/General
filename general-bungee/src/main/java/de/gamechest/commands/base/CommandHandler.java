@@ -9,6 +9,7 @@ import de.gamechest.commands.cloud.*;
 import de.gamechest.commands.msg.MsgCommand;
 import de.gamechest.commands.msg.RCommand;
 import de.gamechest.commands.NickListCommand;
+import de.gamechest.commands.party.PartyCommand;
 import de.gamechest.commands.rank.PremiumCommand;
 import de.gamechest.commands.rank.RankCommand;
 import de.gamechest.commands.rank.ToggleRankCommand;
@@ -50,11 +51,15 @@ public class CommandHandler {
                 new PremiumCommand(),
                 new RankCommand(),
                 new ToggleRankCommand(),
+                new ActivateCommand(),
 
                 new MsgCommand(),
                 new RCommand(),
-
                 new MeCommand(),
+
+                new TeamchatCommand(),
+
+                new PartyCommand(),
 
                 new CoinsCommand(),
                 new GcgCommand(),

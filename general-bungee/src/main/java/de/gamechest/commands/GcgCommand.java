@@ -4,7 +4,6 @@ import de.gamechest.ConnectManager;
 import de.gamechest.GameChest;
 import de.gamechest.UUIDFetcher;
 import de.gamechest.commands.base.GCCommand;
-import de.gamechest.database.DatabasePlayer;
 import de.gamechest.database.rank.Rank;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -88,12 +87,6 @@ public class GcgCommand extends GCCommand {
                 if(args[1].equalsIgnoreCase("add")) {
                     String name = args[2];
                     UUID uuid = UUIDFetcher.getUUID(name);
-                    DatabasePlayer databasePlayer = gameChest.getDatabaseManager().getDatabasePlayer(uuid);
-
-                    if(!databasePlayer.existsPlayer()) {
-                        sender.sendMessage(gameChest.prefix+"§cKonnte User nicht in der Datenbank finden!");
-                        return;
-                    }
 
                     if(connectManager.getWhiteList().contains(uuid)) {
                         sender.sendMessage(gameChest.prefix+"§c"+name+" steht schon auf der WhiteList");
@@ -107,12 +100,6 @@ public class GcgCommand extends GCCommand {
                 if(args[1].equalsIgnoreCase("remove")) {
                     String name = args[2];
                     UUID uuid = UUIDFetcher.getUUID(name);
-                    DatabasePlayer databasePlayer = gameChest.getDatabaseManager().getDatabasePlayer(uuid);
-
-                    if(!databasePlayer.existsPlayer()) {
-                        sender.sendMessage(gameChest.prefix+"§cKonnte User nicht in der Datenbank finden!");
-                        return;
-                    }
 
                     if(!connectManager.getWhiteList().contains(uuid)) {
                         sender.sendMessage(gameChest.prefix+"§c"+name+" steht nicht auf der WhiteList");

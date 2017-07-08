@@ -2,6 +2,7 @@ package de.gamechest.listener;
 
 import de.gamechest.GameChest;
 import de.gamechest.database.DatabaseManager;
+import de.gamechest.database.onlineplayer.DatabaseOnlinePlayer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
@@ -13,19 +14,20 @@ import java.util.UUID;
  */
 public class PlayerDisconnectListener implements Listener {
 
-    private DatabaseManager databaseManager = GameChest.getInstance().getDatabaseManager();
+    private final DatabaseManager databaseManager = GameChest.getInstance().getDatabaseManager();
+    private final GameChest gameChest = GameChest.getInstance();
 
     @EventHandler
     public void onDisconnect(PlayerDisconnectEvent e) {
         UUID uuid = e.getPlayer().getUniqueId();
 
-        GameChest.getInstance().getNick().unnickOnDisconnect(e.getPlayer());
+        gameChest.getNick().unnickOnDisconnect(e.getPlayer());
 
-        databaseManager.getDatabaseOnlinePlayer(uuid).removeOnlinePlayer();
-        databaseManager.removeCachedDatabaseOnlinePlayer(uuid);
-        databaseManager.removeCachedDatabasePlayer(uuid);
+        databaseManager.getAsync().getOnlinePlayer(uuid, DatabaseOnlinePlayer::removeOnlinePlayer);
 
-        if(GameChest.getInstance().TELL_FROM_TO.containsKey(e.getPlayer()))
-            GameChest.getInstance().TELL_FROM_TO.remove(e.getPlayer());
+        if(gameChest.TELL_FROM_TO.containsKey(e.getPlayer()))
+            gameChest.TELL_FROM_TO.remove(e.getPlayer());
+        if(gameChest.onlineTeam.contains(e.getPlayer()))
+            gameChest.onlineTeam.remove(e.getPlayer());
     }
 }

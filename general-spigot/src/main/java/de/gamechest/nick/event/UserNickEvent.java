@@ -1,6 +1,5 @@
 package de.gamechest.nick.event;
 
-import de.gamechest.GameChest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -17,8 +16,6 @@ public class UserNickEvent extends Event {
 		this.p = p;
 		this.playername = playername;
 		this.nickname = nickname;
-
-		p.sendMessage(GameChest.getInstance().getNick().prefix + "§bDein Nickname ist nun: §9"+nickname);
 	}
 	
 	public Player getPlayer() {

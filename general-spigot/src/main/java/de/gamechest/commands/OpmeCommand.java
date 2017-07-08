@@ -1,6 +1,7 @@
 package de.gamechest.commands;
 
 import de.gamechest.GameChest;
+import de.gamechest.database.DatabasePlayer;
 import de.gamechest.database.DatabasePlayerObject;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -17,8 +18,8 @@ public class OpmeCommand implements CommandExecutor {
 			if(!(sender instanceof Player)) return true;
 			
 			Player p = (Player) sender;
-			
-			if(!gameChest.getDatabaseManager().getDatabasePlayer(p.getUniqueId()).getDatabaseElement(DatabasePlayerObject.OPERATOR).getAsBoolean()) {
+
+			if(!new DatabasePlayer(gameChest.getDatabaseManager(), p.getUniqueId()).getDatabaseElement(DatabasePlayerObject.OPERATOR).getAsBoolean()) {
 				p.sendMessage(gameChest.prefix + "§cDu hast keine Berechtigung für diesen Befehl!");
 				return true;
 			}

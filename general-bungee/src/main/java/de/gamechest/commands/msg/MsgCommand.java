@@ -26,7 +26,7 @@ public class MsgCommand extends GCCommand {
             return;
         }
         ProxiedPlayer pp = (ProxiedPlayer) sender;
-        DatabasePlayer databasePlayer = gameChest.getDatabaseManager().getDatabasePlayer(pp.getUniqueId());
+        DatabasePlayer databasePlayer = new DatabasePlayer(gameChest.getDatabaseManager(), pp.getUniqueId());
         if(args.length > 1) {
             String tellTo = args[0];
             ProxiedPlayer tp = gameChest.getProxy().getPlayer(tellTo);
@@ -40,7 +40,7 @@ public class MsgCommand extends GCCommand {
                 return;
             }
 
-            DatabasePlayer tDatabasePlayer = gameChest.getDatabaseManager().getDatabasePlayer(tp.getUniqueId());
+            DatabasePlayer tDatabasePlayer = new DatabasePlayer(gameChest.getDatabaseManager(), tp.getUniqueId());
 
             if(databasePlayer.getDatabaseElement(DatabasePlayerObject.CONFIGURATIONS).getAsDocument().getInteger(DatabasePlayerObject.Configurations.MSG.getName()) == 1) {
                 sender.sendMessage(gameChest.prefix+"§cDu hast privaten Nachrichten ausgeschalten!");

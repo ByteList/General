@@ -4,7 +4,6 @@ import de.gamechest.ConnectManager;
 import de.gamechest.GameChest;
 import de.gamechest.Skin;
 import de.gamechest.database.DatabaseManager;
-import de.gamechest.database.DatabasePlayer;
 import de.gamechest.database.DatabasePlayerObject;
 import de.gamechest.database.ban.DatabaseBanObject;
 import de.gamechest.database.onlineplayer.DatabaseOnlinePlayer;
@@ -31,9 +30,6 @@ public class LoginListener implements Listener {
     @EventHandler
     public void onLogin(LoginEvent e) {
         PendingConnection pc = e.getConnection();
-        // database player
-        DatabasePlayer databasePlayer = databaseManager.getDatabasePlayer(pc.getUniqueId());
-
         ConnectManager.ConnectState currentConnectState = gameChest.getConnectManager().getConnectState();
 
         switch (currentConnectState) {
@@ -86,35 +82,37 @@ public class LoginListener implements Listener {
             }
         }
 
-        databasePlayer.createPlayer();
-        databasePlayer.updatePlayer();
+        // database player
+        databaseManager.getAsync().getPlayer(pc.getUniqueId(), dbPlayer -> {
+            dbPlayer.createPlayer();
+            dbPlayer.updatePlayer();
 
-        // checking name update
-        DatabaseUuidBuffer databaseUuidBuffer = databaseManager.getDatabaseUuidBuffer();
-        String lastName = null;
-        if(databasePlayer.getDatabaseElement(DatabasePlayerObject.LAST_NAME).getObject() != null)
-            lastName = databasePlayer.getDatabaseElement(DatabasePlayerObject.LAST_NAME).getAsString();
+            // checking name update
+            DatabaseUuidBuffer databaseUuidBuffer = databaseManager.getDatabaseUuidBuffer();
+            String lastName = null;
+            if(dbPlayer.getDatabaseElement(DatabasePlayerObject.LAST_NAME).getObject() != null)
+                lastName = dbPlayer.getDatabaseElement(DatabasePlayerObject.LAST_NAME).getAsString();
 
-        if(lastName == null) {
-            databaseUuidBuffer.createPlayer(pc.getName(), pc.getUniqueId());
-        } else if(!lastName.equals(pc.getName())) {
-            databaseUuidBuffer.removePlayer(lastName);
-            databaseUuidBuffer.createPlayer(pc.getName(), pc.getUniqueId());
-        }
+            if(lastName == null) {
+                databaseUuidBuffer.createPlayer(pc.getName(), pc.getUniqueId());
+            } else if(!lastName.equals(pc.getName())) {
+                databaseUuidBuffer.removePlayer(lastName);
+                databaseUuidBuffer.createPlayer(pc.getName(), pc.getUniqueId());
+            }
 
-        // update database player
-        SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-        String onlineDate = formatter.format(Calendar.getInstance().getTime());
+            // update database player
+            SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+            String onlineDate = formatter.format(Calendar.getInstance().getTime());
 
-        databasePlayer.setDatabaseObject(DatabasePlayerObject.LAST_LOGIN, onlineDate);
-        databasePlayer.setDatabaseObject(DatabasePlayerObject.LAST_NAME, pc.getName());
-        databasePlayer.setDatabaseObject(DatabasePlayerObject.LAST_IP, pc.getAddress().getHostString());
+            dbPlayer.setDatabaseObject(DatabasePlayerObject.LAST_LOGIN, onlineDate);
+            dbPlayer.setDatabaseObject(DatabasePlayerObject.LAST_NAME, pc.getName());
+            dbPlayer.setDatabaseObject(DatabasePlayerObject.LAST_IP, pc.getAddress().getHostString());
 
-        Skin.loadSkinAsync(pc, databasePlayer);
+            Skin.loadSkinAsync(pc, dbPlayer);
+        });
 
-        // Online player
-        DatabaseOnlinePlayer databaseOnlinePlayer = databaseManager.createCachedDatabaseOnlinePlayer(pc.getUniqueId(), pc.getName());
-        databaseOnlinePlayer.createOnlinePlayer();
+        // online database player
+        databaseManager.getAsync().getOnlinePlayer(pc.getUniqueId(), DatabaseOnlinePlayer::createOnlinePlayer);
     }
 
     private boolean isBanned(UUID uuid) {

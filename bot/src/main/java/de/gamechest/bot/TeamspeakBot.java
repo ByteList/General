@@ -204,7 +204,7 @@ public class TeamspeakBot {
                             return;
                         }
 
-                        DatabasePlayer databasePlayer = databaseManager.getDatabasePlayer(uuid);
+                        DatabasePlayer databasePlayer = new DatabasePlayer(BotLauncher.getDatabaseManager(), uuid);
 
                         if (databasePlayer.getDatabaseElement(DatabasePlayerObject.TS_UID).getObject() != null) {
                             query.getAsyncApi().sendPrivateMessage(invokerId, "Der User ist bereits mit einer Identität verbunden!");

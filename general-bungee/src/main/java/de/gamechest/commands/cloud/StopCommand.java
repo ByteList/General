@@ -40,12 +40,21 @@ public class StopCommand extends GCCommand {
                 player.connect(randomLobby);
             }
 
-            while (true) {
-                if(currentServer.getPlayers().size() == 0) break;
-            }
-
-            PacketInStopServer packetInStopServer = new PacketInStopServer(currentServer.getName(), sender.getName());
-            ByteCloudMaster.getInstance().getBungeeClient().sendPacket(packetInStopServer);
+            new Thread("Cloud-Stop-"+currentServer.getName()) {
+                @Override
+                public void run() {
+                    while (true) {
+                        if(currentServer.getPlayers().size() == 0) break;
+                    }
+                    try {
+                        Thread.sleep(2000L);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    PacketInStopServer packetInStopServer = new PacketInStopServer(currentServer.getName(), sender.getName());
+                    ByteCloudMaster.getInstance().getBungeeClient().sendPacket(packetInStopServer);
+                }
+            }.start();
         }
     }
 }

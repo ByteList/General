@@ -6,15 +6,14 @@ import com.mongodb.client.model.Filters;
 import de.gamechest.database.DatabaseCollection;
 import de.gamechest.database.DatabaseElement;
 import de.gamechest.database.DatabaseManager;
-import de.gamechest.database.DatabasePlayerObject;
 import org.bson.Document;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by ByteList on 15.04.2017.
+ *
+ * Copyright by ByteList - https://bytelist.de/
  */
 public class DatabaseParty {
 
@@ -29,26 +28,39 @@ public class DatabaseParty {
         Document document = new Document()
                 .append(DatabasePartyObject.PARTY_ID.getName(), partyId)
                 .append(DatabasePartyObject.LEADER.getName(), leader)
-                .append(DatabasePartyObject.MEMBERS.getName(), new Document());
+                .append(DatabasePartyObject.MEMBERS.getName(), new String[0]);
 
         databaseManager.getCollection(databaseCollection).insertOne(document);
     }
 
     public boolean addMember(String partyId, String member) {
         ArrayList<String> members = getMembers(partyId);
-        members.append()
+        if(!members.contains(member)) {
+            members.add(member);
+            setDatabaseObject(partyId, DatabasePartyObject.MEMBERS, members);
+            return true;
+        }
+        return false;
     }
 
-    public boolean removeMember() {
-
+    public boolean removeMember(String partyId, String member) {
+        ArrayList<String> members = getMembers(partyId);
+        if(members.contains(member)) {
+            members.remove(member);
+            setDatabaseObject(partyId, DatabasePartyObject.MEMBERS, members);
+            return true;
+        }
+        return false;
     }
 
-    public boolean setLeader() {
-
+    public void setLeader(String partyId, String leader) {
+        setDatabaseObject(partyId, DatabasePartyObject.LEADER, leader);
     }
 
-    public boolean deleteParty() {
-
+    public void deleteParty(String partyId) {
+        BasicDBObject dbObject = new BasicDBObject()
+                .append(DatabasePartyObject.PARTY_ID.getName(), partyId);
+        databaseManager.getCollection(databaseCollection).deleteOne(dbObject);
     }
 
     public ArrayList<String> getMembers(String partyId) {

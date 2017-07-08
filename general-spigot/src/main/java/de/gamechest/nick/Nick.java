@@ -6,8 +6,10 @@ import com.mongodb.client.FindIterable;
 import de.gamechest.GameChest;
 import de.gamechest.database.DatabaseCollection;
 import de.gamechest.database.DatabaseManager;
+import de.gamechest.database.DatabasePlayer;
 import de.gamechest.database.DatabasePlayerObject;
 import de.gamechest.database.nick.DatabaseNickObject;
+import de.gamechest.database.onlineplayer.DatabaseOnlinePlayer;
 import de.gamechest.database.onlineplayer.DatabaseOnlinePlayerObject;
 import de.gamechest.nick.event.UserNickEvent;
 import de.gamechest.nick.event.UserUnnickEvent;
@@ -50,12 +52,13 @@ public class Nick {
     public void nick(Player p, String nickname) {
         p.setCustomName(p.getName());
         databaseManager.getDatabaseNick().setDatabaseObject(nickname, DatabaseNickObject.USED, p.getName());
-        databaseManager.getDatabaseOnlinePlayer(p.getUniqueId()).setDatabaseObject(DatabaseOnlinePlayerObject.NICKNAME, nickname);
+        databaseManager.getAsync().getOnlinePlayer(p.getUniqueId(), databaseOnlinePlayer-> databaseOnlinePlayer.setDatabaseObject(DatabaseOnlinePlayerObject.NICKNAME, nickname));
         try {
             packets.nickPlayer(p, nickname);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        p.sendMessage(GameChest.getInstance().getNick().prefix + "§bDein Nickname ist nun: §9"+nickname);
         Bukkit.getPluginManager().callEvent(new UserNickEvent(p, p.getCustomName(), p.getName()));
     }
 
@@ -63,29 +66,36 @@ public class Nick {
         if(!isNicked(p.getUniqueId()))
             return;
         databaseManager.getDatabaseNick().setDatabaseObject(p.getName(), DatabaseNickObject.USED, false);
-        databaseManager.getDatabaseOnlinePlayer(p.getUniqueId()).setDatabaseObject(DatabaseOnlinePlayerObject.NICKNAME, null);
+        databaseManager.getAsync().getOnlinePlayer(p.getUniqueId(), databaseOnlinePlayer-> databaseOnlinePlayer.setDatabaseObject(DatabaseOnlinePlayerObject.NICKNAME, null));
         try {
             packets.unnickPlayer(p);
         } catch (Exception e) {
             e.printStackTrace();
         }
         p.setCustomName(null);
+        p.sendMessage(GameChest.getInstance().getNick().prefix + "§bDein Nickname wurde zurückgesetzt.");
         Bukkit.getPluginManager().callEvent(new UserUnnickEvent(p));
     }
 
     public void unnickOnDisconnect(Player p) {
         if(isNicked(p.getUniqueId())) {
-            String nick = databaseManager.getDatabaseOnlinePlayer(p.getUniqueId()).getDatabaseElement(DatabaseOnlinePlayerObject.NICKNAME).getAsString();
-            databaseManager.getDatabaseNick().setDatabaseObject(nick, DatabaseNickObject.USED, false);
+            databaseManager.getAsync().getOnlinePlayer(p.getUniqueId(), dbOPlayer-> {
+                String nick = dbOPlayer.getDatabaseElement(DatabaseOnlinePlayerObject.NICKNAME).getAsString();
+                databaseManager.getDatabaseNick().setDatabaseObject(nick, DatabaseNickObject.USED, false);
+            });
         }
     }
 
     public boolean isNicked(UUID uuid) {
-        return databaseManager.getDatabaseOnlinePlayer(uuid).getDatabaseElement(DatabaseOnlinePlayerObject.NICKNAME).getObject() != null;
+        return new DatabaseOnlinePlayer(databaseManager, uuid.toString(),
+                new DatabasePlayer(databaseManager, uuid).getDatabaseElement(DatabasePlayerObject.LAST_NAME).getAsString())
+                .getDatabaseElement(DatabaseOnlinePlayerObject.NICKNAME).getObject() != null;
     }
 
     public String getNick(UUID uuid) {
-        return databaseManager.getDatabaseOnlinePlayer(uuid).getDatabaseElement(DatabaseOnlinePlayerObject.NICKNAME).getAsString();
+        return new DatabaseOnlinePlayer(databaseManager, uuid.toString(),
+                new DatabasePlayer(databaseManager, uuid).getDatabaseElement(DatabasePlayerObject.LAST_NAME).getAsString())
+                .getDatabaseElement(DatabaseOnlinePlayerObject.NICKNAME).getAsString();
     }
 
     public String getPlayernameFromNick(String nick) {
@@ -113,6 +123,7 @@ public class Nick {
         double oldHealth = p.getHealth();
         double maxHealth = getHealth(p);
         double healthScale = p.getHealthScale();
+        int foodLevel = p.getFoodLevel();
 
         ItemStack[] armorContents = p.getInventory().getArmorContents();
 
@@ -133,8 +144,7 @@ public class Nick {
         p.setHealthScale(healthScale);
         p.setMaxHealth(maxHealth);
         p.setHealth(oldHealth);
-
-        p.setWalkSpeed(p.getWalkSpeed());
+        p.setFoodLevel(foodLevel);
     }
 
     public void setSkin(UUID uuid, String nick) {
@@ -156,41 +166,14 @@ public class Nick {
         GameProfile gp = ((CraftPlayer)p).getProfile();
 
         String name = "textures";
-        Document document = GameChest.getInstance().getDatabaseManager().getDatabasePlayer(uuid).getDatabaseElement(DatabasePlayerObject.SKIN_TEXTURE).getAsDocument();
-        String value = document.getString(DatabaseNickObject.SkinObject.VALUE.getName());
-        String signature = document.getString(DatabaseNickObject.SkinObject.SIGNATURE.getName());
+        databaseManager.getAsync().getPlayer(uuid, dbPlayer-> {
+            Document document = dbPlayer.getDatabaseElement(DatabasePlayerObject.SKIN_TEXTURE).getAsDocument();
+            String value = document.getString(DatabaseNickObject.SkinObject.VALUE.getName());
+            String signature = document.getString(DatabaseNickObject.SkinObject.SIGNATURE.getName());
 
-        gp.getProperties().put(name, new Property(name, value, signature));
+            gp.getProperties().put(name, new Property(name, value, signature));
+        });
     }
-//    public void updatePlayer(Player player) throws Exception {
-//        CraftPlayer cp = (CraftPlayer) player;
-//
-//
-//
-//        Location location = locs.get(player.getUniqueId());
-//
-////        PacketPlayOutRespawn respawn = new PacketPlayOutRespawn(cp.getEntityId(),
-////                EnumDifficulty.getById(player.getWorld().getDifficulty().getValue()),
-////                ((CraftWorld) player.getWorld()).getHandle().L(),
-////                WorldSettings.EnumGamemode.getById(player.getGameMode().getValue()));
-//
-////        PacketPlayInClientCommand respawn = new PacketPlayInClientCommand(PacketPlayInClientCommand.EnumClientCommand.PERFORM_RESPAWN);
-//
-////
-////        PacketPlayOutPosition teleport = new PacketPlayOutPosition(location.getX(), location.getY()+0.1,
-////                location.getZ(), location.getYaw(), location.getPitch(), Collections.EMPTY_SET, -1337);
-////
-////        Reflection.sendPlayerPacket(player, respawn);
-////        Reflection.sendPlayerPacket(player, teleport);
-//
-//
-//
-//        player.teleport(location);
-//
-//        locs.remove(player.getUniqueId());
-//
-//        //https://github.com/games647/ChangeSkin/blob/master/bukkit/src/main/java/com/github/games647/changeskin/bukkit/tasks/SkinUpdater.java
-//    }
 
     private double getHealth(Player player) {
         double health = player.getMaxHealth();

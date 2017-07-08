@@ -8,8 +8,12 @@ import de.gamechest.database.DatabaseElement;
 import de.gamechest.database.DatabaseManager;
 import org.bson.Document;
 
+import java.util.UUID;
+
 /**
  * Created by ByteList on 11.04.2017.
+ *
+ * Copyright by ByteList - https://bytelist.de/
  */
 public class DatabaseOnlinePlayer {
 
@@ -27,6 +31,13 @@ public class DatabaseOnlinePlayer {
         this.uuid = uuid;
         this.name = name;
         this.find = databaseManager.getCollection(databaseCollection).find(Filters.eq(DatabaseOnlinePlayerObject.UUID.getName(), uuid));
+    }
+
+    public DatabaseOnlinePlayer(DatabaseManager databaseManager, UUID uuid) {
+        this.databaseManager = databaseManager;
+        this.uuid = uuid.toString();
+        this.name = null;
+        this.find = databaseManager.getCollection(databaseCollection).find(Filters.eq(DatabaseOnlinePlayerObject.UUID.getName(), this.uuid));
     }
 
     public void setDatabaseObject(DatabaseOnlinePlayerObject databaseOnlinePlayerObject, Object value) {

@@ -42,7 +42,7 @@ public class UnbanCommand extends GCCommand implements TabExecutor {
         if(args.length == 1) {
             String playername = args[0];
             UUID uuid = UUIDFetcher.getUUID(playername);
-            DatabasePlayer databasePlayer = gameChest.getDatabaseManager().getDatabasePlayer(uuid);
+            DatabasePlayer databasePlayer = new DatabasePlayer(gameChest.getDatabaseManager(), uuid);
 
             if (!databasePlayer.existsPlayer()) {
                 sender.sendMessage(gameChest.prefix + "§cKonnte den User nicht in der Datenbank finden!");
@@ -86,7 +86,7 @@ public class UnbanCommand extends GCCommand implements TabExecutor {
         if (args.length == 1) {
             String search = args[0].toLowerCase();
             for (UUID uuid : databaseBan.getBannedUuids()) {
-                DatabasePlayer databasePlayer = gameChest.getDatabaseManager().getDatabasePlayer(uuid);
+                DatabasePlayer databasePlayer = new DatabasePlayer(gameChest.getDatabaseManager(), uuid);
                 String lastName = databasePlayer.getDatabaseElement(DatabasePlayerObject.LAST_NAME).getAsString();
                 if (lastName.toLowerCase().startsWith(search)) {
                     matches.add(lastName);

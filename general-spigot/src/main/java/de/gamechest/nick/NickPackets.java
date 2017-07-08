@@ -30,24 +30,29 @@ class NickPackets {
         List<Player> players = Bukkit.getOnlinePlayers().stream().filter(player -> player.canSee(p)).collect(Collectors.toList());
         players.remove(p);
 
-        getField(GameProfile.class, "name").set(cp.getProfile(), nickname);
+        players.forEach(player -> player.hidePlayer(p));
 
+        getField(GameProfile.class, "name").set(cp.getProfile(), nickname);
         nick.setSkin(p.getUniqueId(), nickname);
 
-
         PacketPlayOutPlayerInfo remove = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, cp.getHandle());
-        Reflection.sendAllPacket(remove);
+        Reflection.sendListPacket(players, remove);
+        Reflection.sendPlayerPacket(p, remove);
 
         PacketPlayOutEntityDestroy destroy = new PacketPlayOutEntityDestroy(cp.getEntityId());
         Reflection.sendListPacket(players, destroy);
 
-        nick.performDeath(p);
-
         PacketPlayOutPlayerInfo add = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, cp.getHandle());
-        Reflection.sendAllPacket(add);
+        Reflection.sendListPacket(players, add);
+        Reflection.sendPlayerPacket(p, add);
+
+        nick.performDeath(p);
 
         PacketPlayOutNamedEntitySpawn spawn = new PacketPlayOutNamedEntitySpawn(cp.getHandle());
         Reflection.sendListPacket(players, spawn);
+
+
+        players.forEach(player -> player.showPlayer(p));
 
         System.out.println("[GCG/Nick] Player " + p.getCustomName() + " is now nicked as " + nickname);
     }
@@ -62,22 +67,29 @@ class NickPackets {
         List<Player> players = Bukkit.getOnlinePlayers().stream().filter(player -> player.canSee(p)).collect(Collectors.toList());
         players.remove(p);
 
+        players.forEach(player -> player.hidePlayer(p));
+
         getField(GameProfile.class, "name").set(cp.getProfile(), p.getCustomName());
         nick.resetSkin(p.getUniqueId());
 
         PacketPlayOutPlayerInfo remove = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, cp.getHandle());
-        Reflection.sendAllPacket(remove);
+        Reflection.sendListPacket(players, remove);
+        Reflection.sendPlayerPacket(p, remove);
 
         PacketPlayOutEntityDestroy destroy = new PacketPlayOutEntityDestroy(cp.getEntityId());
         Reflection.sendListPacket(players, destroy);
 
-        nick.performDeath(p);
-
         PacketPlayOutPlayerInfo add = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, cp.getHandle());
-        Reflection.sendAllPacket(add);
+        Reflection.sendListPacket(players, add);
+        Reflection.sendPlayerPacket(p, add);
+
+        nick.performDeath(p);
 
         PacketPlayOutNamedEntitySpawn spawn = new PacketPlayOutNamedEntitySpawn(cp.getHandle());
         Reflection.sendListPacket(players, spawn);
+
+        players.forEach(player -> player.showPlayer(p));
+
 
         System.out.println("[GCG/Nick] Player " + p.getName() + " is now unnicked");
     }

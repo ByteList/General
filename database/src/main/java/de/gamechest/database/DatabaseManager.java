@@ -6,11 +6,12 @@ import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import de.gamechest.database.activate.DatabaseActivate;
 import de.gamechest.database.ban.DatabaseBan;
 import de.gamechest.database.bug.DatabaseBugreport;
 import de.gamechest.database.chatlog.DatabaseChatlog;
 import de.gamechest.database.nick.DatabaseNick;
-import de.gamechest.database.onlineplayer.DatabaseOnlinePlayer;
+import de.gamechest.database.party.DatabaseParty;
 import de.gamechest.database.premiumplayer.DatabasePremiumPlayer;
 import de.gamechest.database.stats.clickattack.DatabaseClickAttack;
 import de.gamechest.database.stats.deathrun.DatabaseDeathRun;
@@ -24,18 +25,19 @@ import org.bson.codecs.UuidCodec;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * Created by ByteList on 09.04.2017.
+ *
+ * Copyright by ByteList - https://bytelist.de/
  */
 public class DatabaseManager {
 
     private HashMap<DatabaseCollection, MongoCollection<Document>> collections = new HashMap<>();
-    private HashMap<String, DatabasePlayer> cachedPlayers = new HashMap<>();
-    private HashMap<String, DatabaseOnlinePlayer> cachedOnlinePlayers = new HashMap<>();
 
     @Getter
     private MongoClient mongoClient;
@@ -62,6 +64,12 @@ public class DatabaseManager {
     private DatabaseUuidBuffer databaseUuidBuffer;
     @Getter
     private DatabaseBugreport databaseBugreport;
+    @Getter
+    private DatabaseActivate databaseActivate;
+    @Getter
+    private DatabaseParty databaseParty;
+    @Getter
+    private AsyncDatabaseManager async;
 
     public DatabaseManager(String host, int port, String username, String password, String database) throws Exception {
         // Disable the stupid log messages from mongodb
@@ -92,6 +100,10 @@ public class DatabaseManager {
         this.databaseBan = new DatabaseBan(this);
         this.databaseUuidBuffer = new DatabaseUuidBuffer(this);
         this.databaseBugreport = new DatabaseBugreport(this);
+        this.databaseActivate = new DatabaseActivate(this);
+        this.databaseParty = new DatabaseParty(this);
+
+        this.async = new AsyncDatabaseManager(this);
     }
 
     public void init() {
@@ -113,43 +125,5 @@ public class DatabaseManager {
 
     public MongoCollection<Document> getCollection(DatabaseCollection collectionEnum) {
         return collections.get(collectionEnum);
-    }
-
-    public DatabasePlayer getDatabasePlayer(UUID uuid) {
-        String uid = uuid.toString();
-        if(!cachedPlayers.containsKey(uid)) {
-            DatabasePlayer databaseOnlinePlayer = new DatabasePlayer(this, uuid);
-            cachedPlayers.put(uid, databaseOnlinePlayer);
-            return databaseOnlinePlayer;
-        }
-        return cachedPlayers.get(uid);
-    }
-
-    public void removeCachedDatabasePlayer(UUID uuid) {
-        String uid = uuid.toString();
-        if(cachedPlayers.containsKey(uid)) {
-            cachedPlayers.remove(uid);
-        }
-    }
-
-    public DatabaseOnlinePlayer createCachedDatabaseOnlinePlayer(UUID uuid, String name) {
-        String uid = uuid.toString();
-        if(!cachedOnlinePlayers.containsKey(uid)) {
-            DatabaseOnlinePlayer databaseOnlinePlayer = new DatabaseOnlinePlayer(this, uid, name);
-            cachedOnlinePlayers.put(uid, databaseOnlinePlayer);
-            return databaseOnlinePlayer;
-        }
-        return cachedOnlinePlayers.get(uid);
-    }
-
-    public DatabaseOnlinePlayer getDatabaseOnlinePlayer(UUID uuid) {
-        return cachedOnlinePlayers.get(uuid.toString());
-    }
-
-    public void removeCachedDatabaseOnlinePlayer(UUID uuid) {
-        String uid = uuid.toString();
-        if(cachedOnlinePlayers.containsKey(uid)) {
-            cachedOnlinePlayers.remove(uid);
-        }
     }
 }
