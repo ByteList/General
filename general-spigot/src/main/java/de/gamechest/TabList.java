@@ -171,16 +171,37 @@ public class TabList {
     private static void asParty(Player player, List<UUID> partyPlayers) {
         String s = "000party";
 
+//        for(UUID uuid : partyPlayers) {
+//            Player all = Bukkit.getPlayer(uuid);
+//
+//            String prefix = "§dParty§8 \u00BB §d";
+//            Scoreboard board = all.getScoreboard();
+//            if(board == null) {
+//                board = Bukkit.getScoreboardManager().getNewScoreboard();
+//                all.setScoreboard(board);
+//            }
+//            Team team = board.getTeam(s);
+//            if(team == null) {
+//                team = board.registerNewTeam(s);
+//                team.setPrefix(prefix);
+//                team.setSuffix("§r");
+//                team.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
+//            }
+//            team.addEntry(all.getName());
+//        }
+
+        String prefix = "§dParty§8 \u00BB §d";
+
+        Scoreboard playerBoard = player.getScoreboard();
+        if(playerBoard == null) {
+            playerBoard = Bukkit.getScoreboardManager().getNewScoreboard();
+            player.setScoreboard(playerBoard);
+        }
+
         for(UUID uuid : partyPlayers) {
             Player all = Bukkit.getPlayer(uuid);
-            Rank rank;
-            Nick nick = GameChest.getInstance().getNick();
-            if (nick.isNicked(all.getUniqueId()) || GameChest.getInstance().isRankToggled(all.getUniqueId())) {
-                rank = Rank.SPIELER;
-            } else {
-                rank = GameChest.getInstance().getRank(all.getUniqueId());
-            }
-            String prefix = "§8[§cParty§8] "+rank.getColor();
+            if(all == null)
+                return;
             Scoreboard board = all.getScoreboard();
             if(board == null) {
                 board = Bukkit.getScoreboardManager().getNewScoreboard();
@@ -194,6 +215,18 @@ public class TabList {
                 team.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
             }
             team.addEntry(player.getName());
+
+            if(all.getUniqueId() != player.getUniqueId()) {
+
+                team = playerBoard.getTeam(s);
+                if (team == null) {
+                    team = playerBoard.registerNewTeam(s);
+                    team.setPrefix(prefix);
+                    team.setSuffix("§r");
+                    team.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
+                }
+                team.addEntry(all.getName());
+            }
         }
     }
 

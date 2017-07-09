@@ -40,22 +40,30 @@ public class PacketListenerGC extends GCJsonServerListener {
                         for (ProxiedPlayer player : gameChest.getProxy().getPlayers()) {
                             if (gameChest.hasRank(player.getUniqueId(), Rank.SUPPORTER)) {
                                 player.sendMessage(gameChest.pr_ban + "§a" + sender + "§7 hat §c" + pp.getName() + "§7 gebannt");
-                                player.sendMessage(gameChest.pr_ban + "§7Grund: §e" + Reason.CLIENT.toString() + " (" + reason[0]+" - "+sId + ")"+"§7 - §e"+reason[1]);
+                                player.sendMessage(gameChest.pr_ban + "§7Grund: §e" + Reason.CLIENT.getReason() + " (" + reason[0]+" - "+sId + ")"+"§7 - §e"+reason[1]);
                             }
                         }
                     }
+//        JsonObject jsonObject1 = new JsonObject();
+//        jsonObject1.addProperty("packet", "ANTI-CHEAT");
+//        jsonObject1.addProperty("action", "BAN");
+//        jsonObject1.addProperty("uuid", "");
+//        jsonObject1.addProperty("serverId", "");
+//        jsonObject1.addProperty("sender", "");
+//        jsonObject1.addProperty("reason", "=");// AutoClicker=CPS: 23 VL: 2
 
                 }
             }
         }
 
-        JsonObject jsonObject1 = new JsonObject();
-        jsonObject1.addProperty("packet", "ANTI-CHEAT");
-        jsonObject1.addProperty("action", "BAN");
-        jsonObject1.addProperty("uuid", "");
-        jsonObject1.addProperty("serverId", "");
-        jsonObject1.addProperty("sender", "");
-        jsonObject1.addProperty("reason", "=");// AutoClicker=CPS: 23 VL: 2
+        if(jsonObject.has("packet")) {
+            String packet = jsonObject.get("packet").getAsString();
+
+            if(packet.equals("RegisterNewClient")) {
+                gameChest.getPacketHandler().registerClient(jsonObject.get("serverId").getAsString(), paramGCPatron);
+            }
+        }
+
     }
 
     @Override
@@ -66,5 +74,6 @@ public class PacketListenerGC extends GCJsonServerListener {
     @Override
     public void disconnected(GCPatron paramGCPatron) {
         gameChest.getLogger().info("[GC-PacketServer] Client disconnected!");
+        gameChest.getPacketHandler().unregisterClient(paramGCPatron);
     }
 }

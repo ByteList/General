@@ -1,5 +1,8 @@
 package de.gamechest;
 
+import com.google.gson.JsonObject;
+import com.voxelboxstudios.resilent.GCPacketClient;
+import de.bytelist.bytecloud.core.ByteCloudCore;
 import de.gamechest.chatlog.ChatLog;
 import de.gamechest.coins.Coins;
 import de.gamechest.commands.ChatlogCommand;
@@ -74,6 +77,16 @@ public class GameChest extends JavaPlugin {
 
 //        getServer().getPluginManager().registerEvents(new JoinListener(), this);
 //        getServer().getPluginManager().registerEvents(new QuitListener(), this);
+
+        GCPacketClient.start();
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("packet", "RegisterNewClient");
+        if(isCloudEnabled())
+            jsonObject.addProperty("serverId", ByteCloudCore.getInstance().getCloudHandler().getServerId());
+        else
+            jsonObject.addProperty("serverId", getServer().getServerName());
+        GCPacketClient.sendPacket(jsonObject);
+
 
         getCommand("chatlog").setExecutor(new ChatlogCommand());
         getCommand("opme").setExecutor(new OpmeCommand());

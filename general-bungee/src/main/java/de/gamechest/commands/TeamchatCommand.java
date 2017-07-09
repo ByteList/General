@@ -48,7 +48,7 @@ public class TeamchatCommand extends GCCommand {
         msg = new StringBuilder(msg.toString());
 
         for(ProxiedPlayer pp : gameChest.onlineTeam) {
-            pp.sendMessage(gameChest.pr_team+prefix+" §8\u00BB§e "+msg);
+            pp.sendMessage(gameChest.pr_msg_team +prefix+" §8\u00BB§e "+msg);
         }
     }
 }

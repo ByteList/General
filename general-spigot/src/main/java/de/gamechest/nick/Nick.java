@@ -87,9 +87,13 @@ public class Nick {
     }
 
     public boolean isNicked(UUID uuid) {
-        return new DatabaseOnlinePlayer(databaseManager, uuid.toString(),
-                new DatabasePlayer(databaseManager, uuid).getDatabaseElement(DatabasePlayerObject.LAST_NAME).getAsString())
-                .getDatabaseElement(DatabaseOnlinePlayerObject.NICKNAME).getObject() != null;
+        try {
+            return new DatabaseOnlinePlayer(databaseManager, uuid.toString(),
+                    new DatabasePlayer(databaseManager, uuid).getDatabaseElement(DatabasePlayerObject.LAST_NAME).getAsString())
+                    .getDatabaseElement(DatabaseOnlinePlayerObject.NICKNAME).getObject() != null;
+        } catch (Exception ex) {
+            return false;
+        }
     }
 
     public String getNick(UUID uuid) {

@@ -1,5 +1,6 @@
 package de.gamechest.party;
 
+import de.gamechest.GameChest;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.HashMap;
@@ -34,15 +35,17 @@ public class PartyManager {
         return parties.getOrDefault(partyIds.getOrDefault(uuid, null), null);
     }
 
-    public void deleteParty(Party party) {
+    public void deleteParty(Party party, boolean sendPacket) {
+        party.getLeader().sendMessage(GameChest.getInstance().pr_party+"§7Die Party wurde aufgelöst.");
         for(ProxiedPlayer player : party.getMember()) {
+            player.sendMessage(GameChest.getInstance().pr_party+"§7Die Party wurde aufgelöst.");
             if(this.partyIds.containsKey(player.getUniqueId()))
                 this.partyIds.remove(player.getUniqueId());
         }
         if(this.partyIds.containsKey(party.getLeader().getUniqueId()))
             this.partyIds.remove(party.getLeader().getUniqueId());
         parties.remove(party.getPartyId());
-        party.deleteParty();
+        party.deleteParty(sendPacket);
     }
 
     public void acceptRequest(String partyId, ProxiedPlayer player) {
@@ -58,6 +61,24 @@ public class PartyManager {
         if(party != null) {
             party.removeMember(player);
             partyIds.remove(player.getUniqueId());
+        }
+    }
+
+    public void leaveParty(String partyId, ProxiedPlayer player) {
+        Party party = parties.get(partyId);
+        if(party != null) {
+            removeMember(partyId, player);
+            if(party.getMember().size() == 0) {
+                deleteParty(party, false);
+            } else if(party.getLeader().getUniqueId().equals(player.getUniqueId())) {
+                party.promoteLeader(party.getMember().get(0));
+            }
+        }
+    }
+
+    public void onStop() {
+        for(Party party : parties.values()) {
+            deleteParty(party, false);
         }
     }
 

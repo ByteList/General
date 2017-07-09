@@ -7,8 +7,6 @@ import de.gamechest.party.PartyManager;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
-import java.util.Date;
-
 /**
  * Created by ByteList on 08.07.2017.
  * <p>
@@ -41,11 +39,7 @@ public class PartyCommand extends GCCommand {
 
                 Party party = partyManager.getParty(player.getUniqueId());
 
-                partyManager.removeMember(party.getPartyId(), player);
-                for(ProxiedPlayer p : party.getMember()) {
-                    p.sendMessage(gameChest.pr_party+"§6"+player.getName()+"§7 hat die Party verlassen.");
-                }
-                party.getLeader().sendMessage(gameChest.pr_party+"§6"+player.getName()+"§7 hat die Party verlassen.");
+                partyManager.leaveParty(party.getPartyId(), player);
                 return;
             }
 
@@ -62,7 +56,7 @@ public class PartyCommand extends GCCommand {
                     return;
                 }
 
-                partyManager.deleteParty(party);
+                partyManager.deleteParty(party, true);
                 return;
             }
 
@@ -100,12 +94,12 @@ public class PartyCommand extends GCCommand {
                 }
                 Party party = partyManager.getParty(tplayer.getUniqueId());
 
-                if(!party.getRequests().containsKey(user)) {
+                if(!party.getRequests().containsKey(player.getName())) {
                     player.sendMessage(gameChest.pr_party+"§cDu wurdest nicht in diese Party eingeladen!");
                     return;
                 }
 
-                if(new Date(party.getRequests().get(player.getName())).after(new Date())) {
+                if(System.currentTimeMillis()/1000 >= party.getRequests().get(player.getName()) + 60*3) {
                     player.sendMessage(gameChest.pr_party+"§cDeine Einladung ist abgelaufen!");
                     party.getRequests().remove(player.getName());
                     return;
@@ -115,18 +109,36 @@ public class PartyCommand extends GCCommand {
                 return;
             }
 
-            if(args[0].equalsIgnoreCase("invite")) {
-                Party party;
-                if (!partyManager.isPlayerInAParty(player.getUniqueId())) {
-                    party = partyManager.createParty(player);
-                } else {
-                    party = partyManager.getParty(player.getUniqueId());
-                    if(!party.getLeader().getUniqueId().equals(player.getUniqueId())) {
-                        player.sendMessage(gameChest.pr_party+"§cNur der Party Leader kann Spieler einladen!");
-                        return;
-                    }
+            if(args[0].equalsIgnoreCase("deny")) {
+                String user = args[1];
+                ProxiedPlayer tplayer = gameChest.getProxy().getPlayer(user);
+                if(tplayer == null) {
+                    player.sendMessage(gameChest.pr_party+"§cDie Party von "+user+" konnte nicht gefunden werden!");
+                    return;
+                }
+                Party party = partyManager.getParty(tplayer.getUniqueId());
+
+                if(!party.getRequests().containsKey(player.getName())) {
+                    player.sendMessage(gameChest.pr_party+"§cDu wurdest nicht in diese Party eingeladen!");
+                    return;
                 }
 
+                if(System.currentTimeMillis()/1000 >= party.getRequests().get(player.getName()) + 60*3) {
+                    player.sendMessage(gameChest.pr_party+"§cDeine Einladung ist abgelaufen!");
+                    party.getRequests().remove(player.getName());
+                    return;
+                }
+
+                party.getRequests().remove(player.getName());
+                player.sendMessage(gameChest.pr_party+"§cDu hast die Party Anfrage abgelenht.");
+                for(ProxiedPlayer p : party.getMember()) {
+                    p.sendMessage(gameChest.pr_party+"§6"+player.getName()+"§c hat die Party Anfrage abgelehnt.");
+                }
+                tplayer.sendMessage(gameChest.pr_party+"§6"+player.getName()+"§c hat die Party Anfrage abgelehnt.");
+                return;
+            }
+
+            if(args[0].equalsIgnoreCase("invite")) {
                 String user = args[1];
                 ProxiedPlayer tplayer = gameChest.getProxy().getPlayer(user);
 
@@ -135,7 +147,28 @@ public class PartyCommand extends GCCommand {
                     return;
                 }
 
+                Party party;
+                if (!partyManager.isPlayerInAParty(player.getUniqueId())) {
+                    party = partyManager.createParty(player);
+                    player.sendMessage(gameChest.pr_party+"§7Es wurde eine Party erstellt.");
+                } else {
+                    party = partyManager.getParty(player.getUniqueId());
+                    if(!party.getLeader().getUniqueId().equals(player.getUniqueId())) {
+                        player.sendMessage(gameChest.pr_party+"§cNur der Party Leader kann Spieler einladen!");
+                        return;
+                    }
+                }
                 // TODO: 09.07.2017 settings if
+
+                if(party.getMember().contains(tplayer)) {
+                    player.sendMessage(gameChest.pr_party+"§7Der Spieler ist bereits in deiner Party.");
+                    return;
+                }
+
+                if(party.getRequests().containsKey(tplayer.getName())) {
+                    player.sendMessage(gameChest.pr_party+"§7Der Spieler wurde bereits eingeladen.");
+                    return;
+                }
 
                 party.sendRequest(tplayer);
                 return;
@@ -167,7 +200,7 @@ public class PartyCommand extends GCCommand {
                     return;
                 }
 
-                if(player.getUniqueId().equals(party.getLeader().getUniqueId())) {
+                if(tplayer.getUniqueId().equals(party.getLeader().getUniqueId())) {
                     player.sendMessage(gameChest.pr_party+"§cDu kannst dich nicht selbst kicken!");
                     return;
                 }
@@ -202,7 +235,7 @@ public class PartyCommand extends GCCommand {
                     return;
                 }
 
-                if(player.getUniqueId().equals(party.getLeader().getUniqueId())) {
+                if(tplayer.getUniqueId().equals(player.getUniqueId())) {
                     player.sendMessage(gameChest.pr_party+"§cDu bist bereits der Party Leader!");
                     return;
                 }
@@ -213,16 +246,12 @@ public class PartyCommand extends GCCommand {
                 }
 
                 party.promoteLeader(tplayer);
-                for(ProxiedPlayer p : party.getMember()) {
-                    p.sendMessage(gameChest.pr_party+"§6"+player.getName()+"§7 wurde zum Party Leader ernannt.");
-                }
-                party.getLeader().sendMessage(gameChest.pr_party+"§6"+player.getName()+"§7 wurde zum Party Leader ernannt.");
                 return;
             }
         }
 
         player.sendMessage(gameChest.pr_party+"§6Alle Party Befehle:");
-        player.sendMessage("§8\u00BB §c/party accept <Spieler>");
+        player.sendMessage("§8\u00BB §c/party accept|deny <Spieler>");
         player.sendMessage("§8\u00BB §c/party leave");
         player.sendMessage("§8\u00BB §c/party invite <Spieler>");
         player.sendMessage("§8\u00BB §c/party delete");

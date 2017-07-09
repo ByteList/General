@@ -1,5 +1,7 @@
 package de.gamechest.party;
 
+import com.google.gson.JsonObject;
+import de.bytelist.bytecloud.bungee.ByteCloudMaster;
 import de.gamechest.GameChest;
 import lombok.Getter;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -9,8 +11,6 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -37,20 +37,24 @@ public class Party {
         this.member = new ArrayList<>();
         this.requests = new HashMap<>();
         gameChest.getDatabaseManager().getDatabaseParty().createParty(partyId, leader.getName());
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("packet", "PartyJoin");
+        jsonObject.addProperty("partyId", partyId);
+        jsonObject.addProperty("player", leader.getName());
+        gameChest.getPacketHandler().sendPacket(leader.getServer().getInfo().getName(), jsonObject);
     }
 
 
     public void sendRequest(ProxiedPlayer player) {
+        if(this.member.contains(player))
+            return;
         if(!this.requests.containsKey(player.getName())) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.add(Calendar.MINUTE, 3);
-            long expire = calendar.getTime().getTime();
-            this.requests.put(player.getName(), expire);
+            this.requests.put(player.getName(), System.currentTimeMillis()/1000);
 
             for(ProxiedPlayer p : member) {
-                p.sendMessage(gameChest.pr_party+"§a"+player.getName()+"§7 wurde in die Party eingeladen!");
+                p.sendMessage(gameChest.pr_party+"§6"+player.getName()+"§a wurde in die Party eingeladen!");
             }
-            leader.sendMessage(gameChest.pr_party+"§a"+player.getName()+"§7 wurde in die Party eingeladen!");
+            leader.sendMessage(gameChest.pr_party+"§6"+player.getName()+"§a wurde in die Party eingeladen!");
 
 
             TextComponent start = new TextComponent("§8\u00BB ");
@@ -63,9 +67,9 @@ public class Party {
 
             TextComponent deny = new TextComponent("§7[§cAblehnen§7]");
             deny.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/party deny "+leader.getName()));
-            deny.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§aKlicke, um die Party Anfrage abzulehnen.").create()));
+            deny.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§cKlicke, um die Party Anfrage abzulehnen.").create()));
 
-            player.sendMessage(gameChest.pr_party+"§6"+leader.getName()+"§7 hat dich in seine Party eingeladen!");
+            player.sendMessage(gameChest.pr_party+"§6"+leader.getName()+"§a hat dich in seine Party eingeladen!");
             player.sendMessage(start, accept, middle, deny);
         }
     }
@@ -74,7 +78,7 @@ public class Party {
         if(!this.requests.containsKey(player.getName())) {
             return;
         }
-        if(new Date(this.requests.get(player.getName())).after(new Date())) {
+        if(System.currentTimeMillis()/1000 >= this.requests.get(player.getName()) + 60*3) {
             this.requests.remove(player.getName());
             return;
         }
@@ -82,10 +86,16 @@ public class Party {
         this.member.add(player);
         gameChest.getDatabaseManager().getDatabaseParty().addMember(partyId, player.getName());
 
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("packet", "PartyJoin");
+        jsonObject.addProperty("partyId", partyId);
+        jsonObject.addProperty("player", player.getName());
+        gameChest.getPacketHandler().sendPacket(player.getServer().getInfo().getName(), jsonObject);
+
         for(ProxiedPlayer p : member) {
-            p.sendMessage(gameChest.pr_party+"§a"+player.getName()+"§7 ist der Party beigetreten.");
+            p.sendMessage(gameChest.pr_party+"§6"+player.getName()+"§a ist der Party beigetreten.");
         }
-        leader.sendMessage(gameChest.pr_party+"§a"+player.getName()+"§7 ist der  Party beigetreten.");
+        leader.sendMessage(gameChest.pr_party+"§6"+player.getName()+"§a ist der Party beigetreten.");
     }
 
     public boolean promoteLeader(ProxiedPlayer player) {
@@ -93,22 +103,44 @@ public class Party {
         this.member.add(leader);
         gameChest.getDatabaseManager().getDatabaseParty().addMember(partyId, leader.getName());
         this.leader = player;
+        gameChest.getDatabaseManager().getDatabaseParty().setLeader(partyId, leader.getName());
         this.member.remove(player);
         gameChest.getDatabaseManager().getDatabaseParty().removeMember(partyId, player.getName());
+        for(ProxiedPlayer p : this.member) {
+            p.sendMessage(gameChest.pr_party+"§6"+this.leader+"§a wurde zum Party Leader ernannt.");
+        }
+        this.leader.sendMessage(gameChest.pr_party+"§6"+this.leader+"§a wurde zum Party Leader ernannt.");
         return true;
     }
 
     void removeMember(ProxiedPlayer player) {
         if(this.member.contains(player)) {
             this.member.remove(player);
+            for(ProxiedPlayer p : this.member) {
+                p.sendMessage(gameChest.pr_party+"§6"+player.getName()+"§a hat die Party verlassen.");
+            }
+            this.leader.sendMessage(gameChest.pr_party+"§6"+player.getName()+"§a hat die Party verlassen.");
             gameChest.getDatabaseManager().getDatabaseParty().removeMember(partyId, player.getName());
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("packet", "PartyLeave");
+            jsonObject.addProperty("partyId", partyId);
+            jsonObject.addProperty("player", player.getName());
+            gameChest.getPacketHandler().sendPacket(player.getServer().getInfo().getName(), jsonObject);
         }
     }
 
-    void deleteParty() {
+    void deleteParty(boolean sendPacket) {
         this.member = null;
         this.leader = null;
         this.requests = null;
+        if(gameChest.isCloudEnabled() && sendPacket) {
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("packet", "PartyDelete");
+            jsonObject.addProperty("partyId", partyId);
+            for(String lobby : ByteCloudMaster.getInstance().getCloudHandler().getServerInDatabase("LOBBY")) {
+                gameChest.getPacketHandler().sendPacket(lobby, jsonObject);
+            }
+        }
         gameChest.getDatabaseManager().getDatabaseParty().deleteParty(this.partyId);
         this.partyId = null;
     }

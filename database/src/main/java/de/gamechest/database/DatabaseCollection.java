@@ -15,6 +15,8 @@ public enum DatabaseCollection {
 
     PARTY("party"),
 
+    POLL("poll"),
+
     BANS("bans"),
     BAN_HISTORY("ban-history"),
     CHAT_REPORTS("chat-reports"),

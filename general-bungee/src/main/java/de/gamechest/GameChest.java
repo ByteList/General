@@ -14,6 +14,7 @@ import de.gamechest.database.onlineplayer.DatabaseOnlinePlayerObject;
 import de.gamechest.database.rank.Rank;
 import de.gamechest.listener.*;
 import de.gamechest.nick.Nick;
+import de.gamechest.packet.PacketHandlerGC;
 import de.gamechest.party.PartyManager;
 import lombok.Getter;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -45,6 +46,8 @@ public class GameChest extends Plugin {
     private ConnectManager connectManager;
     @Getter
     private PartyManager partyManager;
+    @Getter
+    private PacketHandlerGC packetHandler;
 
     public final String prefix = "§2GameChest §8\u00BB ";
     public final String pr_nick = "§5Nick §8\u00BB ";
@@ -53,9 +56,11 @@ public class GameChest extends Plugin {
     public final String pr_ban = "§cBan §8\u00BB ";
     public final String pr_bug = "§9BugReport §8\u00BB ";
     public final String pr_activate = "§6Activate §8\u00BB ";
-    public final String pr_party = "§cParty §8\u00BB ";
-    public final String pr_msg = "§f§o[§c§oPrivat§f§o] ";
-    public final String pr_team = "§f§o[§c§oTeam§f§o] ";
+    public final String pr_party = "§dParty §8\u00BB ";
+    public final String pr_msg_private = "§f§o[§c§oPrivat§f§o] ";
+    public final String pr_msg_team = "§f§o[§c§oTeam§f§o] ";
+    public final String pr_msg_party = "§f§o[§c§oParty§f§o] ";
+
 
     public List<ProxiedPlayer> onlineTeam = new ArrayList<>();
 
@@ -74,6 +79,7 @@ public class GameChest extends Plugin {
         this.partyManager = new PartyManager();
 
         GCPacketServer.start();
+        this.packetHandler = new PacketHandlerGC();
 
         CommandHandler.registerAllCommands();
 
@@ -94,6 +100,7 @@ public class GameChest extends Plugin {
 
     @Override
     public void onDisable() {
+        partyManager.onStop();
         getProxy().getConsole().sendMessage(prefix+"§cDisabled!");
     }
 

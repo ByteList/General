@@ -7,6 +7,7 @@ import de.gamechest.database.DatabaseCollection;
 import de.gamechest.database.DatabaseElement;
 import de.gamechest.database.DatabaseManager;
 import org.bson.Document;
+import org.json.simple.JSONArray;
 
 import java.util.ArrayList;
 
@@ -28,7 +29,7 @@ public class DatabaseParty {
         Document document = new Document()
                 .append(DatabasePartyObject.PARTY_ID.getName(), partyId)
                 .append(DatabasePartyObject.LEADER.getName(), leader)
-                .append(DatabasePartyObject.MEMBERS.getName(), new String[0]);
+                .append(DatabasePartyObject.MEMBERS.getName(), new JSONArray());
 
         databaseManager.getCollection(databaseCollection).insertOne(document);
     }
@@ -68,6 +69,13 @@ public class DatabaseParty {
         if(databaseElement != null)
             return (ArrayList<String>) databaseElement.getObject();
         return new ArrayList<>();
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    public String getLeader(String partyId) {
+        if(getDatabaseElement(partyId, DatabasePartyObject.LEADER).getObject() == null)
+            return null;
+        else return getDatabaseElement(partyId, DatabasePartyObject.LEADER).getAsString();
     }
 
     private void setDatabaseObject(String partyId, DatabasePartyObject databasePartyObject, Object value) {

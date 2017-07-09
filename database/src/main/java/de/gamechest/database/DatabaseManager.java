@@ -12,6 +12,7 @@ import de.gamechest.database.bug.DatabaseBugreport;
 import de.gamechest.database.chatlog.DatabaseChatlog;
 import de.gamechest.database.nick.DatabaseNick;
 import de.gamechest.database.party.DatabaseParty;
+import de.gamechest.database.poll.DatabasePoll;
 import de.gamechest.database.premiumplayer.DatabasePremiumPlayer;
 import de.gamechest.database.stats.clickattack.DatabaseClickAttack;
 import de.gamechest.database.stats.deathrun.DatabaseDeathRun;
@@ -69,6 +70,8 @@ public class DatabaseManager {
     @Getter
     private DatabaseParty databaseParty;
     @Getter
+    private DatabasePoll databasePoll;
+    @Getter
     private AsyncDatabaseManager async;
 
     public DatabaseManager(String host, int port, String username, String password, String database) throws Exception {
@@ -102,6 +105,7 @@ public class DatabaseManager {
         this.databaseBugreport = new DatabaseBugreport(this);
         this.databaseActivate = new DatabaseActivate(this);
         this.databaseParty = new DatabaseParty(this);
+        this.databasePoll = new DatabasePoll(this);
 
         this.async = new AsyncDatabaseManager(this);
     }
