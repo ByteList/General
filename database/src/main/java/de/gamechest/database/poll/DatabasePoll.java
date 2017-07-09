@@ -100,9 +100,4 @@ public class DatabasePoll {
 
         return new DatabaseElement(document.get(databasePollObject.getName()));
     }
-
-    public enum ActivatePurpose {
-        PREMIUM,
-        COINS
-    }
 }

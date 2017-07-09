@@ -5,7 +5,7 @@ website: https://bytelist.de/
 
 main: de.gamechest.GameChest
 
-loadbefore: [ClickAttack, Lobby, ShulkerDefence, DeathRun, JumpDuell, Survival, SurvivalPlus, BuildManager]
+loadbefore: [ClickAttack, Lobby, ShulkerDefence, DeathRun, JumpDuell, Survival, SurvivalPlus, BuildManager, GameChestPoll]
 
 commands:
   chatlog:
