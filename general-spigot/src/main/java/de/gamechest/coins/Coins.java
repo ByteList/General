@@ -25,14 +25,14 @@ public class Coins {
     }
 
     public void setCoins(UUID uuid, long coins) {
-        databaseManager.getAsync().getPlayer(uuid, dbPlayer -> dbPlayer.setDatabaseObject(DatabasePlayerObject.COINS, coins));
+        databaseManager.getAsync().getPlayer(uuid, dbPlayer -> dbPlayer.setDatabaseObject(DatabasePlayerObject.COINS, coins), DatabasePlayerObject.COINS);
     }
 
     public void addCoins(UUID uuid, long coins) {
-        databaseManager.getAsync().getPlayer(uuid, dbPlayer -> dbPlayer.setDatabaseObject(DatabasePlayerObject.COINS, dbPlayer.getDatabaseElement(DatabasePlayerObject.COINS).getAsLong()+coins));
+        databaseManager.getAsync().getPlayer(uuid, dbPlayer -> dbPlayer.setDatabaseObject(DatabasePlayerObject.COINS, dbPlayer.getDatabaseElement(DatabasePlayerObject.COINS).getAsLong()+coins), DatabasePlayerObject.COINS);
     }
 
     public void removeCoins(UUID uuid, long coins) {
-        databaseManager.getAsync().getPlayer(uuid, dbPlayer -> dbPlayer.setDatabaseObject(DatabasePlayerObject.COINS, dbPlayer.getDatabaseElement(DatabasePlayerObject.COINS).getAsLong()-coins));
+        databaseManager.getAsync().getPlayer(uuid, dbPlayer -> dbPlayer.setDatabaseObject(DatabasePlayerObject.COINS, dbPlayer.getDatabaseElement(DatabasePlayerObject.COINS).getAsLong()-coins), DatabasePlayerObject.COINS);
     }
 }

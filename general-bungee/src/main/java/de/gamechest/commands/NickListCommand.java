@@ -46,7 +46,7 @@ public class NickListCommand extends GCCommand {
                     String rank = Rank.getRankById(dbPlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt()).getName();
 
                     sender.sendMessage("§8\u00BB §e" + name + "§7 (" + rank + ") §cspielt als §b" + nick);
-                });
+                }, DatabasePlayerObject.RANK_ID);
             }
         }
     }

@@ -119,10 +119,10 @@ public class BanCommand extends GCCommand implements TabExecutor {
                 ProxiedPlayer pp = gameChest.getProxy().getPlayer(uuid);
                 if(pp != null)
                     pp.disconnect(gameChest.getBanMessage(pp.getUniqueId()));
-                for (ProxiedPlayer player : gameChest.getProxy().getPlayers()) {
+                for (ProxiedPlayer player : gameChest.onlineTeam) {
                     if (gameChest.hasRank(player.getUniqueId(), Rank.SUPPORTER)) {
                         player.sendMessage(gameChest.pr_ban + "§a" + sender + "§7 hat §c" + playername + "§7 gebannt");
-                        player.sendMessage(gameChest.pr_ban + "§7Grund: §e" + Reason.getReason(reason.toUpperCase()).name() + onlyStaff);
+                        player.sendMessage(gameChest.pr_ban + "§7Grund: §e" + Reason.getReason(reason.toUpperCase()).getReason() + onlyStaff);
                     }
                 }
                 return;
@@ -167,10 +167,10 @@ public class BanCommand extends GCCommand implements TabExecutor {
                 ProxiedPlayer pp = gameChest.getProxy().getPlayer(uuid);
                 if(pp != null)
                     pp.disconnect(gameChest.getBanMessage(pp.getUniqueId()));
-                for (ProxiedPlayer player : gameChest.getProxy().getPlayers()) {
+                for (ProxiedPlayer player : gameChest.onlineTeam) {
                     if (gameChest.hasRank(player.getUniqueId(), Rank.SUPPORTER)) {
                         player.sendMessage(gameChest.pr_ban + "§a" + sender + "§7 hat §c" + playername + "§7 gebannt");
-                        player.sendMessage(gameChest.pr_ban + "§7Grund: §e" + Reason.getReason(reason.toUpperCase()).toString() + " (" + extra + ")" + onlyStaff);
+                        player.sendMessage(gameChest.pr_ban + "§7Grund: §e" + Reason.getReason(reason.toUpperCase()).getReason() + " (" + extra + ")" + onlyStaff);
                     }
                 }
                 return;

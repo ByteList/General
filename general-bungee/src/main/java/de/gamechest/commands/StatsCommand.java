@@ -391,6 +391,8 @@ public class StatsCommand extends GCCommand {
                 int played = database.getDatabaseElement(uuid, DatabaseDeathRunObject.GAMES).getAsInt();
                 int wins = database.getDatabaseElement(uuid, DatabaseDeathRunObject.WINS).getAsInt();
                 int coins = database.getDatabaseElement(uuid, DatabaseDeathRunObject.EARNED_COINS).getAsInt();
+                int useddj = database.getDatabaseElement(uuid, DatabaseDeathRunObject.USED_DOUBLE_JUMPS).getAsInt();
+                int useditems = database.getDatabaseElement(uuid, DatabaseDeathRunObject.USED_ITEMS).getAsInt();
 
 
                 sender.sendMessage(gameChest.pr_stats+"§eDeathRun Statistik von "+name+":");
@@ -399,6 +401,8 @@ public class StatsCommand extends GCCommand {
                 sender.sendMessage("§8\u00BB §7Spiele: §6"+played);
                 sender.sendMessage("§8\u00BB §7Gewonnen: §6"+wins+"§7");
                 sender.sendMessage("§8\u00BB §7Coins: §6"+coins);
+                sender.sendMessage("§8\u00BB §7Benutze Doppelsprünge: §6"+useddj);
+                sender.sendMessage("§8\u00BB §7Benutze Items: §6"+useditems);
                 return;
             }
 

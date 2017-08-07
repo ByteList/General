@@ -13,9 +13,7 @@ public class ChatlogCommand implements CommandExecutor {
 	private ChatLog chatLog = GameChest.getInstance().getChatLog();
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String label,
-			String[] args) {
-		
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if(cmd.getName().equalsIgnoreCase("chatlog")) {
 			if(!(sender instanceof Player)) {
 				String report = args[0];
@@ -32,7 +30,7 @@ public class ChatlogCommand implements CommandExecutor {
 			Player p = (Player) sender;
 
 			if(args.length != 1) {
-				sender.sendMessage(chatLog.prefix+"§c/de.gamechest.chatlog <Spieler>");
+				sender.sendMessage(chatLog.prefix+"§c/chatlog <Spieler>");
 				return true;
 			}
 			

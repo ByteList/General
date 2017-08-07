@@ -8,7 +8,6 @@ import de.gamechest.database.DatabaseManager;
 import de.gamechest.database.DatabasePlayerObject;
 import de.gamechest.database.nick.DatabaseNickObject;
 import de.gamechest.database.onlineplayer.DatabaseOnlinePlayer;
-import de.gamechest.database.onlineplayer.DatabaseOnlinePlayerObject;
 import de.gamechest.database.uuidbuffer.DatabaseUuidBuffer;
 import de.gamechest.nick.Nick;
 import org.bson.Document;
@@ -37,15 +36,15 @@ public class JoinListener {
         }
 
         gameChest.getPacketInjector().addPlayer(p);
-
-        gameChest.getDatabaseManager().getAsync().getOnlinePlayer(p.getUniqueId(), databaseOnlinePlayer -> {
-            if(databaseOnlinePlayer.getDatabaseElement(DatabaseOnlinePlayerObject.SERVER_ID).getObject() == null) {
-                setServerId(databaseOnlinePlayer);
-            } else {
-                databaseOnlinePlayer.setDatabaseObject(DatabaseOnlinePlayerObject.PREVIOUS_SERVER_ID, databaseOnlinePlayer.getDatabaseElement(DatabaseOnlinePlayerObject.SERVER_ID).getAsString());
-                setServerId(databaseOnlinePlayer);
-            }
-        });
+//
+//        gameChest.getDatabaseManager().getAsync().getOnlinePlayer(p.getUniqueId(), databaseOnlinePlayer -> {
+//            if(databaseOnlinePlayer.getDatabaseElement(DatabaseOnlinePlayerObject.SERVER_ID).getObject() == null) {
+//                setServerId(databaseOnlinePlayer);
+//            } else {
+//                databaseOnlinePlayer.setDatabaseObject(DatabaseOnlinePlayerObject.PREVIOUS_SERVER_ID, databaseOnlinePlayer.getDatabaseElement(DatabaseOnlinePlayerObject.SERVER_ID).getAsString());
+//                setServerId(databaseOnlinePlayer);
+//            }
+//        }, DatabaseOnlinePlayerObject.SERVER_ID, DatabaseOnlinePlayerObject.PREVIOUS_SERVER_ID);
 
         BountifulAPI.sendTabTitle(p,
                 " §6Game-Chest§f.§6de §8[§b1.9 §f§l- §c1.12§8]  \n"+ //§eSurvival §f& §eSpielmodi
@@ -53,6 +52,7 @@ public class JoinListener {
 
                 "§7Willkommen, §c"+p.getName()+"§7!\n"+
                         "  §fInformationen findest du unter §a/help§f!  ");
+        BountifulAPI.sendTitle(e.getPlayer(), 1, 2, 1, "§r", "§r");
 
         Nick nick = gameChest.getNick();
 
@@ -61,12 +61,12 @@ public class JoinListener {
         }
     }
 
-    private static void setServerId(DatabaseOnlinePlayer databaseOnlinePlayer) {
-        if(gameChest.isCloudEnabled())
-            databaseOnlinePlayer.setDatabaseObject(DatabaseOnlinePlayerObject.SERVER_ID, ByteCloudCore.getInstance().getCloudHandler().getServerId());
-        else
-            databaseOnlinePlayer.setDatabaseObject(DatabaseOnlinePlayerObject.SERVER_ID, Bukkit.getServerName());
-    }
+//    private static void setServerId(DatabaseOnlinePlayer databaseOnlinePlayer) {
+//        if(gameChest.isCloudEnabled())
+//            databaseOnlinePlayer.setDatabaseObject(DatabaseOnlinePlayerObject.SERVER_ID, ByteCloudCore.getInstance().getCloudHandler().getServerId());
+//        else
+//            databaseOnlinePlayer.setDatabaseObject(DatabaseOnlinePlayerObject.SERVER_ID, Bukkit.getServerName());
+//    }
     
     private static void create(Player p) {
         DatabaseManager databaseManager = gameChest.getDatabaseManager();

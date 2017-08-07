@@ -11,10 +11,15 @@ public enum DatabaseOnlinePlayerObject {
     NAME("Name"),
     SERVER_ID("Server-Id"),
     PREVIOUS_SERVER_ID("Previous-Server-Id"),
-    TOGGLED_RANK("Toggled-Rank"),
     NICKNAME("Nickname"),
     PARTY_ID("Party-Id");
 
+    public static String[] toStringList(DatabaseOnlinePlayerObject ... rules) {
+        String[] list = new String[rules.length];
+        for (int i = 0; i < rules.length; i++)
+            list[i] = rules[i].getName();
+        return list;
+    }
 
     @Getter
     private String name;

@@ -6,6 +6,7 @@ import de.gamechest.Skin;
 import de.gamechest.database.DatabaseManager;
 import de.gamechest.database.DatabasePlayerObject;
 import de.gamechest.database.ban.DatabaseBanObject;
+import de.gamechest.database.nick.DatabaseNickObject;
 import de.gamechest.database.onlineplayer.DatabaseOnlinePlayer;
 import de.gamechest.database.rank.Rank;
 import de.gamechest.database.uuidbuffer.DatabaseUuidBuffer;
@@ -13,6 +14,7 @@ import net.md_5.bungee.api.connection.PendingConnection;
 import net.md_5.bungee.api.event.LoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
+import org.bson.Document;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -39,27 +41,21 @@ public class LoginListener implements Listener {
             case WHITELIST:
                 if(!gameChest.getConnectManager().getWhiteList().contains(pc.getUniqueId())) {
                     e.setCancelled(true);
-                    e.setCancelReason("§cWir befinden uns momentan im §6geschlossenen Modus§c!\n\n" +
-                            "§7Momentan ist nur für eine Liste von bestimmten Usern der Zugriff auf das Netzwerk gewährt!\n" +
-                            "§7Bei Fragen wende dich bitte an den Support.");
+                    e.setCancelReason("§cWir befinden uns momentan im §6geschlossenen Modus§c!");
                     return;
                 }
                 break;
             case MAINTENANCE:
                 if (!gameChest.hasRank(pc.getUniqueId(), Rank.BUILDER)) {
                     e.setCancelled(true);
-                    e.setCancelReason("§cWir befinden uns momentan im §aWartungsmodus§c!\n\n" +
-                            "§7Wir führen gerade einige Änderungen (z.B. Map-Updates) durch!\n" +
-                            "§7Bei Fragen wende dich bitte an den Support.");
+                    e.setCancelReason("§cWir befinden uns momentan im §aWartungsmodus§c!");
                     return;
                 }
                 break;
             case DEVELOPMENT:
                 if (!gameChest.hasRank(pc.getUniqueId(), Rank.DEVELOPER)) {
                     e.setCancelled(true);
-                    e.setCancelReason("§cWir befinden uns momentan im §4Development-Modus§c!\n\n" +
-                            "§eIn dieser Zeit ist für jeden, bis auf Developer und Admins,\n§eder Zugriff auf das Minecraft-Netzwerk untersagt§e.\n" +
-                            "§7Bei Fragen wende dich an den Support.");
+                    e.setCancelReason("§cWir befinden uns momentan im §4Development-Modus§c!");
                     return;
                 }
                 break;
@@ -99,17 +95,31 @@ public class LoginListener implements Listener {
                 databaseUuidBuffer.removePlayer(lastName);
                 databaseUuidBuffer.createPlayer(pc.getName(), pc.getUniqueId());
             }
+        });
 
-            // update database player
+        // update database player
+        databaseManager.getAsync().getPlayer(pc.getUniqueId(), dbPlayer -> {
             SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm");
             String onlineDate = formatter.format(Calendar.getInstance().getTime());
 
             dbPlayer.setDatabaseObject(DatabasePlayerObject.LAST_LOGIN, onlineDate);
             dbPlayer.setDatabaseObject(DatabasePlayerObject.LAST_NAME, pc.getName());
             dbPlayer.setDatabaseObject(DatabasePlayerObject.LAST_IP, pc.getAddress().getHostString());
+        }, DatabasePlayerObject.LAST_LOGIN, DatabasePlayerObject.LAST_NAME, DatabasePlayerObject.LAST_IP);
 
-            Skin.loadSkinAsync(pc, dbPlayer);
-        });
+        // Skin texture update
+        databaseManager.getAsync().getPlayer(pc.getUniqueId(), dbPlayer -> {
+            Skin skin = new Skin(pc.getUniqueId());
+            String value = skin.getSkinValue();
+            String signature = skin.getSkinSignature();
+
+            if(value != null && signature != null) {
+                Document skinTextures = new Document();
+                skinTextures.put(DatabaseNickObject.SkinObject.VALUE.getName(), value);
+                skinTextures.put(DatabaseNickObject.SkinObject.SIGNATURE.getName(), signature);
+                dbPlayer.setDatabaseObject(DatabasePlayerObject.SKIN_TEXTURE, skinTextures);
+            }
+        }, DatabasePlayerObject.SKIN_TEXTURE);
 
         // online database player
         databaseManager.getAsync().getOnlinePlayer(pc.getUniqueId(), DatabaseOnlinePlayer::createOnlinePlayer);

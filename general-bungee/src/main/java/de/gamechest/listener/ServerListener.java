@@ -2,6 +2,8 @@ package de.gamechest.listener;
 
 import de.bytelist.bytecloud.bungee.ByteCloudMaster;
 import de.gamechest.GameChest;
+import de.gamechest.database.DatabaseElement;
+import de.gamechest.database.onlineplayer.DatabaseOnlinePlayerObject;
 import de.gamechest.party.Party;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -56,5 +58,15 @@ public class ServerListener implements Listener {
                 p.connect(player.getServer().getInfo());
             }
         }
+
+        gameChest.getDatabaseManager().getAsync().getOnlinePlayer(player.getUniqueId(), databaseOnlinePlayer -> {
+            DatabaseElement databaseElement = databaseOnlinePlayer.getDatabaseElement(DatabaseOnlinePlayerObject.SERVER_ID);
+            if(databaseElement.getObject() == null) {
+                databaseOnlinePlayer.setDatabaseObject(DatabaseOnlinePlayerObject.SERVER_ID, player.getServer().getInfo().getName());
+            } else {
+                databaseOnlinePlayer.setDatabaseObject(DatabaseOnlinePlayerObject.PREVIOUS_SERVER_ID, databaseElement.getAsString());
+                databaseOnlinePlayer.setDatabaseObject(DatabaseOnlinePlayerObject.SERVER_ID, player.getServer().getInfo().getName());
+            }
+        }, DatabaseOnlinePlayerObject.SERVER_ID, DatabaseOnlinePlayerObject.PREVIOUS_SERVER_ID);
     }
 }

@@ -110,7 +110,7 @@ public class PremiumCommand extends GCCommand {
                     if(!databasePremiumPlayer.existsPlayer(uuid)) databasePremiumPlayer.createPlayer(uuid, end);
                     else databasePremiumPlayer.setDatabaseObject(uuid, DatabasePremiumPlayerObject.ENDING_DATE, end);
 
-                    gameChest.getDatabaseManager().getAsync().getPlayer(uuid, dbPlayer-> dbPlayer.setDatabaseObject(DatabasePlayerObject.RANK_ID, 7));
+                    gameChest.getDatabaseManager().getAsync().getPlayer(uuid, dbPlayer-> dbPlayer.setDatabaseObject(DatabasePlayerObject.RANK_ID, 7), DatabasePlayerObject.RANK_ID);
 
                     sender.sendMessage(gameChest.prefix + "§aPremium hinzugefügt!");
                     if (end == -2) {

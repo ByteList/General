@@ -1,0 +1,8 @@
+name: GameChestVerify
+version: 0.1
+author: ByteList
+main: de.gamechest.verify.Verify
+
+commands:
+   unverify:
+

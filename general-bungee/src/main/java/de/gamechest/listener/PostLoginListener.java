@@ -30,5 +30,4 @@ public class PostLoginListener implements Listener {
             gameChest.onlineTeam.add(pp);
         }
     }
-
 }

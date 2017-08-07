@@ -12,14 +12,9 @@ public enum DatabaseCollection {
     PREMIUM_PLAYER("premium-player"),
     UUID_BUFFER("uuid-buffer"),
     ACTIVATE_CODES("activate-codes"),
-
     PARTY("party"),
 
     POLL("poll"),
-
-    BANS("bans"),
-    BAN_HISTORY("ban-history"),
-    CHAT_REPORTS("chat-reports"),
 
     NICKNAMES("nicknames"),
 
@@ -28,6 +23,9 @@ public enum DatabaseCollection {
     DR_STATISTICS("dr-statistics"),
     JD_STATISTICS("jd-statistics"),
 
+    BANS("bans"),
+    BAN_HISTORY("ban-history"),
+    CHAT_REPORTS("chat-reports"),
     BUG_REPORTS("bug-reports");
 
     @Getter

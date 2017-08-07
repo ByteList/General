@@ -1,11 +1,6 @@
 package de.gamechest;
 
-import de.gamechest.database.DatabasePlayer;
-import de.gamechest.database.DatabasePlayerObject;
-import de.gamechest.database.nick.DatabaseNickObject;
 import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.connection.PendingConnection;
-import org.bson.Document;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -29,6 +24,19 @@ public class Skin {
     public Skin(String name) {
         try {
             this.uuid = UUIDFetcher.getUUID(name);
+            load();
+        } catch (Exception ignored) {
+            this.value = "";
+            this.signature = "";
+        }
+    }
+
+    public Skin(String name, boolean unsafe) {
+        try {
+            if(unsafe)
+                this.uuid = UUIDFetcher.getUnsaveUUID(name);
+            else
+                this.uuid = UUIDFetcher.getUUID(name);
             load();
         } catch (Exception ignored) {
             this.value = "";
@@ -74,19 +82,5 @@ public class Skin {
 
     public String getSkinSignature() {
         return this.signature;
-    }
-
-    public static void loadSkinAsync(PendingConnection pendingConnection, DatabasePlayer databasePlayer) {
-        // Skin texture update
-        Skin skin = new Skin(pendingConnection.getUniqueId());
-        String value = skin.getSkinValue();
-        String signature = skin.getSkinSignature();
-
-        if(value != null && signature != null) {
-            Document skinTextures = new Document();
-            skinTextures.put(DatabaseNickObject.SkinObject.VALUE.getName(), value);
-            skinTextures.put(DatabaseNickObject.SkinObject.SIGNATURE.getName(), signature);
-            databasePlayer.setDatabaseObject(DatabasePlayerObject.SKIN_TEXTURE, skinTextures);
-        }
     }
 }

@@ -9,8 +9,6 @@ import de.gamechest.database.DatabasePlayerObject;
 import de.gamechest.database.ban.DatabaseBan;
 import de.gamechest.database.ban.DatabaseBanObject;
 import de.gamechest.database.ban.Reason;
-import de.gamechest.database.onlineplayer.DatabaseOnlinePlayer;
-import de.gamechest.database.onlineplayer.DatabaseOnlinePlayerObject;
 import de.gamechest.database.rank.Rank;
 import de.gamechest.listener.*;
 import de.gamechest.nick.Nick;
@@ -21,14 +19,11 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by ByteList on 09.04.2017.
- *
+ * <p>
  * Copyright by ByteList - https://bytelist.de/
  */
 public class GameChest extends Plugin {
@@ -49,6 +44,8 @@ public class GameChest extends Plugin {
     @Getter
     private PacketHandlerGC packetHandler;
 
+    public HashMap<UUID, Rank> rankCache = new HashMap<>();
+
     public final String prefix = "§2GameChest §8\u00BB ";
     public final String pr_nick = "§5Nick §8\u00BB ";
     public final String pr_stats = "§6Stats §8\u00BB ";
@@ -57,13 +54,14 @@ public class GameChest extends Plugin {
     public final String pr_bug = "§9BugReport §8\u00BB ";
     public final String pr_activate = "§6Activate §8\u00BB ";
     public final String pr_party = "§dParty §8\u00BB ";
+    public final String pr_verify = "§6Verify §8\u00BB ";
+
     public final String pr_msg_private = "§f§o[§c§oPrivat§f§o] ";
     public final String pr_msg_team = "§f§o[§c§oTeam§f§o] ";
-    public final String pr_msg_party = "§f§o[§c§oParty§f§o] ";
+    public final String pr_msg_party = "§f§o[§d§oParty§f§o] ";
 
 
     public List<ProxiedPlayer> onlineTeam = new ArrayList<>();
-
 
     public HashMap<ProxiedPlayer, ProxiedPlayer> TELL_FROM_TO = new HashMap<>();
 
@@ -72,6 +70,7 @@ public class GameChest extends Plugin {
         instance = this;
 
         initDatabase();
+
 
         this.nick = new Nick();
         this.coins = new Coins();
@@ -92,61 +91,88 @@ public class GameChest extends Plugin {
                 new ProxyPingListener(),
                 new ServerListener()
         };
-        for(Listener listener : listeners)
+        for (Listener listener : listeners)
             getProxy().getPluginManager().registerListener(this, listener);
 
-        getProxy().getConsole().sendMessage(prefix+"§aEnabled!");
+        getProxy().getConsole().sendMessage(prefix + "§aEnabled!");
     }
 
     @Override
     public void onDisable() {
         partyManager.onStop();
-        getProxy().getConsole().sendMessage(prefix+"§cDisabled!");
+//        teamspeakBot.stop();
+        getProxy().getConsole().sendMessage(prefix + "§cDisabled!");
     }
 
     private void initDatabase() {
         try {
             this.databaseManager = new DatabaseManager("game-chest.de", 27017, "server-gc", "Passwort007", "server");
             this.databaseManager.init();
-            getProxy().getConsole().sendMessage(prefix+"§eDatabase - §aConnected!");
+            getProxy().getConsole().sendMessage(prefix + "§eDatabase - §aConnected!");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
     public boolean hasRank(UUID uuid, Rank rank) {
-        DatabasePlayer dbPlayer = new DatabasePlayer(this.databaseManager, uuid);
+        Rank playerRank;
+        if (!rankCache.containsKey(uuid)) {
+            DatabasePlayer dbPlayer = new DatabasePlayer(this.databaseManager, uuid);
+            if (dbPlayer.existsPlayer()) {
+                playerRank = Rank.getRankById(dbPlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt());
+                rankCache.put(uuid, playerRank);
+            } else {
+                return false;
+            }
+        } else {
+            playerRank = rankCache.get(uuid);
+        }
 
-        return dbPlayer.existsPlayer() && dbPlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt() <= rank.getId();
+        return playerRank.getId() <= rank.getId();
     }
 
     public boolean equalsRank(UUID uuid, Rank rank) {
-        DatabasePlayer dbPlayer = new DatabasePlayer(this.databaseManager, uuid);
-
-        return dbPlayer.existsPlayer() && dbPlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt() == rank.getId();
+        Rank playerRank;
+        if (!rankCache.containsKey(uuid)) {
+            DatabasePlayer dbPlayer = new DatabasePlayer(this.databaseManager, uuid);
+            if (dbPlayer.existsPlayer()) {
+                playerRank = Rank.getRankById(dbPlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt());
+                rankCache.put(uuid, playerRank);
+            } else {
+                return false;
+            }
+        } else {
+            playerRank = rankCache.get(uuid);
+        }
+        return Objects.equals(playerRank.getId(), rank.getId());
     }
 
     public Rank getRank(UUID uuid) {
-        DatabasePlayer dbPlayer = new DatabasePlayer(this.databaseManager, uuid);
-        return Rank.getRankById(dbPlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt());
+        if (!rankCache.containsKey(uuid)) {
+            DatabasePlayer dbPlayer = new DatabasePlayer(this.databaseManager, uuid);
+            Rank rank = Rank.getRankById(dbPlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt());
+            rankCache.put(uuid, rank);
+            return rank;
+        } else {
+            return rankCache.get(uuid);
+        }
     }
 
     public boolean isRankToggled(UUID uuid) {
-        DatabaseOnlinePlayer databaseOnlinePlayer = new DatabaseOnlinePlayer(this.databaseManager, uuid);
-        return databaseOnlinePlayer.getDatabaseElement(DatabaseOnlinePlayerObject.TOGGLED_RANK).getAsBoolean();
+        return false;
     }
 
     public String getBanMessage(UUID uuid) {
         DatabaseBan databaseBan = databaseManager.getDatabaseBan();
         String endDate = databaseBan.getDatabaseElement(uuid, DatabaseBanObject.END_DATE).getAsString();
         String extra = null;
-        if(databaseBan.getDatabaseElement(uuid, DatabaseBanObject.EXTRA_MESSAGE).getObject() != null)
+        if (databaseBan.getDatabaseElement(uuid, DatabaseBanObject.EXTRA_MESSAGE).getObject() != null)
             extra = databaseBan.getDatabaseElement(uuid, DatabaseBanObject.EXTRA_MESSAGE).getAsString();
         return
-                "§cDu wurdest bis zum §a"+(endDate.equals("-1") ? "§4permanent" : endDate)+"§c vom §6Game-Chest.de Netzwerk§c gebannt."
+                "§cDu wurdest bis zum §a" + (endDate.equals("-1") ? "§4permanent" : endDate) + "§c vom §6Game-Chest.de Netzwerk§c gebannt."
                         + "\n" + "\n" +
-                        "§cGrund: §e"+ Reason.getReason(databaseBan.getDatabaseElement(uuid, DatabaseBanObject.REASON).getAsString()).getReason()
-                                        + (extra != null ? " ("+extra+")" : "")
+                        "§cGrund: §e" + Reason.getReason(databaseBan.getDatabaseElement(uuid, DatabaseBanObject.REASON).getAsString()).getReason()
+                        + (extra != null ? " (" + extra + ")" : "")
                         + "\n" + "\n" +
                         "§7§oDu kannst einen §a§neinmaligen§7§o Entbannungsantrag im Support stellen."
                         + "\n" +
@@ -158,81 +184,87 @@ public class GameChest extends Plugin {
     }
 
 //    private void insertNicks() {
-//        System.out.println("Init Nicks...");
-//        HashMap<String, String> list = new HashMap<>();
-//        list.put("KnoeterichHD", "carletto66");
-//        list.put("KaffesatzNab", "classic594");
-//        list.put("TeppichLp_Xx", "aftertast");
-//        list.put("Schnuefflex", "domvito123");
-//        list.put("Feuerwerman_2005", "cougar88");
-//        list.put("LogischerLuke203", "daniel1206");
-//        list.put("Bubblegummer", "jacob4431");
-//        list.put("LOGOS_2005_Fen", "ericcronin");
-//        list.put("DragonEvil68", "BaZoOKaMoE");
-//        list.put("Hashtagger", "BuffyTVS");
-//        list.put("NotchHD_", "Blokkiesam");
-//        list.put("MCproYT", "cheers");
-//        list.put("CookiePlayZ", "colbyo");
-//        list.put("Rexey", "dixib");
-//        list.put("xCrasherHD", "domthebomb123");
-//        list.put("CaveGamerYT", "jerl999");
-//        list.put("ZionLP", "hjerrild123");
-//        list.put("MelizzlHD", "hellshell");
-//        list.put("ProExeCution", "farrar1");
-//        list.put("MrDurios_", "drkollins");
-//        list.put("GomminaHD", "emerica2");
-//        list.put("ZetinCraftHD", "hansjoergl");
-//        list.put("MonsterElii", "Hoags11");
-//        list.put("_WoodenSword", "cilence");
-//        list.put("GraumannHQ", "Awesominator01");
-//        list.put("Flcokengamer", "Asparagus");
-//        list.put("WahnsinHD", "aleebs");
-//        list.put("Piccio", "chadwick12");
-//        list.put("Katzenface_", "chadley253");
-//        list.put("Sockenmoster", "chrisseh");
-//        list.put("SplexxCraxer", "corgblam");
-//        list.put("CapureHD", "chocky10");
-//        list.put("LowGr0und", "cookie1337");
-//        list.put("Mputiaren", "chune0413");
-//        list.put("Rukkie", "Cheasify");
-//        list.put("Shokkie", "Bammargera23");
-//        list.put("DiPlayz", "Addracyn");
-//        list.put("Gr0undling", "Basemind");
-//        list.put("FrontCrafterYT", "chayton50000");
-//        list.put("UdoGamingHD", "chaser132");
-//        list.put("LogischerFel1x", "cici820");
-//        list.put("Stralekilian", "Clammers");
-//        list.put("_x_Mathias_x_", "chrisc377");
-//        list.put("JetztRedIch007", "Cdavis");
-//        list.put("Wenzala", "ciaranb64");
-//        list.put("ScrealmXL", "Bluecar15");
-//        list.put("SuperPlay3r", "BoneHunter");
-//        list.put("SiggiSchnitzt", "boothboy");
-//        list.put("EcriLP", "ceejay1022");
-//        list.put("MatzePlays", "blobfish12");
-//        list.put("Anominous", "bigfootyeti");
-//        list.put("Alertguy1", "creeperded");
-//        list.put("B3dm4st3r", "coolwalker");
-//        list.put("AndreasRedet", "DA_SWAMPMONSTA");
-//        list.put("_RazorLP", "cocosboy10");
-//        list.put("Ofenkartofel", "dandilion");
-//        list.put("DerLaborant", "dallas13");
-//        list.put("LucasRex", "Clubwho");
-//        list.put("Mausia01", "bradrocks");
-//        list.put("C0bbleman", "bob606060");
-//        list.put("thunderboy_", "defender14");
-//        list.put("_BorisDieBestie_", "hiphoplary");
-//        list.put("HDGround", "costou12"); noSkin
+//        new Thread("Init Nicks Thread") {
+//            @Override
+//            public void run() {
 //
-//        list.put("EzRek4Life", "drdiggler"); noSkin
+//                System.out.println("Init Nicks...");
+//                HashMap<String, String> list = new HashMap<>();
+//                list.put("KnoeterichHD", "carletto66");
+//                list.put("KaffesatzNab", "classic594");
+//                list.put("TeppichLp_Xx", "aftertast");
+//                list.put("Schnuefflex", "domvito123");
+//                list.put("Feuerwerman_2005", "cougar88");
+//                list.put("LogischerLuke203", "daniel1206");
+//                list.put("Bubblegummer", "jacob4431");
+//                list.put("LOGOS_2005_Fen", "ericcronin");
+//                list.put("DragonEvil68", "BaZoOKaMoE");
+//                list.put("Hashtagger", "BuffyTVS");
+//                list.put("NotchHD_", "Blokkiesam");
+//                list.put("MCproYT", "cheers");
+//                list.put("CookiePlayZ", "colbyo");
+//                list.put("Rexey", "dixib");
+//                list.put("xCrasherHD", "domthebomb123");
+//                list.put("CaveGamerYT", "jerl999");
+//                list.put("ZionLP", "hjerrild123");
+//                list.put("MelizzlHD", "hellshell");
+//                list.put("ProExeCution", "farrar1");
+//                list.put("MrDurios_", "drkollins");
+//                list.put("GomminaHD", "emerica2");
+//                list.put("ZetinCraftHD", "hansjoergl");
+//                list.put("MonsterElii", "Hoags11");
+//                list.put("_WoodenSword", "cilence");
+//                list.put("GraumannHQ", "Awesominator01");
+//                list.put("Flcokengamer", "Asparagus");
+//                list.put("WahnsinHD", "aleebs");
+//                list.put("Piccio", "chadwick12");
+//                list.put("Katzenface_", "chadley253");
+//                list.put("Sockenmoster", "chrisseh");
+//                list.put("SplexxCraxer", "corgblam");
+//                list.put("CapureHD", "chocky10");
+//                list.put("LowGr0und", "cookie1337");
+//                list.put("Mputiaren", "chune0413");
+//                list.put("Rukkie", "Cheasify");
+//                list.put("Shokkie", "Bammargera23");
+//                list.put("DiPlayz", "Addracyn");
+//                list.put("Gr0undling", "Basemind");
+//                list.put("FrontCrafterYT", "chayton50000");
+//                list.put("UdoGamingHD", "chaser132");
+//                list.put("LogischerFel1x", "cici820");
+//                list.put("Stralekilian", "Clammers");
+//                list.put("_x_Mathias_x_", "chrisc377");
+//                list.put("JetztRedIch007", "Cdavis");
+//                list.put("Wenzala", "ciaranb64");
+//                list.put("ScrealmXL", "Bluecar15");
+//                list.put("SuperPlay3r", "BoneHunter");
+//                list.put("SiggiSchnitzt", "boothboy");
+//                list.put("EcriLP", "ceejay1022");
+//                list.put("MatzePlays", "blobfish12");
+//                list.put("Anominous", "bigfootyeti");
+//                list.put("Alertguy1", "creeperded");
+//                list.put("B3dm4st3r", "coolwalker");
+//                list.put("AndreasRedet", "DA_SWAMPMONSTA");
+//                list.put("_RazorLP", "cocosboy10");
+//                list.put("Ofenkartofel", "dandilion");
+//                list.put("DerLaborant", "dallas13");
+//                list.put("LucasRex", "Clubwho");
+//                list.put("Mausia01", "bradrocks");
+//                list.put("C0bbleman", "bob606060");
+//                list.put("thunderboy_", "defender14");
+//                list.put("_BorisDieBestie_", "hiphoplary");
+//                list.put("HDGround", "costou12");// noSkin
 //
-//        int i = 0;
+//                list.put("EzRek4Life", "drdiggler");// noSkin
 //
-//        for(String nick : list.keySet()) {
-//            String skinname = list.get(nick);
-//            Skin skin = new Skin(skinname);
-//            databaseManager.getDatabaseNick().createNick(i, nick, skin.getSkinValue(), skin.getSkinSignature());
-//            i++;
-//        }
+//                int i = 0;
+//
+//                for (String nick : list.keySet()) {
+//                    String skinname = list.get(nick);
+//                    Skin skin = new Skin(skinname, true);
+//                    databaseManager.getDatabaseNick().createNick(i, nick, skin.getSkinValue(), skin.getSkinSignature());
+//                    i++;
+//                }
+//            }
+//        }.start();
 //    }
 }

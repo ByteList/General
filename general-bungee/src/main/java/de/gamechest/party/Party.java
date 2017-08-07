@@ -3,6 +3,7 @@ package de.gamechest.party;
 import com.google.gson.JsonObject;
 import de.bytelist.bytecloud.bungee.ByteCloudMaster;
 import de.gamechest.GameChest;
+import de.gamechest.database.onlineplayer.DatabaseOnlinePlayerObject;
 import lombok.Getter;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -37,6 +38,8 @@ public class Party {
         this.member = new ArrayList<>();
         this.requests = new HashMap<>();
         gameChest.getDatabaseManager().getDatabaseParty().createParty(partyId, leader.getName());
+        gameChest.getDatabaseManager().getAsync().getOnlinePlayer(leader.getUniqueId(), dbPlayer ->
+                dbPlayer.setDatabaseObject(DatabaseOnlinePlayerObject.PARTY_ID, this.partyId), DatabaseOnlinePlayerObject.PARTY_ID);
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("packet", "PartyJoin");
         jsonObject.addProperty("partyId", partyId);
@@ -85,6 +88,8 @@ public class Party {
         this.requests.remove(player.getName());
         this.member.add(player);
         gameChest.getDatabaseManager().getDatabaseParty().addMember(partyId, player.getName());
+        gameChest.getDatabaseManager().getAsync().getOnlinePlayer(player.getUniqueId(), dbPlayer ->
+                dbPlayer.setDatabaseObject(DatabaseOnlinePlayerObject.PARTY_ID, this.partyId), DatabaseOnlinePlayerObject.PARTY_ID);
 
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("packet", "PartyJoin");
@@ -121,6 +126,8 @@ public class Party {
             }
             this.leader.sendMessage(gameChest.pr_party+"§6"+player.getName()+"§a hat die Party verlassen.");
             gameChest.getDatabaseManager().getDatabaseParty().removeMember(partyId, player.getName());
+            gameChest.getDatabaseManager().getAsync().getOnlinePlayer(player.getUniqueId(), dbPlayer ->
+                    dbPlayer.setDatabaseObject(DatabaseOnlinePlayerObject.PARTY_ID, null), DatabaseOnlinePlayerObject.PARTY_ID);
             JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty("packet", "PartyLeave");
             jsonObject.addProperty("partyId", partyId);

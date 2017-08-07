@@ -33,10 +33,6 @@ public class Stats {
         this.databaseManager = GameChest.getInstance().getDatabaseManager();
     }
 
-    /**
-     * Returns the ClickAttack Sql class
-     * @return
-     */
     public DatabaseClickAttack getClickAttack() {
         return databaseManager.getDatabaseClickAttack();
     }
@@ -54,7 +50,6 @@ public class Stats {
     }
 
     // CA-Cache
-
     public void createCACache(UUID uuid) {
         if(existsCACache(uuid)) return;
 
@@ -89,7 +84,6 @@ public class Stats {
     }
 
     // SD-Cache
-
     public  void createSDCache(UUID uuid) {
         if(existsSDCache(uuid)) return;
 
@@ -124,7 +118,6 @@ public class Stats {
     }
 
     // JD-Cache
-
     public  void createJDCache(UUID uuid) {
         if(existsJDCache(uuid)) return;
 
@@ -159,7 +152,6 @@ public class Stats {
     }
 
     // DR-Cache
-
     public  void createDRCache(UUID uuid) {
         if(existsDRCache(uuid)) return;
 
@@ -193,113 +185,116 @@ public class Stats {
         return dr_cache.get(uuid).get(type);
     }
 
+
     public  void addCacheToDatabase(UUID uuid, StatsType statsType) {
-        if(statsType == StatsType.CLICKATTACK) {
-            if(!existsCACache(uuid)) return;
-            Player p = Bukkit.getPlayer(uuid);
-            if(p.isOnline()) p.sendMessage(prefix+"§eDeine Rundenstatistik:");
-            for(DatabaseClickAttackObject cacheType : DatabaseClickAttackObject.values()) {
-                if(cacheType != DatabaseClickAttackObject.RANK && cacheType != DatabaseClickAttackObject.UUID) {
-                    Integer cacheValue = getCACacheValue(uuid, cacheType);
-                    Integer dbValue = getClickAttack().getDatabaseElement(uuid, cacheType).getAsInt();
+        Player p = Bukkit.getPlayer(uuid);
+        switch (statsType) {
 
-                    getClickAttack().setDatabaseObject(uuid, cacheType, dbValue+cacheValue);
-                    if(cacheType == DatabaseClickAttackObject.POINTS) {
-                        if(p.isOnline()) p.sendMessage("§8\u00BB §7Punkte: §a"+cacheValue);
-                    }
-                    if(cacheType == DatabaseClickAttackObject.KILLS) {
-                        if(p.isOnline()) p.sendMessage("§8\u00BB §7Kills: §a"+cacheValue);
-                    }
-                    if(cacheType == DatabaseClickAttackObject.DEATHS) {
-                        if(p.isOnline()) p.sendMessage("§8\u00BB §7Tode: §a"+cacheValue);
-                    }
-                    if(cacheType == DatabaseClickAttackObject.CLICKED_BLOCKS) {
-                        if(p.isOnline()) p.sendMessage("§8\u00BB §7Benutzte Blöcke: §a"+cacheValue);
-                    }
-                    if(cacheType == DatabaseClickAttackObject.EARNED_COINS) {
-                        if(p.isOnline()) p.sendMessage("§8\u00BB §7Verdiente Coins: §a"+cacheValue);
+            case CLICKATTACK:
+                if(!existsCACache(uuid)) return;
+                if(p.isOnline()) p.sendMessage(prefix+"§eDeine Rundenstatistik:");
+                for(DatabaseClickAttackObject cacheType : DatabaseClickAttackObject.values()) {
+                    if(cacheType != DatabaseClickAttackObject.RANK && cacheType != DatabaseClickAttackObject.UUID) {
+                        Integer cacheValue = getCACacheValue(uuid, cacheType);
+                        Integer dbValue = getClickAttack().getDatabaseElement(uuid, cacheType).getAsInt();
+
+                        getClickAttack().setDatabaseObject(uuid, cacheType, dbValue+cacheValue);
+
+                        if(cacheType == DatabaseClickAttackObject.POINTS) {
+                            if(p.isOnline()) p.sendMessage("§8\u00BB §7Punkte: §a"+cacheValue);
+                        }
+                        if(cacheType == DatabaseClickAttackObject.KILLS) {
+                            if(p.isOnline()) p.sendMessage("§8\u00BB §7Kills: §a"+cacheValue);
+                        }
+                        if(cacheType == DatabaseClickAttackObject.DEATHS) {
+                            if(p.isOnline()) p.sendMessage("§8\u00BB §7Tode: §a"+cacheValue);
+                        }
+                        if(cacheType == DatabaseClickAttackObject.CLICKED_BLOCKS) {
+                            if(p.isOnline()) p.sendMessage("§8\u00BB §7Benutzte Blöcke: §a"+cacheValue);
+                        }
+                        if(cacheType == DatabaseClickAttackObject.EARNED_COINS) {
+                            if(p.isOnline()) p.sendMessage("§8\u00BB §7Verdiente Coins: §a"+cacheValue);
+                        }
                     }
                 }
-            }
-            deleteCACache(uuid);
-            if(p.isOnline()) p.sendMessage("");
-        }
+                deleteCACache(uuid);
+                if(p.isOnline()) p.sendMessage("");
+                break;
+            case SHULKERDEFENCE:
+                if(!existsSDCache(uuid)) return;
+                if(p.isOnline()) p.sendMessage(prefix+"§eDeine Rundenstatistik:");
+                for(DatabaseShulkerDefenceObject cacheType : DatabaseShulkerDefenceObject.values()) {
+                    if(cacheType != DatabaseShulkerDefenceObject.RANK && cacheType != DatabaseShulkerDefenceObject.UUID) {
+                        Integer cacheValue = getSDCacheValue(uuid, cacheType);
+                        Integer dbValue = getShulkerDefence().getDatabaseElement(uuid, cacheType).getAsInt();
 
-        if(statsType == StatsType.SHULKERDEFENCE) {
-            if(!existsSDCache(uuid)) return;
-            Player p = Bukkit.getPlayer(uuid);
-            if(p.isOnline()) p.sendMessage(prefix+"§eDeine Rundenstatistik:");
-            for(DatabaseShulkerDefenceObject cacheType : DatabaseShulkerDefenceObject.values()) {
-                if(cacheType != DatabaseShulkerDefenceObject.RANK && cacheType != DatabaseShulkerDefenceObject.UUID) {
-                    Integer cacheValue = getSDCacheValue(uuid, cacheType);
-                    Integer dbValue = getShulkerDefence().getDatabaseElement(uuid, cacheType).getAsInt();
+                        getShulkerDefence().setDatabaseObject(uuid, cacheType, dbValue+cacheValue);
 
-                    getShulkerDefence().setDatabaseObject(uuid, cacheType, dbValue+cacheValue);
-                    if(cacheType == DatabaseShulkerDefenceObject.POINTS) {
-                        if(p.isOnline()) p.sendMessage("§8\u00BB §7Punkte: §a"+cacheValue);
-                    }
-                    if(cacheType == DatabaseShulkerDefenceObject.KILLS) {
-                        if(p.isOnline()) p.sendMessage("§8\u00BB §7Kills: §a"+cacheValue);
-                    }
-                    if(cacheType == DatabaseShulkerDefenceObject.DEATHS) {
-                        if(p.isOnline()) p.sendMessage("§8\u00BB §7Tode: §a"+cacheValue);
-                    }
-                    if(cacheType == DatabaseShulkerDefenceObject.KILLED_SHULKERS) {
-                        if(p.isOnline()) p.sendMessage("§8\u00BB §7Getötete Shulker: §a"+cacheValue);
-                    }
-                    if(cacheType == DatabaseShulkerDefenceObject.EARNED_COINS) {
-                        if(p.isOnline()) p.sendMessage("§8\u00BB §7Verdiente Coins: §a"+cacheValue);
+                        if(cacheType == DatabaseShulkerDefenceObject.POINTS) {
+                            if(p.isOnline()) p.sendMessage("§8\u00BB §7Punkte: §a"+cacheValue);
+                        }
+                        if(cacheType == DatabaseShulkerDefenceObject.KILLS) {
+                            if(p.isOnline()) p.sendMessage("§8\u00BB §7Kills: §a"+cacheValue);
+                        }
+                        if(cacheType == DatabaseShulkerDefenceObject.DEATHS) {
+                            if(p.isOnline()) p.sendMessage("§8\u00BB §7Tode: §a"+cacheValue);
+                        }
+                        if(cacheType == DatabaseShulkerDefenceObject.KILLED_SHULKERS) {
+                            if(p.isOnline()) p.sendMessage("§8\u00BB §7Getötete Shulker: §a"+cacheValue);
+                        }
+                        if(cacheType == DatabaseShulkerDefenceObject.EARNED_COINS) {
+                            if(p.isOnline()) p.sendMessage("§8\u00BB §7Verdiente Coins: §a"+cacheValue);
+                        }
                     }
                 }
-            }
-            deleteSDCache(uuid);
-            if(p.isOnline()) p.sendMessage("");
-        }
+                deleteSDCache(uuid);
+                if(p.isOnline()) p.sendMessage("");
+                break;
+            case JUMPDUELL:
+                if(!existsJDCache(uuid)) return;
+                if(p.isOnline()) p.sendMessage(prefix+"§eDeine Rundenstatistik:");
+                for(DatabaseJumpDuellObject cacheType : DatabaseJumpDuellObject.values()) {
+                    if(cacheType != DatabaseJumpDuellObject.RANK && cacheType != DatabaseJumpDuellObject.UUID) {
+                        Integer cacheValue = getJDCacheValue(uuid, cacheType);
+                        Integer dbValue = getJumpDuell().getDatabaseElement(uuid, cacheType).getAsInt();
 
-        if(statsType == StatsType.JUMPDUELL) {
-            if(!existsJDCache(uuid)) return;
-            Player p = Bukkit.getPlayer(uuid);
-            if(p.isOnline()) p.sendMessage(prefix+"§eDeine Rundenstatistik:");
-            for(DatabaseJumpDuellObject cacheType : DatabaseJumpDuellObject.values()) {
-                if(cacheType != DatabaseJumpDuellObject.RANK && cacheType != DatabaseJumpDuellObject.UUID) {
-                    Integer cacheValue = getJDCacheValue(uuid, cacheType);
-                    Integer dbValue = getJumpDuell().getDatabaseElement(uuid, cacheType).getAsInt();
+                        getJumpDuell().setDatabaseObject(uuid, cacheType, dbValue+cacheValue);
 
-                    getJumpDuell().setDatabaseObject(uuid, cacheType, dbValue+cacheValue);
-                    if(cacheType == DatabaseJumpDuellObject.POINTS) {
-                        if(p.isOnline()) p.sendMessage("§8\u00BB §7Punkte: §a"+cacheValue);
-                    }
-                    if(cacheType == DatabaseJumpDuellObject.FAILS) {
-                        if(p.isOnline()) p.sendMessage("§8\u00BB §7Fails: §a"+cacheValue);
-                    }
-                    if(cacheType == DatabaseJumpDuellObject.EARNED_COINS) {
-                        if(p.isOnline()) p.sendMessage("§8\u00BB §7Verdiente Coins: §a"+cacheValue);
+                        if(cacheType == DatabaseJumpDuellObject.POINTS) {
+                            if(p.isOnline()) p.sendMessage("§8\u00BB §7Punkte: §a"+cacheValue);
+                        }
+                        if(cacheType == DatabaseJumpDuellObject.FAILS) {
+                            if(p.isOnline()) p.sendMessage("§8\u00BB §7Fails: §a"+cacheValue);
+                        }
+                        if(cacheType == DatabaseJumpDuellObject.EARNED_COINS) {
+                            if(p.isOnline()) p.sendMessage("§8\u00BB §7Verdiente Coins: §a"+cacheValue);
+                        }
                     }
                 }
-            }
-            deleteJDCache(uuid);
-            if(p.isOnline()) p.sendMessage("");
-        }
+                deleteJDCache(uuid);
+                if(p.isOnline()) p.sendMessage("");
+                break;
+            case DEATHRUN:
+                if(!existsDRCache(uuid)) return;
+                if(p.isOnline()) p.sendMessage(prefix+"§eDeine Rundenstatistik:");
+                for(DatabaseDeathRunObject cacheType : DatabaseDeathRunObject.values()) {
+                    if(cacheType != DatabaseDeathRunObject.RANK && cacheType != DatabaseDeathRunObject.UUID) {
+                        Integer cacheValue = getDRCacheValue(uuid, cacheType);
+                        Integer dbValue = getDeathRun().getDatabaseElement(uuid, cacheType).getAsInt();
 
-        if(statsType == StatsType.DEATHRUN) {
-            if(!existsDRCache(uuid)) return;
-            Player p = Bukkit.getPlayer(uuid);
-            if(p.isOnline()) p.sendMessage(prefix+"§eDeine Rundenstatistik:");
-            for(DatabaseDeathRunObject cacheType : DatabaseDeathRunObject.values()) {
-                if(cacheType != DatabaseDeathRunObject.RANK && cacheType != DatabaseDeathRunObject.UUID) {
-                    Integer cacheValue = getDRCacheValue(uuid, cacheType);
-                    Integer dbValue = getDeathRun().getDatabaseElement(uuid, cacheType).getAsInt();
-                    getDeathRun().setDatabaseObject(uuid, cacheType, dbValue+cacheValue);
-                    if(cacheType == DatabaseDeathRunObject.POINTS) {
-                        if(p.isOnline()) p.sendMessage("§8\u00BB §7Punkte: §a"+cacheValue);
-                    }
-                    if(cacheType == DatabaseDeathRunObject.EARNED_COINS) {
-                        if(p.isOnline()) p.sendMessage("§8\u00BB §7Verdiente Coins: §a"+cacheValue);
+                        getDeathRun().setDatabaseObject(uuid, cacheType, dbValue+cacheValue);
+
+                        if(cacheType == DatabaseDeathRunObject.POINTS) {
+                            if(p.isOnline()) p.sendMessage("§8\u00BB §7Punkte: §a"+cacheValue);
+                        }
+                        if(cacheType == DatabaseDeathRunObject.EARNED_COINS) {
+                            if(p.isOnline()) p.sendMessage("§8\u00BB §7Verdiente Coins: §a"+cacheValue);
+                        }
                     }
                 }
-            }
-            deleteJDCache(uuid);
-            if(p.isOnline()) p.sendMessage("");
+                deleteJDCache(uuid);
+                if(p.isOnline()) p.sendMessage("");
+                break;
         }
     }
 

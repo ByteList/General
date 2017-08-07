@@ -21,6 +21,8 @@ public class PlayerDisconnectListener implements Listener {
     public void onDisconnect(PlayerDisconnectEvent e) {
         UUID uuid = e.getPlayer().getUniqueId();
 
+        gameChest.rankCache.remove(uuid);
+
         gameChest.getNick().unnickOnDisconnect(e.getPlayer());
 
         databaseManager.getAsync().getOnlinePlayer(uuid, DatabaseOnlinePlayer::removeOnlinePlayer);

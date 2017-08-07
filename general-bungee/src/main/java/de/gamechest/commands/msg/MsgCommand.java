@@ -55,14 +55,14 @@ public class MsgCommand extends GCCommand {
             String pColor = Rank.getRankById(databasePlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt()).getColor();
             String tColor = Rank.getRankById(tDatabasePlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt()).getColor();
 
-            String message = "";
+            StringBuilder message = new StringBuilder();
 
             for(int i = 1; i < args.length; i++) {
-                message = message+" "+args[i];
+                message.append(" ").append(args[i]);
             }
 
-            pp.sendMessage(gameChest.pr_msg_private +pColor+ pp.getName()+"§7 \u00BB "+tColor+tp.getName()+"§7: §r"+message);
-            tp.sendMessage(gameChest.pr_msg_private +pColor+ pp.getName()+"§7 \u00BB "+tColor+tp.getName()+"§7: §r"+message);
+            pp.sendMessage(gameChest.pr_msg_private +pColor+ pp.getName()+"§7 \u00BB "+tColor+tp.getName()+"§7:§r"+message);
+            tp.sendMessage(gameChest.pr_msg_private +pColor+ pp.getName()+"§7 \u00BB "+tColor+tp.getName()+"§7:§r"+message);
 
             gameChest.TELL_FROM_TO.put(pp, tp);
             gameChest.TELL_FROM_TO.put(tp, pp);

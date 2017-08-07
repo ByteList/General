@@ -5,18 +5,19 @@ import de.gamechest.commands.*;
 import de.gamechest.commands.ban.BanCommand;
 import de.gamechest.commands.ban.KickCommand;
 import de.gamechest.commands.ban.UnbanCommand;
-import de.gamechest.commands.cloud.*;
+import de.gamechest.commands.cloud.GotoCommand;
+import de.gamechest.commands.cloud.JoinCommand;
+import de.gamechest.commands.cloud.ServerCommand;
+import de.gamechest.commands.cloud.StopCommand;
 import de.gamechest.commands.msg.MsgCommand;
 import de.gamechest.commands.msg.RCommand;
-import de.gamechest.commands.NickListCommand;
 import de.gamechest.commands.party.PartyChatCommand;
 import de.gamechest.commands.party.PartyCommand;
 import de.gamechest.commands.rank.PremiumCommand;
 import de.gamechest.commands.rank.RankCommand;
-import de.gamechest.commands.rank.ToggleRankCommand;
+import de.gamechest.commands.report.PlayerReportCommand;
 import de.gamechest.commands.report.bug.BugInfoCommand;
 import de.gamechest.commands.report.bug.BugReportCommand;
-import de.gamechest.commands.report.PlayerReportCommand;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -51,7 +52,6 @@ public class CommandHandler {
 
                 new PremiumCommand(),
                 new RankCommand(),
-                new ToggleRankCommand(),
                 new ActivateCommand(),
 
                 new MsgCommand(),

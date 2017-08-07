@@ -52,7 +52,7 @@ public class Nick {
     public void nick(Player p, String nickname) {
         p.setCustomName(p.getName());
         databaseManager.getDatabaseNick().setDatabaseObject(nickname, DatabaseNickObject.USED, p.getName());
-        databaseManager.getAsync().getOnlinePlayer(p.getUniqueId(), databaseOnlinePlayer-> databaseOnlinePlayer.setDatabaseObject(DatabaseOnlinePlayerObject.NICKNAME, nickname));
+        databaseManager.getAsync().getOnlinePlayer(p.getUniqueId(), databaseOnlinePlayer-> databaseOnlinePlayer.setDatabaseObject(DatabaseOnlinePlayerObject.NICKNAME, nickname), DatabaseOnlinePlayerObject.NICKNAME);
         try {
             packets.nickPlayer(p, nickname);
         } catch (Exception e) {
@@ -66,7 +66,7 @@ public class Nick {
         if(!isNicked(p.getUniqueId()))
             return;
         databaseManager.getDatabaseNick().setDatabaseObject(p.getName(), DatabaseNickObject.USED, false);
-        databaseManager.getAsync().getOnlinePlayer(p.getUniqueId(), databaseOnlinePlayer-> databaseOnlinePlayer.setDatabaseObject(DatabaseOnlinePlayerObject.NICKNAME, null));
+        databaseManager.getAsync().getOnlinePlayer(p.getUniqueId(), databaseOnlinePlayer-> databaseOnlinePlayer.setDatabaseObject(DatabaseOnlinePlayerObject.NICKNAME, null), DatabaseOnlinePlayerObject.NICKNAME);
         try {
             packets.unnickPlayer(p);
         } catch (Exception e) {
@@ -82,7 +82,7 @@ public class Nick {
             databaseManager.getAsync().getOnlinePlayer(p.getUniqueId(), dbOPlayer-> {
                 String nick = dbOPlayer.getDatabaseElement(DatabaseOnlinePlayerObject.NICKNAME).getAsString();
                 databaseManager.getDatabaseNick().setDatabaseObject(nick, DatabaseNickObject.USED, false);
-            });
+            }, DatabaseOnlinePlayerObject.NICKNAME);
         }
     }
 
@@ -176,7 +176,7 @@ public class Nick {
             String signature = document.getString(DatabaseNickObject.SkinObject.SIGNATURE.getName());
 
             gp.getProperties().put(name, new Property(name, value, signature));
-        });
+        }, DatabasePlayerObject.SKIN_TEXTURE);
     }
 
     private double getHealth(Player player) {

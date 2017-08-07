@@ -60,8 +60,8 @@ public class RCommand extends GCCommand {
                 message = message + " " + arg;
             }
 
-            pp.sendMessage(gameChest.pr_msg_private +pColor+ pp.getName()+"§7 \u00BB "+tColor+tp.getName()+"§7: §r"+message);
-            tp.sendMessage(gameChest.pr_msg_private +pColor+ pp.getName()+"§7 \u00BB "+tColor+tp.getName()+"§7: §r"+message);
+            pp.sendMessage(gameChest.pr_msg_private +pColor+ pp.getName()+"§7 \u00BB "+tColor+tp.getName()+"§7:§r"+message);
+            tp.sendMessage(gameChest.pr_msg_private +pColor+ pp.getName()+"§7 \u00BB "+tColor+tp.getName()+"§7:§r"+message);
 
             gameChest.TELL_FROM_TO.put(pp, tp);
             gameChest.TELL_FROM_TO.put(tp, pp);

@@ -57,7 +57,7 @@ public class UnbanCommand extends GCCommand implements TabExecutor {
             }
 
             databaseBan.unBan(uuid);
-            for(ProxiedPlayer player : gameChest.getProxy().getPlayers()) {
+            for(ProxiedPlayer player : gameChest.onlineTeam) {
                 if (gameChest.hasRank(player.getUniqueId(), Rank.MODERATOR)) {
                     player.sendMessage(gameChest.pr_ban + "§a" + sender + "§7 hat §c" + playername + "§7 entbannt");
                 }

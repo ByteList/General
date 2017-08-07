@@ -8,14 +8,15 @@ import java.util.List;
 
 public enum Reason {
 
-    CLIENT("Verbotenene Modifikation", 3, BanUnit.MONTH),
+    CLIENT("Verbotene Modifikation", 3, BanUnit.MONTH),
     TEAMING("Unerlaubtes Teaming", 15, BanUnit.DAY),
     WERBUNG("Werbung", 1, BanUnit.WEEK),
     SKIN("Verbotener Skin", 15, BanUnit.DAY),
     NAME("Verbotener Namensinhalt", 15, BanUnit.DAY),
-    WORTWAHL("Falsche Wortwahl", 2, BanUnit.DAY),
-    TROLLING("Trolling anderer Spieler", 15, BanUnit.DAY),
-    BAN_UMGEHUNG("Umgehung einer Sperre", -1, BanUnit.SECOND);
+    WORTWAHL("Falsche Wortwahl", 2, BanUnit.HOUR),
+    TROLLING("Trolling anderer Spieler", 5, BanUnit.DAY),
+    BAN_UMGEHUNG("Umgehung einer Sperre", -1, BanUnit.SECOND),
+    PERM_CLIENT("Exzessive Nutzung verbotener Modifikationen", -1, BanUnit.SECOND);
 
 
     @Getter

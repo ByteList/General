@@ -20,6 +20,7 @@
         <module>general-spigot</module>
         <module>general-bungee</module>
         <module>bot</module>
+        <module>verify</module>
     </modules>
 
     <dependencies>

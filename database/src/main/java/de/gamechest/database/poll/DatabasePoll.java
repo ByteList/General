@@ -30,12 +30,12 @@ public class DatabasePoll {
         if(existsPoll()) {
             if(isPollOpened())
                 return;
-            BasicDBObject dbObject = new BasicDBObject().append("_poll", "1");
+            BasicDBObject dbObject = new BasicDBObject().append("_poll", "poll");
             databaseManager.getCollection(databaseCollection).deleteOne(dbObject);
         }
 
         Document document = new Document()
-                .append("_poll", "1")
+                .append("_poll", "p")
                 .append(DatabasePollObject.POLL.getName(), poll)
                 .append(DatabasePollObject.OPENED.getName(), false)
                 .append(DatabasePollObject.POSSIBILITIES.getName(), possibilities)
@@ -46,7 +46,7 @@ public class DatabasePoll {
     }
 
     public boolean existsPoll() {
-        FindIterable<Document> find = databaseManager.getCollection(databaseCollection).find(Filters.eq("_poll", "1"));
+        FindIterable<Document> find = databaseManager.getCollection(databaseCollection).find(Filters.eq("_poll", "poll"));
         Document document = find.first();
         return document != null;
     }
@@ -88,12 +88,12 @@ public class DatabasePoll {
         BasicDBObject doc = new BasicDBObject();
         doc.append("$set", new BasicDBObject().append(databasePollObject.getName(), value));
 
-        BasicDBObject basicDBObject = new BasicDBObject().append("_poll", "1");
+        BasicDBObject basicDBObject = new BasicDBObject().append("_poll", "poll");
         databaseManager.getCollection(databaseCollection).updateOne(basicDBObject, doc);
     }
 
     public DatabaseElement getDatabaseElement(DatabasePollObject databasePollObject) {
-        FindIterable<Document> find = databaseManager.getCollection(databaseCollection).find(Filters.eq("_poll", "1"));
+        FindIterable<Document> find = databaseManager.getCollection(databaseCollection).find(Filters.eq("_poll", "poll"));
         Document document = find.first();
 
         if(document == null) return null;

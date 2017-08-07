@@ -60,8 +60,6 @@ public class PlayerinfoCommand extends GCCommand {
                         pp.sendMessage("§8\u00BB §7Letzte IP: §c"+dbPlayer.getDatabaseElement(DatabasePlayerObject.LAST_IP).getAsString());
                         if(gameChest.getNick().isNicked(uuid))
                             pp.sendMessage("§8\u00BB §7Aktuell genickt als: §9" + databaseOnlinePlayer.getDatabaseElement(DatabaseOnlinePlayerObject.NICKNAME).getAsString());
-                        if(databaseOnlinePlayer.getDatabaseElement(DatabaseOnlinePlayerObject.TOGGLED_RANK).getAsBoolean())
-                            pp.sendMessage("§8\u00BB §7Aktuell getoggled!");
                         if(dbPlayer.getDatabaseElement(DatabasePlayerObject.OPERATOR).getAsBoolean())
                             pp.sendMessage("§4\u00BB Achtung: §cAls Operator in der Datenbank festgelegt!");
 

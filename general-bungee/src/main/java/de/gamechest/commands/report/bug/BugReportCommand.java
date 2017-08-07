@@ -185,7 +185,7 @@ public class BugReportCommand extends GCCommand implements TabExecutor {
                             player.sendMessage(gameChest.pr_bug + "§a" + sender.getName() + "§b hat einen Bug reportet! §7(§c" + bugId + "§7)");
                         }
                     }
-                });
+                }, DatabaseOnlinePlayerObject.PREVIOUS_SERVER_ID);
 
                 return;
             }

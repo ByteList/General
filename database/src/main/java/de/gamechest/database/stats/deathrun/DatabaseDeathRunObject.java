@@ -10,11 +10,12 @@ public enum DatabaseDeathRunObject {
     UUID("UUID"),
     RANK("Rank"),
     POINTS("Points"),
-    KILLS("Kills"),
     DEATHS("Deaths"),
     GAMES("Games"),
     WINS("Wins"),
-    EARNED_COINS("Earned-Coins");
+    EARNED_COINS("Earned-Coins"),
+    USED_DOUBLE_JUMPS("Used-Double-Jumps"),
+    USED_ITEMS("Used-Items");
 
     @Getter
     private String name;

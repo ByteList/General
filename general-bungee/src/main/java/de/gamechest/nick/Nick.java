@@ -34,7 +34,8 @@ public class Nick {
         if(isNicked(p.getUniqueId())) {
             gameChest.getDatabaseManager().getAsync().getOnlinePlayer(p.getUniqueId(), dbOPLayer->
                 gameChest.getDatabaseManager().getDatabaseNick().setDatabaseObject(
-                        dbOPLayer.getDatabaseElement(DatabaseOnlinePlayerObject.NICKNAME).getAsString(), DatabaseNickObject.USED, false));
+                        dbOPLayer.getDatabaseElement(DatabaseOnlinePlayerObject.NICKNAME).getAsString(), DatabaseNickObject.USED, false),
+                    DatabaseOnlinePlayerObject.NICKNAME);
         }
     }
 

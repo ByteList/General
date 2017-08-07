@@ -82,7 +82,7 @@ public class ActivateCommand extends GCCommand {
                                     end = months;
                                 }
                                 databasePremiumPlayer.createPlayer(pp.getUniqueId(), end);
-                                gameChest.getDatabaseManager().getAsync().getPlayer(pp.getUniqueId(), dbPlayer-> dbPlayer.setDatabaseObject(DatabasePlayerObject.RANK_ID, 7));
+                                gameChest.getDatabaseManager().getAsync().getPlayer(pp.getUniqueId(), dbPlayer-> dbPlayer.setDatabaseObject(DatabasePlayerObject.RANK_ID, 7), DatabasePlayerObject.RANK_ID);
                             }
 
 

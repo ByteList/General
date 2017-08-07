@@ -33,6 +33,13 @@ public enum DatabasePlayerObject {
         this.name = name;
     }
 
+    public static String[] toStringList(DatabasePlayerObject... rules) {
+        String[] list = new String[rules.length];
+        for (int i = 0; i < rules.length; i++)
+            list[i] = rules[i].getName();
+        return list;
+    }
+
     public enum ActiveShopItems {
 
         HEAD("HEAD"),

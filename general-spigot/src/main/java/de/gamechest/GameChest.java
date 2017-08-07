@@ -12,8 +12,6 @@ import de.gamechest.commands.ServerIdCommand;
 import de.gamechest.database.DatabaseManager;
 import de.gamechest.database.DatabasePlayer;
 import de.gamechest.database.DatabasePlayerObject;
-import de.gamechest.database.onlineplayer.DatabaseOnlinePlayer;
-import de.gamechest.database.onlineplayer.DatabaseOnlinePlayerObject;
 import de.gamechest.database.rank.Rank;
 import de.gamechest.nick.Nick;
 import de.gamechest.reflector.PacketInjector;
@@ -21,6 +19,8 @@ import de.gamechest.stats.Stats;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.HashMap;
+import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
 
@@ -44,6 +44,8 @@ public class GameChest extends JavaPlugin {
         }
         return kb.toString();
     }
+
+    public HashMap<UUID, Rank> rankCache = new HashMap<>();
 
     @Getter
     private static GameChest instance;
@@ -75,9 +77,6 @@ public class GameChest extends JavaPlugin {
         this.nick = new Nick();
         this.coins = new Coins();
 
-//        getServer().getPluginManager().registerEvents(new JoinListener(), this);
-//        getServer().getPluginManager().registerEvents(new QuitListener(), this);
-
         GCPacketClient.start();
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("packet", "RegisterNewClient");
@@ -86,7 +85,6 @@ public class GameChest extends JavaPlugin {
         else
             jsonObject.addProperty("serverId", getServer().getServerName());
         GCPacketClient.sendPacket(jsonObject);
-
 
         getCommand("chatlog").setExecutor(new ChatlogCommand());
         getCommand("opme").setExecutor(new OpmeCommand());
@@ -113,25 +111,51 @@ public class GameChest extends JavaPlugin {
     }
 
     public boolean hasRank(UUID uuid, Rank rank) {
-        DatabasePlayer dbPlayer = new DatabasePlayer(this.databaseManager, uuid);
+        Rank playerRank;
+        if(!rankCache.containsKey(uuid)) {
+            DatabasePlayer dbPlayer = new DatabasePlayer(this.databaseManager, uuid);
+            if(dbPlayer.existsPlayer()) {
+                playerRank = Rank.getRankById(dbPlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt());
+                rankCache.put(uuid, playerRank);
+            } else {
+                return false;
+            }
+        } else {
+            playerRank = rankCache.get(uuid);
+        }
 
-        return dbPlayer.existsPlayer() && dbPlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt() <= rank.getId();
+        return playerRank.getId() <= rank.getId();
     }
 
     public boolean equalsRank(UUID uuid, Rank rank) {
-        DatabasePlayer dbPlayer = new DatabasePlayer(this.databaseManager, uuid);
-
-        return dbPlayer.existsPlayer() && dbPlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt() == rank.getId();
+        Rank playerRank;
+        if(!rankCache.containsKey(uuid)) {
+            DatabasePlayer dbPlayer = new DatabasePlayer(this.databaseManager, uuid);
+            if(dbPlayer.existsPlayer()) {
+                playerRank = Rank.getRankById(dbPlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt());
+                rankCache.put(uuid, playerRank);
+            } else {
+                return false;
+            }
+        } else {
+            playerRank = rankCache.get(uuid);
+        }
+        return Objects.equals(playerRank.getId(), rank.getId());
     }
 
     public Rank getRank(UUID uuid) {
-        DatabasePlayer dbPlayer = new DatabasePlayer(this.databaseManager, uuid);
-        return Rank.getRankById(dbPlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt());
+        if(!rankCache.containsKey(uuid)) {
+            DatabasePlayer dbPlayer = new DatabasePlayer(this.databaseManager, uuid);
+            Rank rank = Rank.getRankById(dbPlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt());
+            rankCache.put(uuid, rank);
+            return rank;
+        } else {
+            return rankCache.get(uuid);
+        }
     }
 
     public boolean isRankToggled(UUID uuid) {
-        DatabaseOnlinePlayer databaseOnlinePlayer = new DatabaseOnlinePlayer(this.databaseManager, uuid);
-        return databaseOnlinePlayer.getDatabaseElement(DatabaseOnlinePlayerObject.TOGGLED_RANK).getAsBoolean();
+        return false;
     }
 
     public boolean isCloudEnabled() {

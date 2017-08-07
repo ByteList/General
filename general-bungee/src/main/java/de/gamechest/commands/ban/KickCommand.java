@@ -40,7 +40,7 @@ public class KickCommand extends GCCommand implements TabExecutor {
 
         if(args.length > 1) {
             String playername = args[0];
-            String onlyStaff = null;
+            String onlyStaff = "";
 
             if(gameChest.getNick().isNameANick(playername)) {
                 onlyStaff = " §7- §eNicked as §9"+playername;
@@ -67,7 +67,7 @@ public class KickCommand extends GCCommand implements TabExecutor {
                     "§cGrund: §e"+reason/*
                     + "\n" + "\n" +
                     "§6Unser Regelwerk findest du unter: §agame-chest.de/regelwerk"*/);
-            for (ProxiedPlayer player : gameChest.getProxy().getPlayers()) {
+            for (ProxiedPlayer player : gameChest.onlineTeam) {
                 if (gameChest.hasRank(player.getUniqueId(), Rank.SUPPORTER)) {
                     player.sendMessage(gameChest.pr_kick + "§a" + sender + "§7 hat §c" + playername + "§7 gekickt");
                     player.sendMessage(gameChest.pr_kick + "§7Grund: §e" + reason + onlyStaff);

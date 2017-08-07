@@ -1,6 +1,7 @@
 package de.gamechest.database;
 
 import de.gamechest.database.onlineplayer.DatabaseOnlinePlayer;
+import de.gamechest.database.onlineplayer.DatabaseOnlinePlayerObject;
 import lombok.Getter;
 
 import java.util.UUID;
@@ -29,14 +30,26 @@ public class AsyncDatabaseManager {
                 callback.run(new DatabasePlayer(databaseManager, uuid)));
     }
 
+    public void getPlayer(UUID uuid, Callback<DatabasePlayer> callback, DatabasePlayerObject... accesses) {
+        this.executor.execute(()->
+                callback.run(new DatabasePlayer(databaseManager, uuid, accesses)));
+    }
+
     public void getPlayerByName(String name, Callback<DatabasePlayer> callback) {
         this.executor.execute(()->
             callback.run(new DatabasePlayer(databaseManager, this.databaseManager.getDatabaseUuidBuffer().getUUID(name))));
     }
 
-    public void getOnlinePlayer(UUID uuid, Callback<DatabaseOnlinePlayer> callback) {
+    public void getPlayerByName(String name, Callback<DatabasePlayer> callback, DatabasePlayerObject... accesses) {
         this.executor.execute(()->
-            getPlayer(uuid, dbPlayer->
-                    callback.run(new DatabaseOnlinePlayer(databaseManager, uuid.toString(), dbPlayer.getDatabaseElement(DatabasePlayerObject.LAST_NAME).getAsString()))));
+                callback.run(new DatabasePlayer(databaseManager, this.databaseManager.getDatabaseUuidBuffer().getUUID(name), accesses)));
+    }
+
+    public void getOnlinePlayer(UUID uuid, Callback<DatabaseOnlinePlayer> callback) {
+        this.executor.execute(()-> callback.run(new DatabaseOnlinePlayer(databaseManager, uuid.toString(), null)));
+    }
+
+    public void getOnlinePlayer(UUID uuid, Callback<DatabaseOnlinePlayer> callback, DatabaseOnlinePlayerObject... accesses) {
+        this.executor.execute(()-> callback.run(new DatabaseOnlinePlayer(databaseManager, uuid.toString(), null, accesses)));
     }
 }

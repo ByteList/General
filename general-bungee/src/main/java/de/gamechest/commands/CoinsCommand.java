@@ -48,7 +48,7 @@ public class CoinsCommand extends GCCommand {
                         sender.sendMessage(gameChest.prefix+"§eCoins von "+
                                 Rank.getRankById(dbPlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt()).getColor()+name+"§e: §7"
                                 + dbPlayer.getDatabaseElement(DatabasePlayerObject.COINS).getAsInt());
-                    });
+                    }, DatabasePlayerObject.RANK_ID, DatabasePlayerObject.COINS);
 
                     return;
                 }
@@ -67,7 +67,7 @@ public class CoinsCommand extends GCCommand {
                         sender.sendMessage("§8\u00BB §eCoins von "+
                                 Rank.getRankById(dbPlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt()).getColor()+name+"§e: §7"
                                 + dbPlayer.getDatabaseElement(DatabasePlayerObject.COINS).getAsInt());
-                    });
+                    }, DatabasePlayerObject.RANK_ID, DatabasePlayerObject.COINS);
 
                     return;
                 }
@@ -97,7 +97,7 @@ public class CoinsCommand extends GCCommand {
                         sender.sendMessage("§8\u00BB §eCoins von "+
                                 Rank.getRankById(dbPlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt()).getColor()+name+"§e: §7"
                                 + dbPlayer.getDatabaseElement(DatabasePlayerObject.COINS).getAsInt());
-                    });
+                    }, DatabasePlayerObject.RANK_ID, DatabasePlayerObject.COINS);
                     return;
                 }
                 if(args[0].equalsIgnoreCase("add")) {
@@ -126,7 +126,7 @@ public class CoinsCommand extends GCCommand {
                         sender.sendMessage("§8\u00BB §eCoins von "+
                                 Rank.getRankById(dbPlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt()).getColor()+name+"§e: §7"
                                 + dbPlayer.getDatabaseElement(DatabasePlayerObject.COINS).getAsInt());
-                    });
+                    }, DatabasePlayerObject.RANK_ID, DatabasePlayerObject.COINS);
                     return;
                 }
                 if(args[0].equalsIgnoreCase("rmv")) {
@@ -154,7 +154,7 @@ public class CoinsCommand extends GCCommand {
                         sender.sendMessage("§8\u00BB §eCoins von "+
                                 Rank.getRankById(dbPlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt()).getColor()+name+"§e: §7"
                                 + dbPlayer.getDatabaseElement(DatabasePlayerObject.COINS).getAsInt());
-                    });
+                    }, DatabasePlayerObject.RANK_ID, DatabasePlayerObject.COINS);
 
                     return;
                 }

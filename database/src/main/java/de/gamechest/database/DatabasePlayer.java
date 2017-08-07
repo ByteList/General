@@ -1,8 +1,10 @@
 package de.gamechest.database;
 
 import com.mongodb.BasicDBObject;
+import com.mongodb.CursorType;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Projections;
 import de.gamechest.database.rank.Rank;
 import org.bson.Document;
 
@@ -31,6 +33,18 @@ public class DatabasePlayer {
             this.find = databaseManager.getCollection(databaseCollection).find(Filters.eq(DatabasePlayerObject.UUID.getName(), uuid.toString()));
         else
             this.find = null;
+    }
+
+    public DatabasePlayer(DatabaseManager databaseManager, UUID uuid, DatabasePlayerObject... accesses) {
+        this.databaseManager = databaseManager;
+        this.uuid = uuid;
+        this.exists = -1;
+        if(uuid != null) {
+            this.find = databaseManager.getCollection(databaseCollection).find(Filters.eq(DatabasePlayerObject.UUID.getName(), uuid.toString()));
+            this.find.cursorType(CursorType.NonTailable);
+            this.find.projection(Projections.include(DatabasePlayerObject.toStringList(accesses)));
+        }
+        else this.find = null;
     }
 
     public void setDatabaseObject(DatabasePlayerObject databasePlayerObject, Object value) {
@@ -88,11 +102,11 @@ public class DatabasePlayer {
         shopItems.put(DatabasePlayerObject.ActiveShopItems.GADGET.getName(), 0);
 
         Document configurations = new Document(); //302.5D,21.0D,2028.5D,2F,65F
-        configurations.put(DatabasePlayerObject.Configurations.LOBBY_POS_X.getName(), 302.5);
-        configurations.put(DatabasePlayerObject.Configurations.LOBBY_POS_Y.getName(), 21.0);
-        configurations.put(DatabasePlayerObject.Configurations.LOBBY_POS_Z.getName(), 2028.5);
-        configurations.put(DatabasePlayerObject.Configurations.LOBBY_PITCH.getName(), 2.0);
-        configurations.put(DatabasePlayerObject.Configurations.LOBBY_YAW.getName(), 65.0);
+        configurations.put(DatabasePlayerObject.Configurations.LOBBY_POS_X.getName(), "302.5");
+        configurations.put(DatabasePlayerObject.Configurations.LOBBY_POS_Y.getName(), "21.0");
+        configurations.put(DatabasePlayerObject.Configurations.LOBBY_POS_Z.getName(), "2028.5");
+        configurations.put(DatabasePlayerObject.Configurations.LOBBY_PITCH.getName(), "2.0");
+        configurations.put(DatabasePlayerObject.Configurations.LOBBY_YAW.getName(), "65.0");
         configurations.put(DatabasePlayerObject.Configurations.LOBBY_CHAT.getName(), 0);
         configurations.put(DatabasePlayerObject.Configurations.LOBBY_VISIBILITY.getName(), 0);
         configurations.put(DatabasePlayerObject.Configurations.MSG.getName(), 0);

@@ -12,6 +12,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
  */
 public class QuitListener {
 
+    private static final GameChest gameChest = GameChest.getInstance();
+
     public static void callLastOnQuit(PlayerQuitEvent e) {
         OLD_callFirstOnQuit(e);
     }
@@ -25,12 +27,12 @@ public class QuitListener {
      */
     @Deprecated
     public static void OLD_callFirstOnQuit(PlayerQuitEvent e) {
+        gameChest.rankCache.remove(e.getPlayer().getUniqueId());
 
         if(Bukkit.getServerName().contains("nonBungee")) {
             delete(e.getPlayer());
         }
 
-        GameChest gameChest = GameChest.getInstance();
         gameChest.getPacketInjector().removePlayer(e.getPlayer());
     }
 
