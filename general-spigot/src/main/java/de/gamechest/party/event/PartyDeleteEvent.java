@@ -18,8 +18,8 @@ public class PartyDeleteEvent extends Event {
     @Getter
     private Party party;
 
-    public PartyDeleteEvent(String partyId) {
-        this.party = new Party(partyId);
+    public PartyDeleteEvent(Party party) {
+        this.party = party;
     }
 
     @Override

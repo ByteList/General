@@ -148,7 +148,6 @@ public class Party {
                 gameChest.getPacketHandler().sendPacket(lobby, jsonObject);
             }
         }
-        gameChest.getDatabaseManager().getDatabaseParty().deleteParty(this.partyId);
         this.partyId = null;
     }
 }

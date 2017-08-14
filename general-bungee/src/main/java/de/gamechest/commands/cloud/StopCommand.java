@@ -24,6 +24,7 @@ public class StopCommand extends GCCommand {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if (!gameChest.isCloudEnabled()) return;
+        ByteCloudMaster byteCloudMaster = ByteCloudMaster.getInstance();
         if(sender instanceof ProxiedPlayer) {
             ProxiedPlayer pp = (ProxiedPlayer) sender;
 
@@ -33,11 +34,19 @@ public class StopCommand extends GCCommand {
             }
 
             ServerInfo currentServer = pp.getServer().getInfo();
-            ServerInfo randomLobby = GameChest.getInstance().getProxy().getServerInfo(ByteCloudMaster.getInstance().getCloudHandler().getRandomLobbyId(currentServer.getName()));
+            String rndLobby = byteCloudMaster.getCloudHandler().getRandomLobbyId(currentServer.getName());
+            if(rndLobby == null) {
+                sender.sendMessage(byteCloudMaster.prefix+"§cKonnte keinen Lobby-Server finden! Spieler werden gekickt.");
+                for(ProxiedPlayer player : currentServer.getPlayers()) {
+                    player.disconnect(byteCloudMaster.prefix+"§cDein Server wurde gestoppt.\n§cLeider konnte kein Lobby-Server erreicht werden.");
+                }
+            } else {
+                ServerInfo randomLobby = gameChest.getProxy().getServerInfo(rndLobby);
 
-            for(ProxiedPlayer player : currentServer.getPlayers()) {
-                player.sendMessage("§6Verbinde zur Lobby...");
-                player.connect(randomLobby);
+                for(ProxiedPlayer player : currentServer.getPlayers()) {
+                    player.sendMessage("§6Verbinde zur Lobby...");
+                    player.connect(randomLobby);
+                }
             }
 
             new Thread("Cloud-Stop-"+currentServer.getName()) {
@@ -52,7 +61,7 @@ public class StopCommand extends GCCommand {
                         e.printStackTrace();
                     }
                     PacketInStopServer packetInStopServer = new PacketInStopServer(currentServer.getName(), sender.getName());
-                    ByteCloudMaster.getInstance().getBungeeClient().sendPacket(packetInStopServer);
+                    byteCloudMaster.getBungeeClient().sendPacket(packetInStopServer);
                 }
             }.start();
         }

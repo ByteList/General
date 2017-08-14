@@ -2,6 +2,8 @@ package de.gamechest.packet;
 
 import com.google.gson.JsonObject;
 import com.voxelboxstudios.resilent.GCJsonClientListener;
+import de.gamechest.GameChest;
+import de.gamechest.party.Party;
 import de.gamechest.party.event.PartyDeleteEvent;
 import de.gamechest.party.event.PartyJoinEvent;
 import de.gamechest.party.event.PartyLeaveEvent;
@@ -42,7 +44,9 @@ public class PacketListener extends GCJsonClientListener {
 
             if(packet.equals("PartyDelete")) {
                 String partyId = jsonObject.get("partyId").getAsString();
-                PartyDeleteEvent partyDeleteEvent = new PartyDeleteEvent(partyId);
+                Party party = new Party(partyId);
+                GameChest.getInstance().getDatabaseManager().getDatabaseParty().deleteParty(partyId);
+                PartyDeleteEvent partyDeleteEvent = new PartyDeleteEvent(party);
 
                 Bukkit.getPluginManager().callEvent(partyDeleteEvent);
             }
