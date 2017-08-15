@@ -2,6 +2,7 @@ package de.gamechest.verify.commands;
 
 import com.github.theholywaffle.teamspeak3.TS3ApiAsync;
 import com.github.theholywaffle.teamspeak3.api.wrapper.ClientInfo;
+import com.github.theholywaffle.teamspeak3.api.wrapper.DatabaseClientInfo;
 import de.gamechest.GameChest;
 import de.gamechest.database.DatabasePlayerObject;
 import de.gamechest.verify.Verify;
@@ -36,16 +37,18 @@ public class UnverifyCommand implements CommandExecutor {
 
                 dbPlayer.setDatabaseObject(DatabasePlayerObject.TS_UID, null);
                 try {
-                    ClientInfo clientInfo = verify.getTeamspeakBot().getApiAsync().getClientByUId(uId).get();
                     TS3ApiAsync apiAsync = verify.getTeamspeakBot().getApiAsync();
-                    apiAsync.removeClientFromServerGroup(verify.getTeamspeakBot().verifyServerGroupId, clientInfo.getDatabaseId());
-                    if (clientInfo.isInServerGroup(verify.getTeamspeakBot().noMessageServerGroupId))
-                        apiAsync.removeClientFromServerGroup(verify.getTeamspeakBot().noMessageServerGroupId, clientInfo.getDatabaseId());
-                    if (clientInfo.isInServerGroup(verify.getTeamspeakBot().noPokeServerGroupId))
-                        apiAsync.removeClientFromServerGroup(verify.getTeamspeakBot().noPokeServerGroupId, clientInfo.getDatabaseId());
+                    DatabaseClientInfo databaseClientInfo = apiAsync.getDatabaseClientByUId(uId).get();
 
-                    apiAsync.sendPrivateMessage(clientInfo.getId(), "Die Verbindung zu deinem Minecraft-Account wurde aufgelöst.");
+                    apiAsync.removeClientFromServerGroup(verify.getTeamspeakBot().verifyServerGroupId, databaseClientInfo.getDatabaseId());
+                    apiAsync.removeClientFromServerGroup(verify.getTeamspeakBot().noMessageServerGroupId, databaseClientInfo.getDatabaseId());
+                    apiAsync.removeClientFromServerGroup(verify.getTeamspeakBot().noPokeServerGroupId, databaseClientInfo.getDatabaseId());
+
                     player.sendMessage(verify.prefix + "§aDie Verbindung wurde erfolgreich getrennt.");
+                    ClientInfo clientInfo = verify.getTeamspeakBot().getApiAsync().getClientByUId(uId).get();
+                    if(clientInfo != null) {
+                        apiAsync.sendPrivateMessage(clientInfo.getId(), "Die Verbindung zu deinem Minecraft-Account wurde aufgelöst.");
+                    }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     player.sendMessage(verify.prefix + "§cError: " + e.getMessage());
