@@ -45,7 +45,7 @@ public class UnverifyCommand implements CommandExecutor {
                         apiAsync.removeClientFromServerGroup(verify.getTeamspeakBot().noPokeServerGroupId, clientInfo.getDatabaseId());
 
                     apiAsync.sendPrivateMessage(clientInfo.getId(), "Die Verbindung zu deinem Minecraft-Account wurde aufgelöst.");
-                    player.sendMessage(verify.prefix + "§aDie Verbidung wurde erfolgreich getrennt.");
+                    player.sendMessage(verify.prefix + "§aDie Verbindung wurde erfolgreich getrennt.");
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     player.sendMessage(verify.prefix + "§cError: " + e.getMessage());
