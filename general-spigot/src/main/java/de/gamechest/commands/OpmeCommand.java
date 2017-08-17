@@ -14,20 +14,18 @@ public class OpmeCommand implements CommandExecutor {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		if(cmd.getName().equalsIgnoreCase("opme")) {
-			if(!(sender instanceof Player)) return true;
-			
-			Player p = (Player) sender;
+		if(!(sender instanceof Player)) return true;
 
-			if(!new DatabasePlayer(gameChest.getDatabaseManager(), p.getUniqueId()).getDatabaseElement(DatabasePlayerObject.OPERATOR).getAsBoolean()) {
+		Player p = (Player) sender;
+
+		gameChest.getDatabaseManager().getAsync().getPlayer(p.getUniqueId(), dbPlayer-> {
+			if(!dbPlayer.getDatabaseElement(DatabasePlayerObject.OPERATOR).getAsBoolean()) {
 				p.sendMessage(gameChest.prefix + "§cDu hast keine Berechtigung für diesen Befehl!");
-				return true;
+				return;
 			}
-
 			p.setOp(true);
 			p.sendMessage(gameChest.prefix + "§7§oDu bist nun Operator!");
-			return true;
-		}
-		return false;
+        }, DatabasePlayerObject.OPERATOR);
+		return true;
 	}
 }

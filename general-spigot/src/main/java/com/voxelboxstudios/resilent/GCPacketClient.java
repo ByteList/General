@@ -2,6 +2,7 @@ package com.voxelboxstudios.resilent;
 
 import com.google.gson.JsonObject;
 import de.gamechest.packet.PacketListener;
+import org.bukkit.Bukkit;
 
 import java.io.IOException;
 
@@ -18,7 +19,14 @@ public class GCPacketClient {
         try {
             client.connect(address, port);
         } catch (IOException e) {
-            e.printStackTrace();
+            if(!Bukkit.getServerName().contains("nonBungee")) {
+                System.err.println("Can't connect to bungee!\n" +
+                        "If you haven't a bungee online you can add \"nonBungee\" to your server-name in " +
+                        "your server.properties file.\n" +
+                        "If you can't find server-name in your server.properties add the following line:\n\n"+
+                        "server-name=nonBungee-server\n\n"+
+                        "You wouldn't get this exception with this in your server-name.\n");
+            }
         }
 
     }
@@ -30,8 +38,10 @@ public class GCPacketClient {
     public static void sendPacket(JsonObject paramJsonObject) {
         try {
             client.sendPacket(paramJsonObject);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            if(!Bukkit.getServerName().contains("nonBungee")) {
+                System.err.println("Error while sending packet to bungee: "+e.getMessage());
+            }
         }
     }
 
