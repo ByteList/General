@@ -17,6 +17,7 @@ import de.gamechest.nick.Nick;
 import de.gamechest.reflector.PacketInjector;
 import de.gamechest.stats.Stats;
 import lombok.Getter;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
@@ -162,4 +163,12 @@ public class GameChest extends JavaPlugin {
         return getServer().getPluginManager().isPluginEnabled("ByteCloudAPI");
     }
 
+
+    public String getDisplayname(Player player) {
+        Rank rank = getRank(player.getUniqueId());
+        if(this.nick.isNicked(player.getUniqueId()))
+            rank = Rank.SPIELER;
+
+        return rank.getColor() + player.getName();
+    }
 }
