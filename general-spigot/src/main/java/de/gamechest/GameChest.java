@@ -5,10 +5,7 @@ import com.voxelboxstudios.resilent.GCPacketClient;
 import de.bytelist.bytecloud.core.ByteCloudCore;
 import de.gamechest.chatlog.ChatLog;
 import de.gamechest.coins.Coins;
-import de.gamechest.commands.ChatlogCommand;
-import de.gamechest.commands.NickCommands;
-import de.gamechest.commands.OpmeCommand;
-import de.gamechest.commands.ServerIdCommand;
+import de.gamechest.commands.*;
 import de.gamechest.database.DatabaseManager;
 import de.gamechest.database.DatabasePlayer;
 import de.gamechest.database.DatabasePlayerObject;
@@ -17,6 +14,7 @@ import de.gamechest.nick.Nick;
 import de.gamechest.reflector.PacketInjector;
 import de.gamechest.stats.Stats;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -78,19 +76,22 @@ public class GameChest extends JavaPlugin {
         this.nick = new Nick();
         this.coins = new Coins();
 
-        GCPacketClient.start();
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("packet", "RegisterNewClient");
-        if(isCloudEnabled())
-            jsonObject.addProperty("serverId", ByteCloudCore.getInstance().getCloudHandler().getServerId());
-        else
-            jsonObject.addProperty("serverId", getServer().getServerName());
-        GCPacketClient.sendPacket(jsonObject);
+        if(!Bukkit.getServerName().contains("nonBungee")) {
+            GCPacketClient.start();
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("packet", "RegisterNewClient");
+            if(isCloudEnabled())
+                jsonObject.addProperty("serverId", ByteCloudCore.getInstance().getCloudHandler().getServerId());
+            else
+                jsonObject.addProperty("serverId", getServer().getServerName());
+            GCPacketClient.sendPacket(jsonObject);
+        }
 
         getCommand("chatlog").setExecutor(new ChatlogCommand());
         getCommand("opme").setExecutor(new OpmeCommand());
         getCommand("serverid").setExecutor(new ServerIdCommand());
         getCommand("nick").setExecutor(new NickCommands());
+        getCommand("fakeplugins").setExecutor(new FakePluginCommand());
 
         getServer().getConsoleSender().sendMessage(prefix+"§aEnabled!");
     }
