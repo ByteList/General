@@ -3,12 +3,12 @@ package com.voxelboxstudios.resilent;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
+import com.voxelboxstudios.resilent.server.JsonServerListener;
 
 import java.io.IOException;
 import java.util.Iterator;
 
-public class GCResilentPatronRunnable
-        implements Runnable {
+public class GCResilentPatronRunnable implements Runnable {
     private GCPatron GCPatron;
 
     public GCResilentPatronRunnable(GCPatron paramGCPatron) {
@@ -34,10 +34,8 @@ public class GCResilentPatronRunnable
                     continue;
                 }
                 if (localJsonObject != null) {
-                    Iterator localIterator = this.GCPatron.getServer().getListeners().iterator();
-                    while (localIterator.hasNext()) {
-                        GCJsonServerListener localGCJsonServerListener = (GCJsonServerListener) localIterator.next();
-                        localGCJsonServerListener.jsonReceived(this.GCPatron, localJsonObject);
+                    for (GCJsonServerListener localJsonServerListener : this.GCPatron.getServer().getListeners()) {
+                        localJsonServerListener.jsonReceived(this.GCPatron, localJsonObject);
                     }
                 }
             } else {

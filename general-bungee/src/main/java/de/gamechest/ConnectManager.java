@@ -20,8 +20,6 @@ public class ConnectManager {
     private final File file = new File(dir, "config.yml");
     private Configuration cfg;
 
-
-
     public ConnectManager() {
         try {
             if(!dir.exists()) dir.mkdirs();

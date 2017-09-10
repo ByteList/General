@@ -2,7 +2,6 @@ package com.voxelboxstudios.resilent;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Iterator;
 
 public class GCResilentServerRunnable
         implements Runnable {
@@ -20,11 +19,9 @@ public class GCResilentServerRunnable
             } catch (IOException localIOException) {
                 continue;
             }
-            GCPatron localGCPatron = new GCPatron(this.server, localSocket);
-            Iterator localIterator = this.server.getListeners().iterator();
-            while (localIterator.hasNext()) {
-                GCJsonServerListener localGCJsonServerListener = (GCJsonServerListener) localIterator.next();
-                localGCJsonServerListener.connected(localGCPatron);
+            GCPatron localPatron = new GCPatron(this.server, localSocket);
+            for (GCJsonServerListener jsonServerListener : this.server.getListeners()) {
+                jsonServerListener.connected(localPatron);
             }
         }
     }

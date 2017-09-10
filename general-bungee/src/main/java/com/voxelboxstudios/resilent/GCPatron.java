@@ -1,6 +1,7 @@
 package com.voxelboxstudios.resilent;
 
 import com.google.gson.JsonObject;
+import com.voxelboxstudios.resilent.server.JsonServerListener;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -62,11 +63,17 @@ public class GCPatron {
                 e.printStackTrace();
             }
             this.socket = null;
-            Iterator localIterator = this.server.getListeners().iterator();
-            while (localIterator.hasNext()) {
-                GCJsonServerListener localGCJsonServerListener = (GCJsonServerListener) localIterator.next();
-                localGCJsonServerListener.disconnected(this);
+            for (GCJsonServerListener localJsonServerListener : this.server.getListeners()) {
+                localJsonServerListener.disconnected(this);
             }
+        }
+        try {
+            this.writer.close();
+            this.reader.close();
+            this.writer = null;
+            this.reader = null;
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         if (this.thread != null) {
             this.thread.interrupt();

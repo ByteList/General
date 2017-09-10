@@ -21,29 +21,29 @@ public class PacketListenerGC extends GCJsonServerListener {
 
     @Override
     public void jsonReceived(GCPatron paramGCPatron, JsonObject jsonObject) {
-        if(jsonObject.has("packet") && jsonObject.has("action")) {
-            String packet = jsonObject.get("packet").getAsString();
-            String action = jsonObject.get("action").getAsString();
-
-            if(packet.equals("ANTI-CHEAT")) {
-                if(action.equals("BAN")) {
-                    String uuidStr = jsonObject.get("uuid").getAsString();
-                    String sId = jsonObject.get("serverId").getAsString();
-                    ProxiedPlayer pp = gameChest.getProxy().getPlayer(UUID.fromString(uuidStr));
-
-                    String sender = jsonObject.get("sender").getAsString();
-                    String[] reason = jsonObject.get("reason").getAsString().split("="); // AutoClicker=CPS: 23 VL: 2
-
-                    if(reason[0].equals("AutoClicker") || reason[0].equals("KillAura") || reason[0].equals("FastBuild")) {
-                        databaseBan.ban(pp.getUniqueId(), Reason.CLIENT, reason[0]+" - "+sId, null, sender);
-                        pp.disconnect(gameChest.getBanMessage(pp.getUniqueId()));
-                        for (ProxiedPlayer player : gameChest.getProxy().getPlayers()) {
-                            if (gameChest.hasRank(player.getUniqueId(), Rank.SUPPORTER)) {
-                                player.sendMessage(gameChest.pr_ban + "§a" + sender + "§7 hat §c" + pp.getName() + "§7 gebannt");
-                                player.sendMessage(gameChest.pr_ban + "§7Grund: §e" + Reason.CLIENT.getReason() + " (" + reason[0]+" - "+sId + ")"+"§7 - §e"+reason[1]);
-                            }
-                        }
-                    }
+//        if(jsonObject.has("packet") && jsonObject.has("action")) {
+//            String packet = jsonObject.get("packet").getAsString();
+//            String action = jsonObject.get("action").getAsString();
+//
+//            if(packet.equals("ANTI-CHEAT")) {
+//                if(action.equals("BAN")) {
+//                    String uuidStr = jsonObject.get("uuid").getAsString();
+//                    String sId = jsonObject.get("serverId").getAsString();
+//                    ProxiedPlayer pp = gameChest.getProxy().getPlayer(UUID.fromString(uuidStr));
+//
+//                    String sender = jsonObject.get("sender").getAsString();
+//                    String[] reason = jsonObject.get("reason").getAsString().split("="); // AutoClicker=CPS: 23 VL: 2
+//
+//                    if(reason[0].equals("AutoClicker") || reason[0].equals("KillAura") || reason[0].equals("FastBuild")) {
+//                        databaseBan.ban(pp.getUniqueId(), Reason.CLIENT, reason[0]+" - "+sId, null, sender);
+//                        pp.disconnect(gameChest.getBanMessage(pp.getUniqueId()));
+//                        for (ProxiedPlayer player : gameChest.getProxy().getPlayers()) {
+//                            if (gameChest.hasRank(player.getUniqueId(), Rank.SUPPORTER)) {
+//                                player.sendMessage(gameChest.pr_ban + "§a" + sender + "§7 hat §c" + pp.getName() + "§7 gebannt");
+//                                player.sendMessage(gameChest.pr_ban + "§7Grund: §e" + Reason.CLIENT.getReason() + " (" + reason[0]+" - "+sId + ")"+"§7 - §e"+reason[1]);
+//                            }
+//                        }
+//                    }
 //        JsonObject jsonObject1 = new JsonObject();
 //        jsonObject1.addProperty("packet", "ANTI-CHEAT");
 //        jsonObject1.addProperty("action", "BAN");
@@ -51,10 +51,10 @@ public class PacketListenerGC extends GCJsonServerListener {
 //        jsonObject1.addProperty("serverId", "");
 //        jsonObject1.addProperty("sender", "");
 //        jsonObject1.addProperty("reason", "=");// AutoClicker=CPS: 23 VL: 2
-
-                }
-            }
-        }
+//
+//                }
+//            }
+//        }
 
         if(jsonObject.has("packet")) {
             String packet = jsonObject.get("packet").getAsString();
