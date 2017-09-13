@@ -26,21 +26,23 @@ public class DatabaseBugreport {
         this.databaseManager = databaseManager;
     }
 
-    public void createBugreport(String bugId, BugReason bugReason, String serverId, String extra, UUID uuid,  String previousServerId) {
-        if(existsBugreport(bugId)) return;
-        SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+    public void createBugreport(String bugId, BugReason bugReason, String serverId, String extra, UUID uuid, String previousServerId) {
+        if (existsBugreport(bugId)) return;
+        this.databaseManager.getAsync().getExecutor().execute(() -> {
+            SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm");
 
-        Document document = new Document()
-                .append(DatabaseBugreportObject.BUG_ID.getName(), bugId)
-                .append(DatabaseBugreportObject.REASON.getName(), bugReason.toString())
-                .append(DatabaseBugreportObject.SERVER_ID.getName(), serverId)
-                .append(DatabaseBugreportObject.EXTRA_MESSAGE.getName(), extra)
-                .append(DatabaseBugreportObject.STATE.getName(), BugState.WAITING.toString())
-                .append(DatabaseBugreportObject.CREATED_BY.getName(), uuid.toString())
-                .append(DatabaseBugreportObject.CREATE_DATE.getName(), formatter.format(Calendar.getInstance().getTime()))
-                .append(DatabaseBugreportObject.PREVIOUS_SERVER_ID.getName(), previousServerId);
+            Document document = new Document()
+                    .append(DatabaseBugreportObject.BUG_ID.getName(), bugId)
+                    .append(DatabaseBugreportObject.REASON.getName(), bugReason.toString())
+                    .append(DatabaseBugreportObject.SERVER_ID.getName(), serverId)
+                    .append(DatabaseBugreportObject.EXTRA_MESSAGE.getName(), extra)
+                    .append(DatabaseBugreportObject.STATE.getName(), BugState.WAITING.toString())
+                    .append(DatabaseBugreportObject.CREATED_BY.getName(), uuid.toString())
+                    .append(DatabaseBugreportObject.CREATE_DATE.getName(), formatter.format(Calendar.getInstance().getTime()))
+                    .append(DatabaseBugreportObject.PREVIOUS_SERVER_ID.getName(), previousServerId);
 
-        databaseManager.getCollection(databaseCollection).insertOne(document);
+            databaseManager.getCollection(databaseCollection).insertOne(document);
+        });
     }
 
     public boolean existsBugreport(String bugId) {
@@ -50,18 +52,20 @@ public class DatabaseBugreport {
     }
 
     public void setDatabaseObject(String bugId, DatabaseBugreportObject databaseBugreportObject, Object value) {
-        BasicDBObject doc = new BasicDBObject();
-        doc.append("$set", new BasicDBObject().append(databaseBugreportObject.getName(), value));
+        this.databaseManager.getAsync().getExecutor().execute(() -> {
+            BasicDBObject doc = new BasicDBObject();
+            doc.append("$set", new BasicDBObject().append(databaseBugreportObject.getName(), value));
 
-        BasicDBObject basicDBObject = new BasicDBObject().append(DatabaseBugreportObject.BUG_ID.getName(), bugId);
-        databaseManager.getCollection(databaseCollection).updateOne(basicDBObject, doc);
+            BasicDBObject basicDBObject = new BasicDBObject().append(DatabaseBugreportObject.BUG_ID.getName(), bugId);
+            databaseManager.getCollection(databaseCollection).updateOne(basicDBObject, doc);
+        });
     }
 
     public DatabaseElement getDatabaseElement(String bugId, DatabaseBugreportObject databaseBugreportObject) {
         FindIterable<Document> find = databaseManager.getCollection(databaseCollection).find(Filters.eq(DatabaseBugreportObject.BUG_ID.getName(), bugId));
         Document document = find.first();
 
-        if(document == null) return null;
+        if (document == null) return null;
 
         return new DatabaseElement(document.get(databaseBugreportObject.getName()));
     }
@@ -69,7 +73,7 @@ public class DatabaseBugreport {
     public List<String> getBugreportIds() {
         FindIterable<Document> find = databaseManager.getCollection(databaseCollection).find();
         List<String> list = new ArrayList<>();
-        for(Document document : find) {
+        for (Document document : find) {
             list.add(document.getString(DatabaseBugreportObject.BUG_ID.getName()));
         }
         return list;
@@ -78,7 +82,7 @@ public class DatabaseBugreport {
     public List<String> getWaitingReports() {
         FindIterable<Document> find = databaseManager.getCollection(databaseCollection).find(Filters.eq(DatabaseBugreportObject.STATE.getName(), BugState.WAITING.toString()));
         List<String> list = new ArrayList<>();
-        for(Document document : find) {
+        for (Document document : find) {
             list.add(document.getString(DatabaseBugreportObject.BUG_ID.getName()));
         }
         return list;

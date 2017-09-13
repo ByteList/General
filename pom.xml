@@ -20,6 +20,7 @@
         <module>general-spigot</module>
         <module>general-bungee</module>
         <module>verify</module>
+        <module>updater</module>
     </modules>
 
     <dependencies>

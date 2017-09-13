@@ -28,26 +28,30 @@ public class DatabaseUuidBuffer {
     }
 
     public void createPlayer(String name, UUID uuid) {
-        if(existsPlayer(name)) removePlayer(name);
+        if (existsPlayer(name)) removePlayer(name);
+        this.databaseManager.getAsync().getExecutor().execute(() -> {
 
-        Document document = new Document()
-                .append(DatabaseUuidBufferObject.NAME.getName(), name)
-                .append(DatabaseUuidBufferObject.UUID.getName(), uuid.toString());
+            Document document = new Document()
+                    .append(DatabaseUuidBufferObject.NAME.getName(), name)
+                    .append(DatabaseUuidBufferObject.UUID.getName(), uuid.toString());
 
-        databaseManager.getCollection(databaseCollection).insertOne(document);
+            databaseManager.getCollection(databaseCollection).insertOne(document);
+        });
     }
 
     public void removePlayer(String name) {
-        BasicDBObject dbObject = new BasicDBObject()
-                .append(DatabaseUuidBufferObject.NAME.getName(), name);
-        databaseManager.getCollection(databaseCollection).deleteOne(dbObject);
+        this.databaseManager.getAsync().getExecutor().execute(() -> {
+            BasicDBObject dbObject = new BasicDBObject()
+                    .append(DatabaseUuidBufferObject.NAME.getName(), name);
+            databaseManager.getCollection(databaseCollection).deleteOne(dbObject);
+        });
     }
 
     public UUID getUUID(String name) {
         FindIterable<Document> find = databaseManager.getCollection(databaseCollection).find(Filters.eq(DatabaseUuidBufferObject.NAME.getName(), name));
         Document document = find.first();
 
-        if(document == null) return null;
+        if (document == null) return null;
 
         return UUID.fromString(document.get(DatabaseUuidBufferObject.UUID.getName()).toString());
     }

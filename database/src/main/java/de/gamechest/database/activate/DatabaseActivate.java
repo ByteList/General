@@ -23,15 +23,17 @@ public class DatabaseActivate {
     }
 
     public void createCode(String code, ActivatePurpose purpose, Object value) {
-        if(existsCode(code)) return;
+        if (existsCode(code)) return;
+        this.databaseManager.getAsync().getExecutor().execute(() -> {
 
-        Document document = new Document()
-                .append(DatabaseActivateObject.CODE.getName(), code)
-                .append(DatabaseActivateObject.PURPOSE.getName(), purpose.toString())
-                .append(DatabaseActivateObject.VALUE.getName(), value)
-                .append(DatabaseActivateObject.REDEEMER.getName(), null);
+            Document document = new Document()
+                    .append(DatabaseActivateObject.CODE.getName(), code)
+                    .append(DatabaseActivateObject.PURPOSE.getName(), purpose.toString())
+                    .append(DatabaseActivateObject.VALUE.getName(), value)
+                    .append(DatabaseActivateObject.REDEEMER.getName(), null);
 
-        databaseManager.getCollection(databaseCollection).insertOne(document);
+            databaseManager.getCollection(databaseCollection).insertOne(document);
+        });
     }
 
     public boolean existsCode(String code) {
@@ -41,18 +43,20 @@ public class DatabaseActivate {
     }
 
     public void setDatabaseObject(String code, DatabaseActivateObject databaseActivateObject, Object value) {
-        BasicDBObject doc = new BasicDBObject();
-        doc.append("$set", new BasicDBObject().append(databaseActivateObject.getName(), value));
+        this.databaseManager.getAsync().getExecutor().execute(() -> {
+            BasicDBObject doc = new BasicDBObject();
+            doc.append("$set", new BasicDBObject().append(databaseActivateObject.getName(), value));
 
-        BasicDBObject basicDBObject = new BasicDBObject().append(DatabaseActivateObject.CODE.getName(), code);
-        databaseManager.getCollection(databaseCollection).updateOne(basicDBObject, doc);
+            BasicDBObject basicDBObject = new BasicDBObject().append(DatabaseActivateObject.CODE.getName(), code);
+            databaseManager.getCollection(databaseCollection).updateOne(basicDBObject, doc);
+        });
     }
 
     public DatabaseElement getDatabaseElement(String code, DatabaseActivateObject databaseActivateObject) {
         FindIterable<Document> find = databaseManager.getCollection(databaseCollection).find(Filters.eq(DatabaseActivateObject.CODE.getName(), code));
         Document document = find.first();
 
-        if(document == null) return null;
+        if (document == null) return null;
 
         return new DatabaseElement(document.get(databaseActivateObject.getName()));
     }

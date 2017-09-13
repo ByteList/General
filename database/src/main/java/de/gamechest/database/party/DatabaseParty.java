@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 /**
  * Created by ByteList on 15.04.2017.
- *
+ * <p>
  * Copyright by ByteList - https://bytelist.de/
  */
 public class DatabaseParty {
@@ -26,17 +26,19 @@ public class DatabaseParty {
     }
 
     public void createParty(String partyId, String leader) {
-        Document document = new Document()
-                .append(DatabasePartyObject.PARTY_ID.getName(), partyId)
-                .append(DatabasePartyObject.LEADER.getName(), leader)
-                .append(DatabasePartyObject.MEMBERS.getName(), new JSONArray());
+        this.databaseManager.getAsync().getExecutor().execute(() -> {
+            Document document = new Document()
+                    .append(DatabasePartyObject.PARTY_ID.getName(), partyId)
+                    .append(DatabasePartyObject.LEADER.getName(), leader)
+                    .append(DatabasePartyObject.MEMBERS.getName(), new JSONArray());
 
-        databaseManager.getCollection(databaseCollection).insertOne(document);
+            databaseManager.getCollection(databaseCollection).insertOne(document);
+        });
     }
 
     public boolean addMember(String partyId, String member) {
         ArrayList<String> members = getMembers(partyId);
-        if(!members.contains(member)) {
+        if (!members.contains(member)) {
             members.add(member);
             setDatabaseObject(partyId, DatabasePartyObject.MEMBERS, members);
             return true;
@@ -46,7 +48,7 @@ public class DatabaseParty {
 
     public boolean removeMember(String partyId, String member) {
         ArrayList<String> members = getMembers(partyId);
-        if(members.contains(member)) {
+        if (members.contains(member)) {
             members.remove(member);
             setDatabaseObject(partyId, DatabasePartyObject.MEMBERS, members);
             return true;
@@ -55,42 +57,48 @@ public class DatabaseParty {
     }
 
     public void setLeader(String partyId, String leader) {
-        setDatabaseObject(partyId, DatabasePartyObject.LEADER, leader);
+        this.databaseManager.getAsync().getExecutor().execute(() -> {
+            setDatabaseObject(partyId, DatabasePartyObject.LEADER, leader);
+        });
     }
 
     public void deleteParty(String partyId) {
-        BasicDBObject dbObject = new BasicDBObject()
-                .append(DatabasePartyObject.PARTY_ID.getName(), partyId);
-        databaseManager.getCollection(databaseCollection).deleteOne(dbObject);
+        this.databaseManager.getAsync().getExecutor().execute(() -> {
+            BasicDBObject dbObject = new BasicDBObject()
+                    .append(DatabasePartyObject.PARTY_ID.getName(), partyId);
+            databaseManager.getCollection(databaseCollection).deleteOne(dbObject);
+        });
     }
 
     public ArrayList<String> getMembers(String partyId) {
         DatabaseElement databaseElement = getDatabaseElement(partyId, DatabasePartyObject.MEMBERS);
-        if(databaseElement != null)
+        if (databaseElement != null)
             return (ArrayList<String>) databaseElement.getObject();
         return new ArrayList<>();
     }
 
     @SuppressWarnings("ConstantConditions")
     public String getLeader(String partyId) {
-        if(getDatabaseElement(partyId, DatabasePartyObject.LEADER).getObject() == null)
+        if (getDatabaseElement(partyId, DatabasePartyObject.LEADER).getObject() == null)
             return null;
         else return getDatabaseElement(partyId, DatabasePartyObject.LEADER).getAsString();
     }
 
     private void setDatabaseObject(String partyId, DatabasePartyObject databasePartyObject, Object value) {
-        BasicDBObject doc = new BasicDBObject();
-        doc.append("$set", new BasicDBObject().append(databasePartyObject.getName(), value));
+        this.databaseManager.getAsync().getExecutor().execute(() -> {
+            BasicDBObject doc = new BasicDBObject();
+            doc.append("$set", new BasicDBObject().append(databasePartyObject.getName(), value));
 
-        BasicDBObject basicDBObject = new BasicDBObject().append(DatabasePartyObject.PARTY_ID.getName(), partyId);
-        databaseManager.getCollection(databaseCollection).updateOne(basicDBObject, doc);
+            BasicDBObject basicDBObject = new BasicDBObject().append(DatabasePartyObject.PARTY_ID.getName(), partyId);
+            databaseManager.getCollection(databaseCollection).updateOne(basicDBObject, doc);
+        });
     }
 
     private DatabaseElement getDatabaseElement(String partyId, DatabasePartyObject databasePartyObject) {
         FindIterable<Document> find = databaseManager.getCollection(databaseCollection).find(Filters.eq(DatabasePartyObject.PARTY_ID.getName(), partyId));
         Document document = find.first();
 
-        if(document == null) return null;
+        if (document == null) return null;
 
         return new DatabaseElement(document.get(databasePartyObject.getName()));
     }

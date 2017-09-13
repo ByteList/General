@@ -31,23 +31,27 @@ public class DatabasePremiumPlayer {
     }
 
     public void createPlayer(UUID uuid, long end) {
-        if(existsPlayer(uuid)) return;
+        if (existsPlayer(uuid)) return;
+        this.databaseManager.getAsync().getExecutor().execute(() -> {
 
-        Document document = new Document()
-                .append(DatabasePremiumPlayerObject.UUID.getName(), uuid.toString())
-                .append(DatabasePremiumPlayerObject.ENDING_DATE.getName(), end);
+            Document document = new Document()
+                    .append(DatabasePremiumPlayerObject.UUID.getName(), uuid.toString())
+                    .append(DatabasePremiumPlayerObject.ENDING_DATE.getName(), end);
 
 
-        databaseManager.getCollection(databaseCollection).insertOne(document);
+            databaseManager.getCollection(databaseCollection).insertOne(document);
+        });
     }
 
     public void setDatabaseObject(UUID uuid, DatabasePremiumPlayerObject databasePremiumPlayerObject, Object value) {
-        String uid = uuid.toString();
-        BasicDBObject doc = new BasicDBObject()
-                .append("$set", new BasicDBObject().append(databasePremiumPlayerObject.getName(), value));
+        this.databaseManager.getAsync().getExecutor().execute(() -> {
+            String uid = uuid.toString();
+            BasicDBObject doc = new BasicDBObject()
+                    .append("$set", new BasicDBObject().append(databasePremiumPlayerObject.getName(), value));
 
-        BasicDBObject basicDBObject = new BasicDBObject().append(DatabasePlayerObject.UUID.getName(), uid);
-        databaseManager.getCollection(databaseCollection).updateOne(basicDBObject, doc);
+            BasicDBObject basicDBObject = new BasicDBObject().append(DatabasePlayerObject.UUID.getName(), uid);
+            databaseManager.getCollection(databaseCollection).updateOne(basicDBObject, doc);
+        });
     }
 
     public DatabaseElement getDatabaseElement(UUID uuid, DatabasePremiumPlayerObject databasePremiumPlayerObject) {
@@ -55,14 +59,16 @@ public class DatabasePremiumPlayer {
         FindIterable<Document> find = databaseManager.getCollection(databaseCollection).find(Filters.eq(DatabasePlayerObject.UUID.getName(), uid));
         Document document = find.first();
 
-        if(document == null) return null;
+        if (document == null) return null;
 
         return new DatabaseElement(document.get(databasePremiumPlayerObject.getName()));
     }
 
     public void removePlayer(UUID uuid) {
-        BasicDBObject dbObject = new BasicDBObject()
-                .append(DatabasePremiumPlayerObject.UUID.getName(), uuid.toString());
-        databaseManager.getCollection(databaseCollection).deleteOne(dbObject);
+        this.databaseManager.getAsync().getExecutor().execute(() -> {
+            BasicDBObject dbObject = new BasicDBObject()
+                    .append(DatabasePremiumPlayerObject.UUID.getName(), uuid.toString());
+            databaseManager.getCollection(databaseCollection).deleteOne(dbObject);
+        });
     }
 }

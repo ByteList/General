@@ -27,22 +27,24 @@ public class DatabasePoll {
     }
 
     public void setPoll(String poll, HashMap<String, Integer> possibilities, String end) {
-        if(existsPoll()) {
-            if(isPollOpened())
-                return;
-            BasicDBObject dbObject = new BasicDBObject().append("_poll", "poll");
-            databaseManager.getCollection(databaseCollection).deleteOne(dbObject);
-        }
+        this.databaseManager.getAsync().getExecutor().execute(() -> {
+            if (existsPoll()) {
+                if (isPollOpened())
+                    return;
+                BasicDBObject dbObject = new BasicDBObject().append("_poll", "poll");
+                databaseManager.getCollection(databaseCollection).deleteOne(dbObject);
+            }
 
-        Document document = new Document()
-                .append("_poll", "p")
-                .append(DatabasePollObject.POLL.getName(), poll)
-                .append(DatabasePollObject.OPENED.getName(), false)
-                .append(DatabasePollObject.POSSIBILITIES.getName(), possibilities)
-                .append(DatabasePollObject.VOTED_USER.getName(), new ArrayList<String>())
-                .append(DatabasePollObject.END.getName(), end);
+            Document document = new Document()
+                    .append("_poll", "p")
+                    .append(DatabasePollObject.POLL.getName(), poll)
+                    .append(DatabasePollObject.OPENED.getName(), false)
+                    .append(DatabasePollObject.POSSIBILITIES.getName(), possibilities)
+                    .append(DatabasePollObject.VOTED_USER.getName(), new ArrayList<String>())
+                    .append(DatabasePollObject.END.getName(), end);
 
-        databaseManager.getCollection(databaseCollection).insertOne(document);
+            databaseManager.getCollection(databaseCollection).insertOne(document);
+        });
     }
 
     public boolean existsPoll() {
@@ -60,16 +62,18 @@ public class DatabasePoll {
     }
 
     public void vote(UUID uuid, String possibility) {
-        if(!canVote(uuid)) {
-            return;
-        }
-        HashMap<String, Integer> pos = getPossibilities();
-        ArrayList<String> voted = getVotes();
+        this.databaseManager.getAsync().getExecutor().execute(() -> {
+            if (!canVote(uuid)) {
+                return;
+            }
+            HashMap<String, Integer> pos = getPossibilities();
+            ArrayList<String> voted = getVotes();
 
-        pos.put(possibility, pos.get(possibility)+1);
-        voted.add(uuid.toString());
-        setDatabaseObject(DatabasePollObject.POSSIBILITIES, pos);
-        setDatabaseObject(DatabasePollObject.VOTED_USER, voted);
+            pos.put(possibility, pos.get(possibility) + 1);
+            voted.add(uuid.toString());
+            setDatabaseObject(DatabasePollObject.POSSIBILITIES, pos);
+            setDatabaseObject(DatabasePollObject.VOTED_USER, voted);
+        });
     }
 
     public boolean canVote(UUID uuid) {
@@ -85,18 +89,20 @@ public class DatabasePoll {
     }
 
     public void setDatabaseObject(DatabasePollObject databasePollObject, Object value) {
-        BasicDBObject doc = new BasicDBObject();
-        doc.append("$set", new BasicDBObject().append(databasePollObject.getName(), value));
+        this.databaseManager.getAsync().getExecutor().execute(() -> {
+            BasicDBObject doc = new BasicDBObject();
+            doc.append("$set", new BasicDBObject().append(databasePollObject.getName(), value));
 
-        BasicDBObject basicDBObject = new BasicDBObject().append("_poll", "poll");
-        databaseManager.getCollection(databaseCollection).updateOne(basicDBObject, doc);
+            BasicDBObject basicDBObject = new BasicDBObject().append("_poll", "poll");
+            databaseManager.getCollection(databaseCollection).updateOne(basicDBObject, doc);
+        });
     }
 
     public DatabaseElement getDatabaseElement(DatabasePollObject databasePollObject) {
         FindIterable<Document> find = databaseManager.getCollection(databaseCollection).find(Filters.eq("_poll", "poll"));
         Document document = find.first();
 
-        if(document == null) return null;
+        if (document == null) return null;
 
         return new DatabaseElement(document.get(databasePollObject.getName()));
     }
