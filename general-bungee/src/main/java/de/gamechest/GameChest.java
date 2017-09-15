@@ -20,6 +20,7 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created by ByteList on 09.04.2017.
@@ -60,6 +61,7 @@ public class GameChest extends Plugin {
     public final String pr_msg_team = "§f§o[§c§oTeam§f§o] ";
     public final String pr_msg_party = "§f§o[§d§oParty§f§o] ";
 
+    private final char[] POOL = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
 
     public List<ProxiedPlayer> onlineTeam = new ArrayList<>();
 
@@ -112,6 +114,26 @@ public class GameChest extends Plugin {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    private char randomChar() {
+        return POOL[ThreadLocalRandom.current().nextInt(POOL.length)];
+    }
+
+    public String randomKey(int length) {
+        StringBuilder kb = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            kb.append(randomChar());
+        }
+        return kb.toString();
+    }
+
+    public String randomNumber(int length) {
+        StringBuilder kb = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            kb.append(ThreadLocalRandom.current().nextInt(10));
+        }
+        return kb.toString();
     }
 
     public boolean hasRank(UUID uuid, Rank rank) {

@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created by ByteList on 09.04.2017.
@@ -31,18 +32,6 @@ import java.util.UUID;
 public class GameChest extends JavaPlugin {
 
     private static final char[] POOL = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
-    private static final Random rnd = new Random();
-    private static char randomChar()
-    {
-        return POOL[rnd.nextInt(POOL.length)];
-    }
-    public static String randomKey(int length) {
-        StringBuilder kb = new StringBuilder();
-        for (int i = 0; i < length; i++) {
-            kb.append(randomChar());
-        }
-        return kb.toString();
-    }
 
     public HashMap<UUID, Rank> rankCache = new HashMap<>();
 
@@ -110,6 +99,26 @@ public class GameChest extends JavaPlugin {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    private static char randomChar() {
+        return POOL[ThreadLocalRandom.current().nextInt(POOL.length)];
+    }
+
+    public static String randomKey(int length) {
+        StringBuilder kb = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            kb.append(randomChar());
+        }
+        return kb.toString();
+    }
+
+    public String randomNumber(int length) {
+        StringBuilder kb = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            kb.append(ThreadLocalRandom.current().nextInt(10));
+        }
+        return kb.toString();
     }
 
     public boolean hasRank(UUID uuid, Rank rank) {
