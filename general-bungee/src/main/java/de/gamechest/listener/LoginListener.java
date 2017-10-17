@@ -83,7 +83,6 @@ public class LoginListener implements Listener {
             dbPlayer.createPlayer();
             dbPlayer.updatePlayer();
 
-            // checking name update
             DatabaseUuidBuffer databaseUuidBuffer = databaseManager.getDatabaseUuidBuffer();
             String lastName = null;
             if(dbPlayer.getDatabaseElement(DatabasePlayerObject.LAST_NAME).getObject() != null)
@@ -95,20 +94,14 @@ public class LoginListener implements Listener {
                 databaseUuidBuffer.removePlayer(lastName);
                 databaseUuidBuffer.createPlayer(pc.getName(), pc.getUniqueId());
             }
-        });
 
-        // update database player
-        databaseManager.getAsync().getPlayer(pc.getUniqueId(), dbPlayer -> {
             SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm");
             String onlineDate = formatter.format(Calendar.getInstance().getTime());
 
             dbPlayer.setDatabaseObject(DatabasePlayerObject.LAST_LOGIN, onlineDate);
             dbPlayer.setDatabaseObject(DatabasePlayerObject.LAST_NAME, pc.getName());
             dbPlayer.setDatabaseObject(DatabasePlayerObject.LAST_IP, pc.getAddress().getHostString());
-        }, DatabasePlayerObject.LAST_LOGIN, DatabasePlayerObject.LAST_NAME, DatabasePlayerObject.LAST_IP);
 
-        // Skin texture update
-        databaseManager.getAsync().getPlayer(pc.getUniqueId(), dbPlayer -> {
             Skin skin = new Skin(pc.getUniqueId());
             String value = skin.getSkinValue();
             String signature = skin.getSkinSignature();
@@ -119,7 +112,7 @@ public class LoginListener implements Listener {
                 skinTextures.put(DatabaseNickObject.SkinObject.SIGNATURE.getName(), signature);
                 dbPlayer.setDatabaseObject(DatabasePlayerObject.SKIN_TEXTURE, skinTextures);
             }
-        }, DatabasePlayerObject.SKIN_TEXTURE);
+        });
 
         // online database player
         databaseManager.getAsync().getOnlinePlayer(pc.getUniqueId(), DatabaseOnlinePlayer::createOnlinePlayer);

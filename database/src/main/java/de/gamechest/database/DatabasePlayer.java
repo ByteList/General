@@ -109,6 +109,10 @@ public class DatabasePlayer {
         configurations.put(DatabasePlayerObject.Configurations.LOBBY_YAW.getName(), "65.0");
         configurations.put(DatabasePlayerObject.Configurations.LOBBY_CHAT.getName(), 0);
         configurations.put(DatabasePlayerObject.Configurations.LOBBY_VISIBILITY.getName(), 0);
+
+        configurations.put(DatabasePlayerObject.Configurations.LOBBY_PARTY_TAG.getName(), 0);
+        configurations.put(DatabasePlayerObject.Configurations.LOBBY_PARTICLES_VISIBILITY.getName(), 0);
+
         configurations.put(DatabasePlayerObject.Configurations.MSG.getName(), 0);
 
         Document document = new Document()
@@ -141,5 +145,23 @@ public class DatabasePlayer {
             setDatabaseObject(DatabasePlayerObject.ACTIVE_SHOP_ITEMS, shopItems);
         }
 
+        updateConfig();
+    }
+
+    private void updateConfig() {
+        Document configurations = getDatabaseElement(DatabasePlayerObject.CONFIGURATIONS).getAsDocument();
+        boolean cu = false;
+        if(!configurations.containsKey(DatabasePlayerObject.Configurations.LOBBY_PARTY_TAG.getName())) {
+            configurations.put(DatabasePlayerObject.Configurations.LOBBY_PARTY_TAG.getName(), 0);
+            cu = true;
+        }
+        if(!configurations.containsKey(DatabasePlayerObject.Configurations.LOBBY_PARTICLES_VISIBILITY.getName())) {
+            configurations.put(DatabasePlayerObject.Configurations.LOBBY_PARTICLES_VISIBILITY.getName(), 0);
+            cu = true;
+        }
+
+        if(cu) {
+            setDatabaseObject(DatabasePlayerObject.CONFIGURATIONS, configurations);
+        }
     }
 }

@@ -64,6 +64,8 @@ public enum DatabasePlayerObject {
         LOBBY_YAW("lobby:yaw"),
         LOBBY_CHAT("lobby:chat"),
         LOBBY_VISIBILITY("lobby:visibility"),
+        LOBBY_PARTY_TAG("lobby:party_tag"),
+        LOBBY_PARTICLES_VISIBILITY("lobby:particles_visibility"),
         MSG("msg");
 
         @Getter
