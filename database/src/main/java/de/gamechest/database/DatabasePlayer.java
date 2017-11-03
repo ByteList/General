@@ -115,6 +115,9 @@ public class DatabasePlayer {
 
         configurations.put(DatabasePlayerObject.Configurations.MSG.getName(), 0);
 
+        configurations.put(DatabasePlayerObject.Configurations.BUILD_CONNECT.getName(), 0);
+        configurations.put(DatabasePlayerObject.Configurations.BUILD_MODE.getName(), 0);
+
         Document document = new Document()
             .append(DatabasePlayerObject.UUID.getName(), uuid.toString())
             .append(DatabasePlayerObject.RANK_ID.getName(), Rank.SPIELER.getId())

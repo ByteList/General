@@ -66,7 +66,9 @@ public enum DatabasePlayerObject {
         LOBBY_VISIBILITY("lobby:visibility"),
         LOBBY_PARTY_TAG("lobby:party_tag"),
         LOBBY_PARTICLES_VISIBILITY("lobby:particles_visibility"),
-        MSG("msg");
+        MSG("network:msg"),
+        BUILD_CONNECT("build:connect"),
+        BUILD_MODE("build:mode");
 
         @Getter
         private String name;
