@@ -20,6 +20,9 @@ import java.util.UUID;
 public class TabList {
 
     private static HashMap<UUID, TabListMode> playerModes = new HashMap<>();
+    private static HashMap<UUID, String> customPrefix = new HashMap<>();
+    private static HashMap<UUID, String> customSuffix = new HashMap<>();
+    private static HashMap<UUID, String> customPos = new HashMap<>();
 
     public static void update(Player player, TabListMode tabListMode) {
         if(tabListMode.isRank()) {
@@ -31,9 +34,15 @@ public class TabList {
                 rank = GameChest.getInstance().getRank(player.getUniqueId());
             }
             asRank(player, rank);
-        } else {
+        } else if(tabListMode.isColor()) {
             asColor(player, tabListMode);
+        } else {
+            throw new IllegalArgumentException(tabListMode.toString() + "can not be updated!");
         }
+    }
+
+    public static void updateCustom(Player player, String pos, String prefix, String suffix) {
+        asCustom(player, pos, prefix, suffix);
     }
 
     public static void updateParty(Player player, List<UUID> partyList) {
@@ -73,33 +82,7 @@ public class TabList {
             team.addEntry(player.getName());
 
             if(all.getUniqueId() != player.getUniqueId() && playerModes.containsKey(all.getUniqueId())) {
-                TabListMode atabListMode = playerModes.get(all.getUniqueId());
-                String as;
-                Team ateam;
-                String aprefix;
-                if (atabListMode.isRank()) {
-                    Rank arank;
-                    Nick nick = GameChest.getInstance().getNick();
-                    if (nick.isNicked(all.getUniqueId()) || GameChest.getInstance().isRankToggled(all.getUniqueId())) {
-                        arank = Rank.SPIELER;
-                    } else {
-                        arank = GameChest.getInstance().getRank(all.getUniqueId());
-                    }
-                    as = arank.getId() + arank.getShortName();
-                    aprefix = arank.getPrefix();
-                } else {
-                    aprefix = "§" + atabListMode.getColorCode();
-                    as = aprefix + "color";
-                }
-
-                ateam = playerBoard.getTeam(as);
-                if (ateam == null) {
-                    ateam = playerBoard.registerNewTeam(as);
-                    ateam.setPrefix(aprefix);
-                    ateam.setSuffix("§r");
-                    ateam.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
-                }
-                ateam.addEntry(all.getName());
+                update0(playerBoard, all);
             }
         }
         playerModes.put(player.getUniqueId(), TabListMode.RANK);
@@ -133,40 +116,87 @@ public class TabList {
             }
             team.addEntry(player.getName());
 
-            if(all.getUniqueId() != player.getUniqueId()) {
-                if(playerModes.containsKey(all.getUniqueId())) {
-                    TabListMode atabListMode = playerModes.get(all.getUniqueId());
-                    String as;
-                    Team ateam;
-                    String aprefix;
-                    if (atabListMode.isRank()) {
-                        Rank arank;
-                        Nick nick = GameChest.getInstance().getNick();
-                        if (nick.isNicked(all.getUniqueId()) || GameChest.getInstance().isRankToggled(all.getUniqueId())) {
-                            arank = Rank.SPIELER;
-                        } else {
-                            arank = GameChest.getInstance().getRank(all.getUniqueId());
-                        }
-                        as = arank.getId() + arank.getShortName();
-                        aprefix = arank.getPrefix();
-                    } else {
-                        aprefix = "§" + atabListMode.getColorCode();
-                        as = prefix + "color";
-                    }
-
-                    ateam = playerBoard.getTeam(as);
-                    if (ateam == null) {
-                        ateam = playerBoard.registerNewTeam(as);
-                        ateam.setPrefix(aprefix);
-                        ateam.setSuffix("§r");
-                        ateam.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
-                    }
-                    ateam.addEntry(all.getName());
-                }
+            if(all.getUniqueId() != player.getUniqueId() && playerModes.containsKey(all.getUniqueId())) {
+                update0(playerBoard, all);
             }
         }
         playerModes.put(player.getUniqueId(), tabListMode);
     }
+
+    private static void asCustom(Player player, String pos, String prefix, String suffix) {
+        TabListMode tabListMode = TabListMode.CUSTOM;
+
+        String s = pos+"custom";
+
+        Scoreboard playerBoard = player.getScoreboard();
+        if(playerBoard == null) {
+            playerBoard = Bukkit.getScoreboardManager().getNewScoreboard();
+            player.setScoreboard(playerBoard);
+        }
+
+        customPrefix.put(player.getUniqueId(), prefix);
+        customSuffix.put(player.getUniqueId(), suffix);
+        customPos.put(player.getUniqueId(), pos);
+
+        for(Player all : Bukkit.getOnlinePlayers()) {
+            Scoreboard board = all.getScoreboard();
+            if(board == null) {
+                board = Bukkit.getScoreboardManager().getNewScoreboard();
+                all.setScoreboard(board);
+            }
+            Team team = board.getTeam(s);
+            if(team == null) {
+                team = board.registerNewTeam(s);
+                team.setPrefix(prefix);
+                team.setSuffix(suffix);
+                team.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
+            }
+            team.addEntry(player.getName());
+
+            if(all.getUniqueId() != player.getUniqueId() && playerModes.containsKey(all.getUniqueId())) {
+                update0(playerBoard, all);
+            }
+        }
+        playerModes.put(player.getUniqueId(), tabListMode);
+    }
+
+    private static void update0(Scoreboard playerBoard, Player all) {
+        if(playerModes.containsKey(all.getUniqueId())) {
+            TabListMode atabListMode = playerModes.get(all.getUniqueId());
+            String as = "null";
+            Team ateam;
+            String aprefix = "null~";
+            String asuffix = "§r";
+            if (atabListMode.isRank()) {
+                Rank arank;
+                Nick nick = GameChest.getInstance().getNick();
+                if (nick.isNicked(all.getUniqueId()) || GameChest.getInstance().isRankToggled(all.getUniqueId())) {
+                    arank = Rank.SPIELER;
+                } else {
+                    arank = GameChest.getInstance().getRank(all.getUniqueId());
+                }
+                as = arank.getId() + arank.getShortName();
+                aprefix = arank.getPrefix();
+            } else if(atabListMode.isColor()) {
+                aprefix = "§" + atabListMode.getColorCode();
+                as = aprefix + "color";
+            } else if(atabListMode.isCustom()) {
+                aprefix = customPrefix.get(all.getUniqueId());
+                asuffix = customSuffix.get(all.getUniqueId());
+                as = customPos.get(all.getUniqueId()) + "custom";
+            }
+
+            ateam = playerBoard.getTeam(as);
+            if (ateam == null) {
+                ateam = playerBoard.registerNewTeam(as);
+                ateam.setPrefix(aprefix);
+                ateam.setSuffix(asuffix);
+                ateam.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
+            }
+            ateam.addEntry(all.getName());
+        }
+    }
+
 
     private static void asParty(Player player, List<UUID> partyPlayers) {
         String s = "000party";
@@ -232,6 +262,7 @@ public class TabList {
 
 
     public enum TabListMode {
+        CUSTOM("_CUSTOM"),
         RANK("_RANK"),
         PARTY("_PARTY"),
         BLACK("0"),
@@ -259,11 +290,15 @@ public class TabList {
         }
 
         public boolean isColor() {
-            return !colorCode.equals("_RANK") || !colorCode.equals("_PARTY");
+            return !colorCode.equals("_RANK") && !colorCode.equals("_PARTY") && !colorCode.equals("_CUSTOM");
         }
 
         public boolean isRank() {
             return colorCode.equals("_RANK");
+        }
+
+        public boolean isCustom() {
+            return colorCode.equals("_CUSTOM");
         }
     }
 }
