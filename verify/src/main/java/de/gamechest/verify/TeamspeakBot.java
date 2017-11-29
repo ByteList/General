@@ -4,6 +4,7 @@ import com.github.theholywaffle.teamspeak3.TS3Api;
 import com.github.theholywaffle.teamspeak3.TS3ApiAsync;
 import com.github.theholywaffle.teamspeak3.TS3Config;
 import com.github.theholywaffle.teamspeak3.TS3Query;
+import com.github.theholywaffle.teamspeak3.api.ClientProperty;
 import com.github.theholywaffle.teamspeak3.api.TextMessageTargetMode;
 import com.github.theholywaffle.teamspeak3.api.event.ClientJoinEvent;
 import com.github.theholywaffle.teamspeak3.api.event.TS3EventAdapter;
@@ -16,6 +17,7 @@ import de.gamechest.database.DatabasePlayerObject;
 import lombok.Getter;
 import org.bukkit.entity.Player;
 
+import java.util.Collections;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -211,6 +213,9 @@ public class TeamspeakBot {
 
                                 dbPlayer.setDatabaseObject(DatabasePlayerObject.TS_UID, uid);
                                 apiAsync.addClientToServerGroup(verifyServerGroupId, clientInfo.getDatabaseId());
+                                String description = "Minecraft: "+name + (clientInfo.getDescription().equals("") ? "" : " | " + clientInfo.getDescription());
+                                apiAsync.editClient(invokerId, Collections.singletonMap(ClientProperty.CLIENT_DESCRIPTION, description));
+
                                 apiAsync.sendPrivateMessage(invokerId, "Du bist nun mit dem Minecraft-Account [COLOR=GREEN]" + name + "[/COLOR] verbunden!");
                                 player.sendMessage(Verify.getInstance().prefix+"§aDu bist nun mit deinem Teamspeak-Account verbunden!");
 

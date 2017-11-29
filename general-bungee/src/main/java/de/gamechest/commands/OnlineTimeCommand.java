@@ -21,7 +21,6 @@ public class OnlineTimeCommand extends GCCommand implements TabExecutor {
     @Override
     public void execute(CommandSender sender, String[] args) {
         sender.sendMessage(gameChest.prefix+"§7~ Coming soon ~");
-        return;
 //        if(args.length == 1) {
 //            final String[] name = {args[0]};
 //            UUID uuid = UUIDFetcher.getUUID(name[0]);

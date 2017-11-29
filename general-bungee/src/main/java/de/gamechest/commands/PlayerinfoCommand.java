@@ -36,19 +36,19 @@ public class PlayerinfoCommand extends GCCommand {
             }
 
             if(args.length == 1) {
-                final String[] playername = {args[0]};
-                UUID uuid = UUIDFetcher.getUUID(playername[0]);
+                UUID uuid = UUIDFetcher.getUUID(args[0]);
                 if(uuid == null) {
                     sender.sendMessage(gameChest.prefix+"§cKonnte den User nicht in der Datenbank finden!");
                     return;
                 }
                 gameChest.getDatabaseManager().getAsync().getPlayer(uuid, dbPlayer -> {
-                    DatabaseOnlinePlayer databaseOnlinePlayer = new DatabaseOnlinePlayer(gameChest.getDatabaseManager(), uuid.toString(), playername[0]);
+                    String playername = args[0];
+                    DatabaseOnlinePlayer databaseOnlinePlayer = new DatabaseOnlinePlayer(gameChest.getDatabaseManager(), uuid.toString(), playername);
 
-                    playername[0] = databaseOnlinePlayer.getDatabaseElement(DatabaseOnlinePlayerObject.NAME).getAsString();
+                    playername = databaseOnlinePlayer.getDatabaseElement(DatabaseOnlinePlayerObject.NAME).getAsString();
                     Rank rank = Rank.getRankById(dbPlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt());
 
-                    pp.sendMessage(gameChest.prefix+"§6Informationen über §c"+ playername[0] +"§6:");
+                    pp.sendMessage(gameChest.prefix+"§6Informationen über §c"+ playername +"§6:");
                     pp.sendMessage("§8\u00BB §7Id: §a"+dbPlayer.getDatabaseElement(DatabasePlayerObject.UUID).getAsString());
                     pp.sendMessage("§8\u00BB §7First-Login: §2"+dbPlayer.getDatabaseElement(DatabasePlayerObject.FIRST_LOGIN).getAsString());
                     pp.sendMessage("§8\u00BB §7Last-Login: §a"+dbPlayer.getDatabaseElement(DatabasePlayerObject.LAST_LOGIN).getAsString());
