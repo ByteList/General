@@ -25,17 +25,14 @@ public class ServerListener implements Listener {
     public void onServerKick(ServerKickEvent e) {
         if(gameChest.isCloudEnabled()) {
             try {
-                System.out.println(e.getKickedFrom().getName());
-                System.out.println(e.getPlayer().getServer().getInfo().getName());
                 String randomLobbyId = ByteCloudMaster.getInstance().getCloudHandler().getRandomLobbyId(e.getKickedFrom().getName());
-                System.out.println(randomLobbyId);
                 e.setCancelled(true);
                 ServerInfo serverInfo = gameChest.getProxy().getServerInfo(randomLobbyId);
                 e.setCancelServer(serverInfo);
                 e.getPlayer().sendMessage("§7Du wurdest vom Server gekickt:§r "+e.getKickReason());
             } catch (Exception ignored) {
                 e.setCancelled(false);
-                e.setKickReason(ByteCloudMaster.getInstance().prefix+"§cDer Cloud-Server konnte nicht erreicht werden.");
+                e.setKickReason(ByteCloudMaster.getInstance().prefix+"§cDer Cloud-Server hat deine Verbindung getrennt.");
             }
         }
     }

@@ -1,6 +1,7 @@
 package de.gamechest.listener;
 
 import de.bytelist.bytecloud.core.ByteCloudCore;
+import de.bytelist.bytecloud.database.DatabaseServerObject;
 import de.gamechest.BountifulAPI;
 import de.gamechest.GameChest;
 import de.gamechest.Skin;
@@ -48,7 +49,10 @@ public class JoinListener {
 
         BountifulAPI.sendTabTitle(p,
                 " §6Game-Chest§f.§6de §8[§b1.9 §f§l- §c1.12§8]  \n"+ //§eSurvival §f& §eSpielmodi
-                        "§fAktueller Server: §e"+ (gameChest.isCloudEnabled() ? ByteCloudCore.getInstance().getCloudHandler().getServerId() : Bukkit.getServerName()),
+                        "§fAktueller Server: §e"+ (gameChest.isCloudEnabled() ?
+                        ByteCloudCore.getInstance().getCloudHandler().getDatabaseServerValue(
+                                ByteCloudCore.getInstance().getCloudHandler().getServerId(), DatabaseServerObject.GROUP).getAsString()+
+                                "-"+ByteCloudCore.getInstance().getCloudHandler().getServerId().split("-")[1] : Bukkit.getServerName()),
 
                 "§7Willkommen, §c"+p.getName()+"§7!\n"+
                         "  §fInformationen findest du unter §a/help§f!  ");

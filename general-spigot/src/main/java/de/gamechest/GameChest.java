@@ -10,6 +10,7 @@ import de.gamechest.database.DatabaseManager;
 import de.gamechest.database.DatabasePlayer;
 import de.gamechest.database.DatabasePlayerObject;
 import de.gamechest.database.rank.Rank;
+import de.gamechest.listener.CommandListener;
 import de.gamechest.nick.Nick;
 import de.gamechest.reflector.PacketInjector;
 import de.gamechest.stats.Stats;
@@ -20,7 +21,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
 import java.util.Objects;
-import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -81,6 +81,8 @@ public class GameChest extends JavaPlugin {
         getCommand("serverid").setExecutor(new ServerIdCommand());
         getCommand("nick").setExecutor(new NickCommands());
         getCommand("fakeplugins").setExecutor(new FakePluginCommand());
+
+        getServer().getPluginManager().registerEvents(new CommandListener(), this);
 
         getServer().getConsoleSender().sendMessage(prefix+"§aEnabled!");
     }
