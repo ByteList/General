@@ -47,13 +47,21 @@ public class JoinListener {
 //            }
 //        }, DatabaseOnlinePlayerObject.SERVER_ID, DatabaseOnlinePlayerObject.PREVIOUS_SERVER_ID);
 
-        BountifulAPI.sendTabTitle(p,
-                " §6Game-Chest§f.§6de §8[§b1.9 §f§l- §c1.12§8]  \n"+ //§eSurvival §f& §eSpielmodi
-                        "§fAktueller Server: §e"+ (gameChest.isCloudEnabled() ?
-                        ByteCloudCore.getInstance().getCloudHandler().getDatabaseServerValue(
-                                ByteCloudCore.getInstance().getCloudHandler().getServerId(), DatabaseServerObject.GROUP).getAsString()+
-                                "-"+ByteCloudCore.getInstance().getCloudHandler().getServerId().split("-")[1] : Bukkit.getServerName()),
+        String serverId = Bukkit.getServerName();
 
+        if(gameChest.isCloudEnabled()) {
+            String group = ByteCloudCore.getInstance().getCloudHandler().getDatabaseServerValue(
+                    ByteCloudCore.getInstance().getCloudHandler().getServerId(), DatabaseServerObject.GROUP).getAsString();
+            if(!group.equals("PERMANENT")) {
+                serverId = group +"-" + ByteCloudCore.getInstance().getCloudHandler().getServerId().split("-")[1];
+            } else {
+                serverId = ByteCloudCore.getInstance().getCloudHandler().getServerId();
+            }
+        }
+
+        BountifulAPI.sendTabTitle(p,
+                " §6Game-Chest§f.§6de §8[§b1.9 §f§l- §c1.12§8]  \n"+
+                        "§fAktueller Server: §e"+ serverId,
                 "§7Willkommen, §c"+p.getName()+"§7!\n"+
                         "  §fInformationen findest du unter §a/help§f!  ");
         BountifulAPI.sendTitle(e.getPlayer(), 1, 2, 1, "§r", "§r");
