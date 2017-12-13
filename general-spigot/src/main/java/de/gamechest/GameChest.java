@@ -76,7 +76,7 @@ public class GameChest extends JavaPlugin {
             GCPacketClient.sendPacket(jsonObject);
         }
 
-        getCommand("chatlog").setExecutor(new ChatlogCommand());
+//        getCommand("chatlog").setExecutor(new ChatlogCommand());
         getCommand("opme").setExecutor(new OpmeCommand());
         getCommand("serverid").setExecutor(new ServerIdCommand());
         getCommand("nick").setExecutor(new NickCommands());

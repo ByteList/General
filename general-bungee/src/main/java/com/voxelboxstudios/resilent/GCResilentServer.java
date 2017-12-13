@@ -1,12 +1,9 @@
 package com.voxelboxstudios.resilent;
 
-import com.voxelboxstudios.resilent.server.JsonServerListener;
-
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.util.ArrayList;
-import java.util.List;
 
 public class GCResilentServer {
     private ServerSocket socket;

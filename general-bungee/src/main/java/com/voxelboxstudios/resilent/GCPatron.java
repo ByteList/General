@@ -1,12 +1,10 @@
 package com.voxelboxstudios.resilent;
 
 import com.google.gson.JsonObject;
-import com.voxelboxstudios.resilent.server.JsonServerListener;
 
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.Iterator;
 
 public class GCPatron {
     public static int CLIENT_ID = 0;

@@ -3,10 +3,8 @@ package com.voxelboxstudios.resilent;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
-import com.voxelboxstudios.resilent.server.JsonServerListener;
 
 import java.io.IOException;
-import java.util.Iterator;
 
 public class GCResilentPatronRunnable implements Runnable {
     private GCPatron GCPatron;

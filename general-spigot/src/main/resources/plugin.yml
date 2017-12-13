@@ -8,8 +8,8 @@ main: de.gamechest.GameChest
 loadbefore: [ClickAttack, Lobby, ShulkerDefence, DeathRun, JumpDuell, Survival, SurvivalPlus, BuildManager, GameChestPoll, GameChestVerify]
 
 commands:
-  chatlog:
-    aliases: [cl, chatreport, cr]
+#  chatlog:
+#    aliases: [cl, chatreport, cr]
   opme:
   serverid:
     aliases: [sid]
