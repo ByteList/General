@@ -115,20 +115,21 @@ public class GcgCommand extends GCCommand {
 
         if(args.length > 2) {
             if(args[0].equalsIgnoreCase("motd")) {
-                String motd = "";
-                for (int i = 1; i < args.length; i++) {
-                    motd = motd + args[i] + " ";
+                String mode = args[1];
+                StringBuilder motd = new StringBuilder();
+                for (int i = 2; i < args.length; i++) {
+                    motd.append(args[i]).append(" ");
                 }
-                connectManager.setMotd(motd);
-                sender.sendMessage(gameChest.prefix+"§eMotd erfolgreich geändert:");
-                sender.sendMessage(motd.replace("&", "§"));
+                connectManager.setMotd(mode, motd.toString());
+                sender.sendMessage(gameChest.prefix+"§eMotd für den Mode "+mode+" erfolgreich geändert:");
+                sender.sendMessage(motd.toString().replace("&", "§"));
                 return;
             }
         }
 
         sender.sendMessage(gameChest.prefix+"§7Alle GCG-Befehle:");
         sender.sendMessage("§8\u00BB §c/gcg mode [open/whitelist/maintenance/development]");
-        sender.sendMessage("§8\u00BB §c/gcg motd [Nachricht] - Farbcodes über: &");
+        sender.sendMessage("§8\u00BB §c/gcg motd [mode] [Nachricht] - Farbcodes über: &");
         sender.sendMessage("§8\u00BB §c/gcg plimit <Limit>");
         sender.sendMessage("§8\u00BB §c/gcg whitelist add <Player>");
         sender.sendMessage("§8\u00BB §c/gcg whitelist remove <Player>");

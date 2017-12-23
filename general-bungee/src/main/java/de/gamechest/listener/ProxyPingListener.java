@@ -45,7 +45,7 @@ public class ProxyPingListener implements Listener {
             protocol.setName("§r");
             protocol.setProtocol(2);
             serverPing.setVersion(protocol);
-            serverPing.setDescription(firstLine+"§cWartungsarbeiten §f| §cTwitter: @GameChestDE");
+            serverPing.setDescription(firstLine+connectManager.getMotd("development").replace("&", "§"));
             return;
         }
 
@@ -53,7 +53,7 @@ public class ProxyPingListener implements Listener {
             protocol.setName("§r");
             protocol.setProtocol(2);
             serverPing.setVersion(protocol);
-            serverPing.setDescription(firstLine+"§cWartungsarbeiten §f| §cTwitter: @GameChestDE");
+            serverPing.setDescription(firstLine+connectManager.getMotd("maintenance").replace("&", "§"));
             return;
         }
 
@@ -61,7 +61,7 @@ public class ProxyPingListener implements Listener {
             protocol.setName("§r");
             protocol.setProtocol(2);
             serverPing.setVersion(protocol);
-            serverPing.setDescription(firstLine+"§cWhiteList §f- §cWhiteList ist eingeschaltet!");
+            serverPing.setDescription(firstLine+connectManager.getMotd("whitelist").replace("&", "§"));
             return;
         }
 
@@ -71,7 +71,7 @@ public class ProxyPingListener implements Listener {
             protocol.setProtocol(protocol.getProtocol());
             serverPing.setPlayers(players);
             serverPing.setVersion(protocol);
-            serverPing.setDescription(firstLine+connectManager.getMotd().replace("&", "§"));
+            serverPing.setDescription(firstLine+connectManager.getMotd("open").replace("&", "§"));
         }
     }
 }

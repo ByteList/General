@@ -17,12 +17,14 @@
             <groupId>de.gamechest</groupId>
             <artifactId>database</artifactId>
             <version>1.0</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>jline</groupId>
             <artifactId>jline</artifactId>
             <version>2.12.1</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

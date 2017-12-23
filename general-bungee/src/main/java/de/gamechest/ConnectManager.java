@@ -74,8 +74,8 @@ public class ConnectManager {
         return cfg.getInt("PlayerLimit");
     }
 
-    public void setMotd(String motd) {
-        cfg.set("Motd", motd);
+    public void setMotd(String mode, String motd) {
+        cfg.set("Motd."+mode, motd);
         try {
             ConfigurationProvider.getProvider(YamlConfiguration.class).save(cfg, file);
         } catch (IOException e) {
@@ -83,8 +83,8 @@ public class ConnectManager {
         }
     }
 
-    public String getMotd() {
-        return cfg.getString("Motd");
+    public String getMotd(String mode) {
+        return cfg.getString("Motd."+mode);
     }
 
     public void addUuidToWhiteList(UUID uuid) {
