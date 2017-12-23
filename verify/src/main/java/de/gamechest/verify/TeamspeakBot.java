@@ -4,20 +4,20 @@ import com.github.theholywaffle.teamspeak3.TS3Api;
 import com.github.theholywaffle.teamspeak3.TS3ApiAsync;
 import com.github.theholywaffle.teamspeak3.TS3Config;
 import com.github.theholywaffle.teamspeak3.TS3Query;
+import com.github.theholywaffle.teamspeak3.api.ChannelProperty;
 import com.github.theholywaffle.teamspeak3.api.ClientProperty;
 import com.github.theholywaffle.teamspeak3.api.TextMessageTargetMode;
-import com.github.theholywaffle.teamspeak3.api.event.ClientJoinEvent;
-import com.github.theholywaffle.teamspeak3.api.event.TS3EventAdapter;
-import com.github.theholywaffle.teamspeak3.api.event.TS3EventType;
-import com.github.theholywaffle.teamspeak3.api.event.TextMessageEvent;
+import com.github.theholywaffle.teamspeak3.api.event.*;
 import com.github.theholywaffle.teamspeak3.api.wrapper.ClientInfo;
 import de.gamechest.GameChest;
 import de.gamechest.UUIDFetcher;
 import de.gamechest.database.DatabasePlayerObject;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -71,7 +71,7 @@ public class TeamspeakBot {
         api.selectVirtualServerById(1);
         api.setNickname("ChestBot");
         queryId = api.whoAmI().getId();
-        api.registerEvents(TS3EventType.SERVER, TS3EventType.TEXT_PRIVATE);
+        api.registerEvents(TS3EventType.SERVER, TS3EventType.TEXT_PRIVATE/*, TS3EventType.CHANNEL*/);
 
         api.addTS3Listeners(new TS3EventAdapter() {
 
@@ -227,6 +227,17 @@ public class TeamspeakBot {
                     }
                 }
             }
+
+            @Override
+            public void onChannelCreate(ChannelCreateEvent e) {
+                checkChannelPassword(e.getChannelId(), e.getInvokerId(), e.get(ChannelProperty.CHANNEL_NAME), e.get(ChannelProperty.CHANNEL_PASSWORD));
+            }
+
+            @Override
+            public void onChannelPasswordChanged(ChannelPasswordChangedEvent e) {
+                checkChannelPassword(e.getChannelId(), e.getInvokerId(), e.get(ChannelProperty.CHANNEL_NAME), e.get(ChannelProperty.CHANNEL_PASSWORD));
+            }
+
         });
     }
 
@@ -237,6 +248,18 @@ public class TeamspeakBot {
         } catch (InterruptedException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    private void checkChannelPassword(int channelId, int invokerId, String name, String password) {
+        if(name.contains(password)) {
+            System.out.println(name + " :: " + password);
+            apiAsync.sendPrivateMessage(invokerId, "Der Channel-Name darf das Channel-Passwort nicht beinhalten!");
+            Bukkit.getScheduler().scheduleSyncDelayedTask(Verify.getInstance(), ()-> {
+                HashMap<ChannelProperty, String> properties = new HashMap<>();
+                properties.put(ChannelProperty.CHANNEL_NAME, name.replace(password, ""));
+                api.editChannel(channelId, properties);
+            }, 25L);
         }
     }
 }

@@ -10,6 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>general-spigot</artifactId>
+    <name>GameChest-Spigot</name>
 
     <repositories>
         <repository>
@@ -49,12 +50,18 @@
             <artifactId>database</artifactId>
             <version>1.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>de.bytelist.bytecloud</groupId>
+            <artifactId>ByteCloud-Plugin-Spigot</artifactId>
+            <version>2.0</version>
+        </dependency>
     </dependencies>
 
     <packaging>jar</packaging>
 
     <build>
-        <finalName>${project.name}${project.version}-${build.number}:${git.commit}</finalName>
+        <finalName>${project.name}</finalName>
 
         <resources>
             <resource>
@@ -93,7 +100,7 @@
                     <archive>
                         <manifestEntries>
                             <Implementation-Title>${project.name}-${project.version}-${build.number}:${git.commit}</Implementation-Title>
-                            <Implementation-Version>${project.version}-${build.number}:${git.commit}</Implementation-Version>
+                            <Implementation-Version>${project.version}.${build.number}:${git.commit}</Implementation-Version>
                         </manifestEntries>
                     </archive>
                 </configuration>

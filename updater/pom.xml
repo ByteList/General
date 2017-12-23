@@ -10,6 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>updater</artifactId>
+    <name>Updater</name>
 
     <dependencies>
         <dependency>
@@ -26,7 +27,7 @@
     </dependencies>
 
     <build>
-        <finalName>${project.name}-${project.version}-${build.number}:${git.commit}</finalName>
+        <finalName>${project.name}</finalName>
 
         <resources>
             <resource>
@@ -71,7 +72,7 @@
                         </manifest>
                         <manifestEntries>
                             <Implementation-Title>${project.name}-${project.version}-${build.number}:${git.commit}</Implementation-Title>
-                            <Implementation-Version>${project.version}-${build.number}:${git.commit}</Implementation-Version>
+                            <Implementation-Version>${project.version}.${build.number}:${git.commit}</Implementation-Version>
                         </manifestEntries>
                     </archive>
                 </configuration>
