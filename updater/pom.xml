@@ -70,7 +70,7 @@
                     <archive>
                         <manifest>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                            <mainClass>de.gamechest.updater.Updater</mainClass>
+                            <mainClass>de.gamechest.updater.bootstrap.Bootstrap</mainClass>
                         </manifest>
                         <manifestEntries>
                             <Implementation-Title>${project.name}-${project.version}-${build.number}:${git.commit}</Implementation-Title>
