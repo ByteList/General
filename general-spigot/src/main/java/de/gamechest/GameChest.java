@@ -89,7 +89,6 @@ public class GameChest extends JavaPlugin {
         getCommand("serverid").setExecutor(new ServerIdCommand());
         getCommand("nick").setExecutor(new NickCommands());
         getCommand("fakeplugins").setExecutor(new FakePluginCommand());
-        getCommand("version").setExecutor(new VersionCommand());
 
         getServer().getPluginManager().registerEvents(new CommandListener(), this);
 
