@@ -23,28 +23,33 @@ import java.util.logging.Logger;
 public class StatsUpdater extends Thread {
 
     private final Updater updater = Updater.getInstance();
-
-    private final DatabaseClickAttack databaseClickAttack;
-    private final DatabaseShulkerDefence databaseShulkerDefence;
-    private final DatabaseDeathRun databaseDeathRun;
-    private final DatabaseJumpDuell databaseJumpDuell;
-
     private final Logger logger = updater.getLogger();
 
     public StatsUpdater() {
         super("Stats Updater Thread");
-        databaseClickAttack = updater.getDatabaseManager().getDatabaseClickAttack();
-        databaseShulkerDefence = updater.getDatabaseManager().getDatabaseShulkerDefence();
-        databaseDeathRun = updater.getDatabaseManager().getDatabaseDeathRun();
-        databaseJumpDuell = updater.getDatabaseManager().getDatabaseJumpDuell();
     }
 
     @Override
     public void run() {
         while (updater.isRunning) {
             clickAttack();
+            try {
+                Thread.sleep(2000L);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             shulkerDefence();
+            try {
+                Thread.sleep(2000L);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             deathRun();
+            try {
+                Thread.sleep(2000L);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             jumpDuell();
             try {
                 logger.info("[Stats] Waiting 30 minutes for next update...");
@@ -56,6 +61,7 @@ public class StatsUpdater extends Thread {
     }
 
     private void clickAttack() {
+        DatabaseClickAttack databaseClickAttack = updater.getDatabaseManager().getDatabaseClickAttack();
         ArrayList<UUID> players = new ArrayList<>(databaseClickAttack.getPlayers());
 
         players.sort((o1, o2) -> {
@@ -75,12 +81,7 @@ public class StatsUpdater extends Thread {
     }
 
     private void shulkerDefence() {
-        try {
-            Thread.sleep(2000L);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
+        DatabaseShulkerDefence databaseShulkerDefence = updater.getDatabaseManager().getDatabaseShulkerDefence();
         ArrayList<UUID> players = new ArrayList<>(databaseShulkerDefence.getPlayers());
 
         players.sort((o1, o2) -> {
@@ -100,12 +101,7 @@ public class StatsUpdater extends Thread {
     }
 
     private void deathRun() {
-        try {
-            Thread.sleep(2000L);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
+        DatabaseDeathRun databaseDeathRun = updater.getDatabaseManager().getDatabaseDeathRun();
         ArrayList<UUID> players = new ArrayList<>(databaseDeathRun.getPlayers());
 
         players.sort((o1, o2) -> {
@@ -125,12 +121,7 @@ public class StatsUpdater extends Thread {
     }
 
     private void jumpDuell() {
-        try {
-            Thread.sleep(2000L);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
+        DatabaseJumpDuell databaseJumpDuell = updater.getDatabaseManager().getDatabaseJumpDuell();
         ArrayList<UUID> players = new ArrayList<>(databaseJumpDuell.getPlayers());
 
         players.sort((o1, o2) -> {
