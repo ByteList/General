@@ -10,7 +10,8 @@ import lombok.Getter;
  */
 public enum EnumFile {
 
-    LOGS("./logs/");
+    LOGS("./logs/"),
+    DOWNLOADS("./downloads");
 
     @Getter
     private String path;
