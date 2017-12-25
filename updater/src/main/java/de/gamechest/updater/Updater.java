@@ -36,7 +36,7 @@ public class Updater {
     @Getter
     private Logger logger;
     @Getter
-    private final String version = "1.0";
+    private String version = "unknown";
 
     private String stopDate;
     @Getter
@@ -48,6 +48,10 @@ public class Updater {
     public Updater() throws Exception {
         instance = this;
         isRunning = false;
+        // 2.0.23:00342580cc947e7bf8d1eeb7fb8650ab456dc3e2
+        String[] v = this.getClass().getPackage().getImplementationVersion().split(":");
+        // 2.0.23:0034258
+        version = v[0]+":"+v[1].substring(0, 7);
         stopDate = System.getProperty("de.gamechest.updater.autostop", "03:55");
 
         // This is a workaround for quite possibly the weirdest bug I have ever encountered in my life!

@@ -31,6 +31,8 @@ public class GameChest extends Plugin {
 
     @Getter
     private static GameChest instance;
+    @Getter
+    private String version = "unknown";
 
     @Getter
     private DatabaseManager databaseManager;
@@ -70,9 +72,12 @@ public class GameChest extends Plugin {
     @Override
     public void onEnable() {
         instance = this;
+        // 2.0.23:00342580cc947e7bf8d1eeb7fb8650ab456dc3e2
+        String[] v = this.getClass().getPackage().getImplementationVersion().split(":");
+        // 2.0.23:0034258
+        version = v[0]+":"+v[1].substring(0, 7);
 
         initDatabase();
-
 
         this.nick = new Nick();
         this.coins = new Coins();

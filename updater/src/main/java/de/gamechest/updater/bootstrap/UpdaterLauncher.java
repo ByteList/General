@@ -11,7 +11,7 @@ public class UpdaterLauncher {
 
     public static void main(String[] args) throws Exception {
         Updater updater = new Updater();
-        updater.getLogger().info("Enabled ByteCloud version " + updater.getVersion() + ".");
+        updater.getLogger().info("Enabled Updater version " + updater.getVersion() + ".");
         updater.start();
         updater.startStopThread();
 

@@ -56,9 +56,17 @@ public class GameChest extends JavaPlugin {
 
     public final String prefix = "§2GameChest §8\u00BB ";
 
+    @Getter
+    private String version = "unknown";
+
     @Override
     public void onEnable() {
         instance = this;
+
+        // 2.0.23:00342580cc947e7bf8d1eeb7fb8650ab456dc3e2
+        String[] v = this.getClass().getPackage().getImplementationVersion().split(":");
+        // 2.0.23:0034258
+        version = v[0]+":"+v[1].substring(0, 7);
 
         initDatabase();
 
