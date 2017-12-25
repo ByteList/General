@@ -5,10 +5,7 @@ import com.voxelboxstudios.resilent.GCPacketClient;
 import de.bytelist.bytecloud.core.ByteCloudCore;
 import de.gamechest.chatlog.ChatLog;
 import de.gamechest.coins.Coins;
-import de.gamechest.commands.FakePluginCommand;
-import de.gamechest.commands.NickCommands;
-import de.gamechest.commands.OpmeCommand;
-import de.gamechest.commands.ServerIdCommand;
+import de.gamechest.commands.*;
 import de.gamechest.database.DatabaseManager;
 import de.gamechest.database.DatabasePlayer;
 import de.gamechest.database.DatabasePlayerObject;
@@ -92,6 +89,7 @@ public class GameChest extends JavaPlugin {
         getCommand("serverid").setExecutor(new ServerIdCommand());
         getCommand("nick").setExecutor(new NickCommands());
         getCommand("fakeplugins").setExecutor(new FakePluginCommand());
+        getCommand("version").setExecutor(new VersionCommand());
 
         getServer().getPluginManager().registerEvents(new CommandListener(), this);
 

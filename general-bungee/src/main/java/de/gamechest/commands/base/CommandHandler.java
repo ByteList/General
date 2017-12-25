@@ -72,7 +72,6 @@ public class CommandHandler {
                 new PingCommand(),
                 new StatsCommand(),
                 new PlayerinfoCommand(),
-                new VersionCommand(),
 
                 new BugReportCommand(),
                 new BugInfoCommand(),
