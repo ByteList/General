@@ -11,7 +11,7 @@ import lombok.Getter;
 public enum EnumFile {
 
     LOGS("./logs/"),
-    DOWNLOADS("./downloads");
+    DOWNLOADS("./downloads/");
 
     @Getter
     private String path;
