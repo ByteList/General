@@ -1,11 +1,10 @@
 name: GameChest
 version: mvn:unknown
+#description
 author: ByteList
-website: https://bytelist.de/
-
 main: de.gamechest.GameChest
 
-loadbefore: [ClickAttack, Lobby, ShulkerDefence, DeathRun, JumpDuell, Survival, BuildPlugin, GameChestPoll, GameChestVerify]
+loadbefore: [ClickAttack, Lobby, ShulkerDefence, DeathRun, JumpDuell, Survival, BuildPlugin, GameChestPoll, Verify]
 
 commands:
   opme:
