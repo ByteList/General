@@ -4,7 +4,7 @@ version: mvn:unknown
 author: ByteList
 main: de.gamechest.GameChest
 
-loadbefore: [ClickAttack, Lobby, ShulkerDefence, DeathRun, JumpDuell, Survival, BuildPlugin, GameChestPoll, Verify]
+loadbefore: [ViaVersion, ClickAttack, Lobby, ShulkerDefence, DeathRun, JumpDuell, Survival, BuildPlugin, GameChestPoll, Verify]
 
 commands:
   opme:
