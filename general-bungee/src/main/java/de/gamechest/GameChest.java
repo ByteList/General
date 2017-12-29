@@ -96,7 +96,8 @@ public class GameChest extends Plugin {
                 new PlayerDisconnectListener(),
                 new PostLoginListener(),
                 new ProxyPingListener(),
-                new ServerListener()
+                new ServerListener(),
+                new ChatListener()
         };
         for (Listener listener : listeners)
             getProxy().getPluginManager().registerListener(this, listener);
