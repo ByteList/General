@@ -17,7 +17,9 @@ import de.gamechest.stats.Stats;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.spigotmc.CustomTimingsHandler;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -58,6 +60,10 @@ public class GameChest extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        //Enable timings
+        ((SimplePluginManager) Bukkit.getPluginManager()).useTimings( true );
+        CustomTimingsHandler.reload();
+
         instance = this;
 
         // 2.0.23:00342580cc947e7bf8d1eeb7fb8650ab456dc3e2
