@@ -1,5 +1,5 @@
 name: GameChestVerify
-version: 0.1
+version: mvn:unknown
 author: ByteList
 main: de.gamechest.verify.Verify
 
