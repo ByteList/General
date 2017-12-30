@@ -37,7 +37,7 @@ public class TabList {
         } else if(tabListMode.isColor()) {
             asColor(player, tabListMode);
         } else {
-            throw new IllegalArgumentException(tabListMode.toString() + "can not be updated!");
+            throw new IllegalArgumentException(tabListMode.toString() + " cannot be updated!");
         }
     }
 
@@ -54,11 +54,13 @@ public class TabList {
      * @param player was used
      */
     @Deprecated
-    public static void onlyUpdatePlayers(Player player) {}
+    public static void onlyUpdatePlayers(Player player) {
+        throw new UnsupportedOperationException("Method is not supported yet.");
+    }
 
     private static void asRank(Player player, Rank rank) {
         String prefix = rank.getPrefix();
-        String s = rank.getId()+rank.getShortName();
+        String teamName = rank.getId()+rank.getShortName();
 
         Scoreboard playerBoard = player.getScoreboard();
         if(playerBoard == null) {
@@ -72,13 +74,13 @@ public class TabList {
                 board = Bukkit.getScoreboardManager().getNewScoreboard();
                 all.setScoreboard(board);
             }
-            Team team = board.getTeam(s);
+            Team team = board.getTeam(teamName);
             if(team == null) {
-                team = board.registerNewTeam(s);
-                team.setPrefix(prefix);
-                team.setSuffix("§r");
-                team.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
+                team = board.registerNewTeam(teamName);
             }
+            team.setPrefix(prefix);
+            team.setSuffix("§r");
+            team.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
             team.addEntry(player.getName());
 
             if(all.getUniqueId() != player.getUniqueId() && playerModes.containsKey(all.getUniqueId())) {
@@ -93,7 +95,7 @@ public class TabList {
             throw new IllegalArgumentException(tabListMode.name()+" is not a color!");
         }
         String prefix = tabListMode.getColorCode();
-        String s = prefix+"color";
+        String teamName = prefix+"color";
 
         Scoreboard playerBoard = player.getScoreboard();
         if(playerBoard == null) {
@@ -107,9 +109,9 @@ public class TabList {
                 board = Bukkit.getScoreboardManager().getNewScoreboard();
                 all.setScoreboard(board);
             }
-            Team team = board.getTeam(s);
+            Team team = board.getTeam(teamName);
             if(team == null) {
-                team = board.registerNewTeam(s);
+                team = board.registerNewTeam(teamName);
                 team.setPrefix("§"+prefix);
                 team.setSuffix("§r");
                 team.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
@@ -126,7 +128,7 @@ public class TabList {
     private static void asCustom(Player player, String pos, String prefix, String suffix) {
         TabListMode tabListMode = TabListMode.CUSTOM;
 
-        String s = pos+"custom";
+        String teamName = pos+"cstm";
 
         Scoreboard playerBoard = player.getScoreboard();
         if(playerBoard == null) {
@@ -138,62 +140,63 @@ public class TabList {
         customSuffix.put(player.getUniqueId(), suffix);
         customPos.put(player.getUniqueId(), pos);
 
+        playerModes.put(player.getUniqueId(), tabListMode);
+
         for(Player all : Bukkit.getOnlinePlayers()) {
             Scoreboard board = all.getScoreboard();
             if(board == null) {
                 board = Bukkit.getScoreboardManager().getNewScoreboard();
                 all.setScoreboard(board);
             }
-            Team team = board.getTeam(s);
+            Team team = board.getTeam(teamName);
             if(team == null) {
-                team = board.registerNewTeam(s);
-                team.setPrefix(prefix);
-                team.setSuffix(suffix);
-                team.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
+                team = board.registerNewTeam(teamName);
             }
+            team.setPrefix(prefix);
+            team.setSuffix(suffix);
+            team.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
             team.addEntry(player.getName());
 
             if(all.getUniqueId() != player.getUniqueId() && playerModes.containsKey(all.getUniqueId())) {
                 update0(playerBoard, all);
             }
         }
-        playerModes.put(player.getUniqueId(), tabListMode);
     }
 
-    private static void update0(Scoreboard playerBoard, Player all) {
-        if(playerModes.containsKey(all.getUniqueId())) {
-            TabListMode atabListMode = playerModes.get(all.getUniqueId());
-            String as = "null";
-            Team ateam;
-            String aprefix = "null~";
-            String asuffix = "§r";
-            if (atabListMode.isRank()) {
-                Rank arank;
+    private static void update0(Scoreboard playerBoard, Player player) {
+        if(playerModes.containsKey(player.getUniqueId())) {
+            TabListMode tabListMode = playerModes.get(player.getUniqueId());
+            String teamName = "null";
+            Team team;
+            String prefix = "null~";
+            String suffix = "§r";
+            if (tabListMode.isRank()) {
+                Rank rank;
                 Nick nick = GameChest.getInstance().getNick();
-                if (nick.isNicked(all.getUniqueId()) || GameChest.getInstance().isRankToggled(all.getUniqueId())) {
-                    arank = Rank.SPIELER;
+                if (nick.isNicked(player.getUniqueId()) || GameChest.getInstance().isRankToggled(player.getUniqueId())) {
+                    rank = Rank.SPIELER;
                 } else {
-                    arank = GameChest.getInstance().getRank(all.getUniqueId());
+                    rank = GameChest.getInstance().getRank(player.getUniqueId());
                 }
-                as = arank.getId() + arank.getShortName();
-                aprefix = arank.getPrefix();
-            } else if(atabListMode.isColor()) {
-                aprefix = "§" + atabListMode.getColorCode();
-                as = aprefix + "color";
-            } else if(atabListMode.isCustom()) {
-                aprefix = customPrefix.get(all.getUniqueId());
-                asuffix = customSuffix.get(all.getUniqueId());
-                as = customPos.get(all.getUniqueId()) + "custom";
+                teamName = rank.getId() + rank.getShortName();
+                prefix = rank.getPrefix();
+            } else if(tabListMode.isColor()) {
+                prefix = "§" + tabListMode.getColorCode();
+                teamName = prefix + "color";
+            } else if(tabListMode.isCustom()) {
+                prefix = customPrefix.get(player.getUniqueId());
+                suffix = customSuffix.get(player.getUniqueId());
+                teamName = customPos.get(player.getUniqueId()) + "cstm";
             }
 
-            ateam = playerBoard.getTeam(as);
-            if (ateam == null) {
-                ateam = playerBoard.registerNewTeam(as);
-                ateam.setPrefix(aprefix);
-                ateam.setSuffix(asuffix);
-                ateam.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
+            team = playerBoard.getTeam(teamName);
+            if (team == null) {
+                team = playerBoard.registerNewTeam(teamName);
             }
-            ateam.addEntry(all.getName());
+            team.setPrefix(prefix);
+            team.setSuffix(suffix);
+            team.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
+            team.addEntry(player.getName());
         }
     }
 
