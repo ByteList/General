@@ -82,20 +82,6 @@ public class ServerCommand extends GCCommand {
                 String serverId = byteCloudMaster.getCloudHandler().getUniqueServerId(args[1]);
 
                 ServerInfo currentServer = gameChest.getProxy().getServerInfo(serverId);
-                String rndLobby = byteCloudMaster.getCloudHandler().getRandomLobbyId(currentServer.getName());
-                if(rndLobby == null) {
-                    sender.sendMessage(byteCloudMaster.prefix+"§cKonnte keinen Lobby-Server finden! Spieler werden gekickt.");
-                    for(ProxiedPlayer player : currentServer.getPlayers()) {
-                        player.disconnect(byteCloudMaster.prefix+"§cDein Server wurde gestoppt.\n§cLeider konnte kein Lobby-Server erreicht werden.");
-                    }
-                } else {
-                    ServerInfo randomLobby = gameChest.getProxy().getServerInfo(rndLobby);
-
-                    for(ProxiedPlayer player : currentServer.getPlayers()) {
-                        player.sendMessage("§6Verbinde zur Lobby...");
-                        player.connect(randomLobby);
-                    }
-                }
 
                 new Thread("Cloud-Stop-"+currentServer.getName()) {
                     @Override
