@@ -47,7 +47,7 @@ class NickPackets {
             Reflection.sendListPacket(players, add);
             Reflection.sendPlayerPacket(p, add);
 
-            nick.performDeath(p);
+            nick.updateSkin(p);
             PacketPlayOutNamedEntitySpawn spawn = new PacketPlayOutNamedEntitySpawn(cp.getHandle());
             Reflection.sendListPacket(players, spawn);
         }
@@ -83,7 +83,7 @@ class NickPackets {
         Reflection.sendListPacket(players, add);
         Reflection.sendPlayerPacket(p, add);
 
-        nick.performDeath(p);
+        nick.updateSkin(p);
 
         PacketPlayOutNamedEntitySpawn spawn = new PacketPlayOutNamedEntitySpawn(cp.getHandle());
         Reflection.sendListPacket(players, spawn);

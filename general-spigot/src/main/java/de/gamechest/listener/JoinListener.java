@@ -69,7 +69,7 @@ public class JoinListener {
         Nick nick = gameChest.getNick();
 
         if(nick.isNicked(p.getUniqueId())) {
-            nick.nick(p, nick.getNick(p.getUniqueId()));
+            nick.nickOnConnect(p, nick.getNick(p.getUniqueId()));
         }
     }
 

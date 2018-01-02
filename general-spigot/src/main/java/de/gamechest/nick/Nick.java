@@ -36,14 +36,12 @@ public class Nick {
 
     private NickPackets packets;
 
-    private final DatabaseManager databaseManager;
+    private final DatabaseManager databaseManager = GameChest.getInstance().getDatabaseManager();
 
     public final String prefix = "§5Nick §8\u00BB";
 
     public Nick() {
         packets = new NickPackets(this);
-
-        databaseManager = GameChest.getInstance().getDatabaseManager();
     }
 
     public void nick(Player p) {
@@ -135,7 +133,7 @@ public class Nick {
         return databaseManager.getDatabaseNick().getRandomNickname();
     }
 
-    void performDeath(Player player) {
+    void updateSkin(Player player) {
         EntityPlayer entityPlayer = ((CraftPlayer)player).getHandle();
 
         final boolean flying = player.isFlying();
