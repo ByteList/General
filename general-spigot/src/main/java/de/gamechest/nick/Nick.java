@@ -125,7 +125,6 @@ public class Nick {
     void performDeath(Player player) {
         EntityPlayer entityPlayer = ((CraftPlayer)player).getHandle();
 
-        final Location location = player.getLocation();
         final boolean flying = player.isFlying();
         final double oldHealth = player.getHealth();
         final double maxHealth = getHealth(player);
@@ -139,12 +138,9 @@ public class Nick {
 
         PacketPlayOutRespawn packet = new PacketPlayOutRespawn(player.getWorld().getEnvironment().getId(),
                 entityPlayer.getWorld().getDifficulty(), entityPlayer.getWorld().getWorldData().getType(), entityPlayer.playerInteractManager.getGameMode());
-
         entityPlayer.playerConnection.sendPacket(packet);
 
-        // Testing Chunk update...
-        // entityPlayer.playerConnection.teleport(new Location(p.getWorld(), entityPlayer.locX, entityPlayer.locY+0.1, entityPlayer.locZ, entityPlayer.yaw, entityPlayer.pitch));
-        player.teleport(location.add(0, 0.1, 0));
+        entityPlayer.playerConnection.teleport(new Location(player.getWorld(), entityPlayer.locX, entityPlayer.locY+0.1, entityPlayer.locZ, entityPlayer.yaw, entityPlayer.pitch));
         Chunk chunk = player.getWorld().getChunkAt(player.getLocation());
         for (int x = -10; x < 10; x++) {
             for (int z = -10; z < 10; z++) {
