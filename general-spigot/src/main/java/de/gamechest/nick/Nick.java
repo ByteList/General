@@ -144,7 +144,9 @@ public class Nick {
         Chunk chunk = player.getWorld().getChunkAt(player.getLocation());
         for (int x = -10; x < 10; x++) {
             for (int z = -10; z < 10; z++) {
-                player.getWorld().refreshChunk(chunk.getX() + x, chunk.getZ() + z);
+//                player.getWorld().refreshChunk(chunk.getX() + x, chunk.getZ() + z);
+                player.getWorld().unloadChunk(chunk.getX() + x, chunk.getZ() + z);
+                player.getWorld().loadChunk(chunk.getX() + x, chunk.getZ() + z);
             }
         }
         player.getInventory().setArmorContents(armorContents);
