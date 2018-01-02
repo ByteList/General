@@ -86,9 +86,9 @@ public class ServerCommand extends GCCommand {
                 new Thread("Cloud-Stop-"+currentServer.getName()) {
                     @Override
                     public void run() {
-                        while (true) {
-                            if(currentServer.getPlayers().size() == 0) break;
-                        }
+//                        while (true) {
+//                            if(currentServer.getPlayers().size() == 0) break;
+//                        }
                         try {
                             Thread.sleep(2000L);
                         } catch (InterruptedException e) {
