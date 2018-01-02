@@ -21,7 +21,7 @@ class NickPackets {
         this.nick = nick;
     }
 
-    public void nickPlayer(Player p, String nickname) throws Exception {
+    public void nickPlayer(Player p, String nickname, boolean onJoin) throws Exception {
         CraftPlayer cp = ((CraftPlayer) p);
 
         GameProfile gp = cp.getProfile();
@@ -35,22 +35,22 @@ class NickPackets {
         getField(GameProfile.class, "name").set(cp.getProfile(), nickname);
         nick.setSkin(p.getUniqueId(), nickname);
 
-        PacketPlayOutPlayerInfo remove = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, cp.getHandle());
-        Reflection.sendListPacket(players, remove);
-        Reflection.sendPlayerPacket(p, remove);
+        if(!onJoin) {
+            PacketPlayOutPlayerInfo remove = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, cp.getHandle());
+            Reflection.sendListPacket(players, remove);
+            Reflection.sendPlayerPacket(p, remove);
 
-        PacketPlayOutEntityDestroy destroy = new PacketPlayOutEntityDestroy(cp.getEntityId());
-        Reflection.sendListPacket(players, destroy);
+            PacketPlayOutEntityDestroy destroy = new PacketPlayOutEntityDestroy(cp.getEntityId());
+            Reflection.sendListPacket(players, destroy);
 
-        PacketPlayOutPlayerInfo add = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, cp.getHandle());
-        Reflection.sendListPacket(players, add);
-        Reflection.sendPlayerPacket(p, add);
+            PacketPlayOutPlayerInfo add = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, cp.getHandle());
+            Reflection.sendListPacket(players, add);
+            Reflection.sendPlayerPacket(p, add);
 
-        nick.performDeath(p);
-
-        PacketPlayOutNamedEntitySpawn spawn = new PacketPlayOutNamedEntitySpawn(cp.getHandle());
-        Reflection.sendListPacket(players, spawn);
-
+            nick.performDeath(p);
+            PacketPlayOutNamedEntitySpawn spawn = new PacketPlayOutNamedEntitySpawn(cp.getHandle());
+            Reflection.sendListPacket(players, spawn);
+        }
 
         players.forEach(player -> player.showPlayer(p));
 

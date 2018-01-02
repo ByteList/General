@@ -55,7 +55,20 @@ public class Nick {
         databaseManager.getDatabaseNick().setDatabaseObject(nickname, DatabaseNickObject.USED, p.getName());
         databaseManager.getAsync().getOnlinePlayer(p.getUniqueId(), databaseOnlinePlayer-> databaseOnlinePlayer.setDatabaseObject(DatabaseOnlinePlayerObject.NICKNAME, nickname), DatabaseOnlinePlayerObject.NICKNAME);
         try {
-            packets.nickPlayer(p, nickname);
+            packets.nickPlayer(p, nickname, false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        p.sendMessage(GameChest.getInstance().getNick().prefix + "§bDein Nickname ist nun: §9"+nickname);
+        Bukkit.getPluginManager().callEvent(new UserNickEvent(p, p.getCustomName(), p.getName()));
+    }
+
+    public void nickOnConnect(Player p, String nickname) {
+        p.setCustomName(p.getName());
+        databaseManager.getDatabaseNick().setDatabaseObject(nickname, DatabaseNickObject.USED, p.getName());
+        databaseManager.getAsync().getOnlinePlayer(p.getUniqueId(), databaseOnlinePlayer-> databaseOnlinePlayer.setDatabaseObject(DatabaseOnlinePlayerObject.NICKNAME, nickname), DatabaseOnlinePlayerObject.NICKNAME);
+        try {
+            packets.nickPlayer(p, nickname, true);
         } catch (Exception e) {
             e.printStackTrace();
         }
