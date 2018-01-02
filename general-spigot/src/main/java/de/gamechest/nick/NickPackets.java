@@ -17,11 +17,11 @@ class NickPackets {
 
     private final Nick nick;
 
-    protected NickPackets(Nick nick) {
+    NickPackets(Nick nick) {
         this.nick = nick;
     }
 
-    public void nickPlayer(Player p, String nickname, boolean onJoin) throws Exception {
+    void nickPlayer(Player p, String nickname, boolean onJoin) throws Exception {
         CraftPlayer cp = ((CraftPlayer) p);
 
         GameProfile gp = cp.getProfile();
@@ -30,9 +30,12 @@ class NickPackets {
         List<Player> players = Bukkit.getOnlinePlayers().stream().filter(player -> player.canSee(p)).collect(Collectors.toList());
         players.remove(p);
 
-        players.forEach(player -> player.hidePlayer(p));
+        players.forEach(player -> {
+            player.hidePlayer(p);
+            p.hidePlayer(player);
+        });
 
-        getField(GameProfile.class, "name").set(cp.getProfile(), nickname);
+        getNameField(GameProfile.class).set(cp.getProfile(), nickname);
         nick.setSkin(p.getUniqueId(), nickname);
 
         if(!onJoin) {
@@ -52,13 +55,16 @@ class NickPackets {
             Reflection.sendListPacket(players, spawn);
         }
 
-        players.forEach(player -> player.showPlayer(p));
+        players.forEach(player -> {
+            player.showPlayer(p);
+            p.showPlayer(player);
+        });
 
         System.out.println("[GCG/Nick] Player " + p.getCustomName() + " is now nicked as " + nickname);
     }
 
 
-    public void unnickPlayer(Player p) throws Exception {
+    void unnickPlayer(Player p) throws Exception {
         CraftPlayer cp = (CraftPlayer) p;
 
         GameProfile gp = cp.getProfile();
@@ -67,9 +73,12 @@ class NickPackets {
         List<Player> players = Bukkit.getOnlinePlayers().stream().filter(player -> player.canSee(p)).collect(Collectors.toList());
         players.remove(p);
 
-        players.forEach(player -> player.hidePlayer(p));
+        players.forEach(player -> {
+            player.hidePlayer(p);
+            p.hidePlayer(player);
+        });
 
-        getField(GameProfile.class, "name").set(cp.getProfile(), p.getCustomName());
+        getNameField(GameProfile.class).set(cp.getProfile(), p.getCustomName());
         nick.resetSkin(p.getUniqueId());
 
         PacketPlayOutPlayerInfo remove = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, cp.getHandle());
@@ -88,20 +97,23 @@ class NickPackets {
         PacketPlayOutNamedEntitySpawn spawn = new PacketPlayOutNamedEntitySpawn(cp.getHandle());
         Reflection.sendListPacket(players, spawn);
 
-        players.forEach(player -> player.showPlayer(p));
-
+        players.forEach(player -> {
+            player.showPlayer(p);
+            p.showPlayer(player);
+        });
 
         System.out.println("[GCG/Nick] Player " + p.getName() + " is now unnicked");
     }
 
-    private Field getField(Class<?> clazz, String name) {
+    private Field getNameField(Class<?> clazz) {
         try {
-            Field field = clazz.getDeclaredField(name);
+            Field field = clazz.getDeclaredField("name");
             field.setAccessible(true);
             return field;
-        } catch (NoSuchFieldException | SecurityException ignored) {
+        } catch (NoSuchFieldException | SecurityException ex) {
+            ex.printStackTrace();
+            return null;
         }
-        return null;
     }
 
 }
