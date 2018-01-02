@@ -43,7 +43,7 @@ public class FakePlayer {
             PacketPlayOutNamedEntitySpawn packet = new PacketPlayOutNamedEntitySpawn(this.entityFakePlayer);
 
             DataWatcher watcher = new DataWatcher(null);
-            watcher.set(new DataWatcherObject<>(12, DataWatcherRegistry.a), (byte) 0xFF);
+            watcher.register(new DataWatcherObject<>(12, DataWatcherRegistry.a), (byte) 0xFF);
             set(packet, "h", watcher);
             addToTabList();
             sendPacket(packet);
