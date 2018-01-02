@@ -17,6 +17,7 @@ import net.minecraft.server.v1_9_R2.EntityPlayer;
 import net.minecraft.server.v1_9_R2.PacketPlayOutRespawn;
 import org.bson.Document;
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_9_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -121,34 +122,48 @@ public class Nick {
         return databaseManager.getDatabaseNick().getRandomNickname();
     }
 
-    public void performDeath(Player p) {
-        EntityPlayer entityPlayer = ((CraftPlayer)p).getHandle();
+    void performDeath(Player player) {
+        EntityPlayer entityPlayer = ((CraftPlayer)player).getHandle();
 
-        double oldHealth = p.getHealth();
-        double maxHealth = getHealth(p);
-        double healthScale = p.getHealthScale();
-        int foodLevel = p.getFoodLevel();
+        final Location location = player.getLocation();
+        final boolean flying = player.isFlying();
+        final double oldHealth = player.getHealth();
+        final double maxHealth = getHealth(player);
+        final double healthScale = player.getHealthScale();
+        final int foodLevel = player.getFoodLevel();
+        final int level = player.getLevel();
+        final float xp = player.getExp();
+        final ItemStack[] armorContents = player.getInventory().getArmorContents();
 
-        ItemStack[] armorContents = p.getInventory().getArmorContents();
+        player.getInventory().setArmorContents(null);
 
-        p.getInventory().setArmorContents(null);
-
-        PacketPlayOutRespawn packet = new PacketPlayOutRespawn(p.getWorld().getEnvironment().getId(),
+        PacketPlayOutRespawn packet = new PacketPlayOutRespawn(player.getWorld().getEnvironment().getId(),
                 entityPlayer.getWorld().getDifficulty(), entityPlayer.getWorld().getWorldData().getType(), entityPlayer.playerInteractManager.getGameMode());
 
         entityPlayer.playerConnection.sendPacket(packet);
-        entityPlayer.playerConnection.teleport(new Location(p.getWorld(), entityPlayer.locX, entityPlayer.locY+0.1, entityPlayer.locZ, entityPlayer.yaw, entityPlayer.pitch));
 
-        p.getInventory().setArmorContents(armorContents);
-        p.updateInventory();
+        // Testing Chunk update...
+        // entityPlayer.playerConnection.teleport(new Location(p.getWorld(), entityPlayer.locX, entityPlayer.locY+0.1, entityPlayer.locZ, entityPlayer.yaw, entityPlayer.pitch));
+        player.teleport(location.add(0, 0.1, 0));
+        Chunk chunk = player.getWorld().getChunkAt(player.getLocation());
+        for (int x = -10; x < 10; x++) {
+            for (int z = -10; z < 10; z++) {
+                player.getWorld().refreshChunk(chunk.getX() + x, chunk.getZ() + z);
+            }
+        }
+        player.getInventory().setArmorContents(armorContents);
+        player.updateInventory();
 
-        p.getInventory().setHeldItemSlot(p.getInventory().getHeldItemSlot());
+        player.getInventory().setHeldItemSlot(player.getInventory().getHeldItemSlot());
 
-        p.resetMaxHealth();
-        p.setHealthScale(healthScale);
-        p.setMaxHealth(maxHealth);
-        p.setHealth(oldHealth);
-        p.setFoodLevel(foodLevel);
+        player.setFlying(flying);
+        player.resetMaxHealth();
+        player.setHealthScale(healthScale);
+        player.setMaxHealth(maxHealth);
+        player.setHealth(oldHealth);
+        player.setFoodLevel(foodLevel);
+        player.setLevel(level);
+        player.setExp(xp);
     }
 
     public void setSkin(UUID uuid, String nick) {

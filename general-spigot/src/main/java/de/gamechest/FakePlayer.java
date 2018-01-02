@@ -2,9 +2,12 @@ package de.gamechest;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import lombok.Getter;
 import net.minecraft.server.v1_9_R2.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.craftbukkit.v1_9_R2.CraftServer;
+import org.bukkit.craftbukkit.v1_9_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_9_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
@@ -13,56 +16,34 @@ import java.lang.reflect.Method;
 import java.util.UUID;
 
 public class FakePlayer {
-    public Location loc;
-    public GameProfile profile;
-    public Integer id;
-    public Player p;
 
-    public EntityPlayer entityPlayer;
+    @Getter
+    private final Player player;
+    @Getter
+    private final EntityPlayer entityFakePlayer;
+    @Getter
+    private final GameProfile profile;
+    @Getter
+    private String displayname;
+    @Getter
+    private Location location;
 
-    public String displayname;
-
-    public FakePlayer(Player p, Location loc, String displayname) {
-        this.p = p;
-        this.loc = loc.clone();
+    public FakePlayer(Player player, Location location, String displayname) {
+        this.player = player;
+        this.location = location.clone();
         this.displayname = displayname;
         this.profile = new GameProfile(UUID.randomUUID(), displayname);
-        this.id = (int) Math.ceil(Math.random() * 10000) + 20000;
-        CraftPlayer craftPlayer = (CraftPlayer) p;
-        this.entityPlayer = new EntityPlayer(craftPlayer.getHandle().server, craftPlayer.getHandle().x(), profile, new PlayerInteractManager(craftPlayer.getHandle().getWorld()));
-    }
-
-    public void teleport(Location location) {
-        PacketPlayOutEntityTeleport packet = new PacketPlayOutEntityTeleport();
-        try {
-            set(packet, "e", getFixRotation(location.getYaw()));
-            set(packet, "a", id);
-            set(packet, "b", location.getX());
-            set(packet, "c", location.getY());
-            set(packet, "d", location.getZ());
-            set(packet, "f", getFixRotation(location.getPitch()));
-            sendPacket(packet);
-            this.loc = location.clone();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        this.entityFakePlayer = new EntityPlayer(((CraftServer) Bukkit.getServer()).getServer(),
+                ((CraftWorld) this.location.getWorld()).getHandle(), profile, new PlayerInteractManager(((CraftWorld) getLocation().getWorld()).getHandle()));
     }
 
     public void spawn() {
         try {
-            PacketPlayOutNamedEntitySpawn packet = new PacketPlayOutNamedEntitySpawn();
+            entityFakePlayer.setLocation(location.getX(), location.getY(), location.getZ(), location.getPitch(), location.getYaw());
+            PacketPlayOutNamedEntitySpawn packet = new PacketPlayOutNamedEntitySpawn(this.entityFakePlayer);
 
-            set(packet, "a", id);
-            set(packet, "b", profile.getId());
-            set(packet, "c", loc.getX());
-            set(packet, "d", loc.getY());
-            set(packet, "e", loc.getZ());
-            set(packet, "f", getFixRotation(loc.getYaw()));
-            set(packet, "g", getFixRotation(loc.getPitch()));
             DataWatcher watcher = new DataWatcher(null);
-            watcher.register(new DataWatcherObject<>(6, DataWatcherRegistry.c), (float) 20);
-            watcher.register(new DataWatcherObject<>(10, DataWatcherRegistry.a), (byte) 127);
+            watcher.set(new DataWatcherObject<>(12, DataWatcherRegistry.a), (byte) 0xFF);
             set(packet, "h", watcher);
             addToTabList();
             sendPacket(packet);
@@ -72,24 +53,14 @@ public class FakePlayer {
     }
 
     public void destroy() {
-        PacketPlayOutEntityDestroy packet = new PacketPlayOutEntityDestroy(id);
+        PacketPlayOutEntityDestroy packet = new PacketPlayOutEntityDestroy(entityFakePlayer.getId());
         rmvFromTabList();
         sendPacket(packet);
     }
 
     public void addToTabList() {
         try {
-            PacketPlayOutPlayerInfo packet = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, entityPlayer);
-//            PacketPlayOutPlayerInfo.PlayerInfoData data = packet.new PlayerInfoData(profile, 0, WorldSettings.EnumGamemode.SURVIVAL, CraftChatMessage.fromString(profile.getName())[0]);
-//
-//            @SuppressWarnings("unchecked")
-//            List<PacketPlayOutPlayerInfo.PlayerInfoData> players = (List<PacketPlayOutPlayerInfo.PlayerInfoData>) get(packet, "b");
-//            players.add(data);
-//
-//            set(packet, "a", PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER);
-//            set(packet, "b", players);
-
-
+            PacketPlayOutPlayerInfo packet = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, entityFakePlayer);
             sendPacket(packet);
         } catch (Exception e) {
             e.printStackTrace();
@@ -98,16 +69,7 @@ public class FakePlayer {
 
     public void rmvFromTabList() {
         try {
-            PacketPlayOutPlayerInfo packet = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, entityPlayer);
-//            packet.getClass();
-//            PacketPlayOutPlayerInfo.PlayerInfoData data = packet.new PlayerInfoData(profile, 0, WorldSettings.EnumGamemode.SURVIVAL, CraftChatMessage.fromString(profile.getName())[0]);
-//            @SuppressWarnings("unchecked")
-//            List<PacketPlayOutPlayerInfo.PlayerInfoData> players = (List<PacketPlayOutPlayerInfo.PlayerInfoData>) get(packet, "b");
-//            players.add(data);
-//
-//            set(packet, "a", PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER);
-//            set(packet, "b", players);
-
+            PacketPlayOutPlayerInfo packet = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, entityFakePlayer);
             sendPacket(packet);
         } catch (Exception e) {
             e.printStackTrace();
@@ -115,19 +77,10 @@ public class FakePlayer {
     }
 
     public void changeSkin(UUID uuid) {
-        if (uuid == null)
-            return;
-        try {
+        if (uuid == null) return;
 
-            Skin skin = new Skin(uuid);
-
-            String value = skin.getSkinValue();
-            String signature = skin.getSkinSignature();
-            profile.getProperties().put("textures", new Property("textures", value, signature));
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Skin skin = new Skin(uuid);
+        changeSkin(skin.getSkinValue(), skin.getSkinSignature());
     }
 
     public void changeSkin(String value, String signature) {
@@ -138,12 +91,23 @@ public class FakePlayer {
         }
     }
 
-    public void lookAtPlayer() {
-        headRotation(lookAt(loc, p.getLocation()));
+    public void teleport(Location location) {
+        try {
+            entityFakePlayer.setLocation(location.getX(), location.getY(), location.getZ(), location.getPitch(), location.getYaw());
+            sendPacket(new PacketPlayOutEntityTeleport(entityFakePlayer));
+            this.location = location.clone();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
-    public Location lookAt(Location loc, Location lookat) {
-        //Clone the loc to prevent applied changes to the input loc
+    public void lookAtPlayer() {
+        headRotation(getLookAtLocation(location, player.getLocation()));
+    }
+
+    public Location getLookAtLocation(Location loc, Location lookat) {
+        //Clone the location to prevent applied changes to the input location
         loc = loc.clone();
 
         // Values of change in distance (make it relative)
@@ -159,7 +123,7 @@ public class FakePlayer {
             } else {
                 loc.setYaw((float) (0.5 * Math.PI));
             }
-            loc.setYaw((float) loc.getYaw() - (float) Math.atan(dz / dx));
+            loc.setYaw(loc.getYaw() - (float) Math.atan(dz / dx));
         } else if (dz < 0) {
             loc.setYaw((float) Math.PI);
         }
@@ -179,11 +143,7 @@ public class FakePlayer {
 
     public void equip(EnumItemSlot slot, ItemStack istack) {
         try {
-            PacketPlayOutEntityEquipment packet = new PacketPlayOutEntityEquipment();
-            set(packet, "a", id);
-            set(packet, "b", slot);
-            set(packet, "c", istack);
-            sendPacket(packet);
+            sendPacket(new PacketPlayOutEntityEquipment(entityFakePlayer.getId(), slot, istack));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -191,10 +151,7 @@ public class FakePlayer {
 
     public void animation(int animation) {
         try {
-            PacketPlayOutAnimation packet = new PacketPlayOutAnimation();
-            set(packet, "a", id);
-            set(packet, "b", (byte) animation);
-            sendPacket(packet);
+            sendPacket(new PacketPlayOutAnimation(entityFakePlayer, animation));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -202,29 +159,23 @@ public class FakePlayer {
 
     public void headRotation(Location loc) {
         try {
-            PacketPlayOutEntity.PacketPlayOutEntityLook packet = new PacketPlayOutEntity.PacketPlayOutEntityLook(id, getFixRotation(loc.getYaw()), getFixRotation(loc.getPitch()), true);
-            PacketPlayOutEntityHeadRotation packetHead = new PacketPlayOutEntityHeadRotation();
-            set(packetHead, "a", id);
-            set(packetHead, "b", getFixRotation(loc.getYaw()));
-
-            sendPacket(packet);
-            sendPacket(packetHead);
+            sendPacket(new PacketPlayOutEntity.PacketPlayOutEntityLook(entityFakePlayer.getId(), getFixRotation(loc.getYaw()), getFixRotation(loc.getPitch()), true));
+            sendPacket(new PacketPlayOutEntityHeadRotation(entityFakePlayer, getFixRotation(loc.getYaw())));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-
-    public void sendPacket(Object packet) {
+    private void sendPacket(Object packet) {
         String path = Bukkit.getServer().getClass().getPackage().getName();
         String version = path.substring(path.lastIndexOf(".") + 1, path.length());
         try {
-            Method getHandle = this.p.getClass().getMethod("getHandle", new Class[0]);
-            Object entityPlayer = getHandle.invoke(this.p, new Object[0]);
+            Method getHandle = ((CraftPlayer) this.player).getClass().getMethod("getHandle");
+            Object entityPlayer = getHandle.invoke(this.player);
             Object pConnection = entityPlayer.getClass().getField("playerConnection").get(entityPlayer);
             Class<?> packetClass = Class.forName("net.minecraft.server." + version + ".Packet");
-            Method sendMethod = pConnection.getClass().getMethod("sendPacket", new Class[]{packetClass});
-            sendMethod.invoke(pConnection, new Object[]{packet});
+            Method sendMethod = pConnection.getClass().getMethod("sendPacket", packetClass);
+            sendMethod.invoke(pConnection, packet);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -242,12 +193,11 @@ public class FakePlayer {
         field.set(instance, value);
     }
 
-    public int getFixLocation(double pos) {
-        return (int) MathHelper.floor(pos * 32.0D);
+    private int getFixLocation(double pos) {
+        return MathHelper.floor(pos * 32.0D);
     }
 
-
-    public byte getFixRotation(float yawpitch) {
+    private byte getFixRotation(float yawpitch) {
         return (byte) ((int) (yawpitch * 256.0F / 360.0F));
     }
 }
