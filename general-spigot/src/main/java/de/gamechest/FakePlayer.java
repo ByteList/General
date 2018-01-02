@@ -61,13 +61,9 @@ public class FakePlayer {
             set(packet, "f", getFixRotation(loc.getYaw()));
             set(packet, "g", getFixRotation(loc.getPitch()));
             DataWatcher watcher = new DataWatcher(null);
-            /* in 1.8 = w.a(6, 18F);
-			 * in 1.9 = w.set(DataWatcherRegistry.c.a(6),18F);
-			 */
-            watcher.register(new DataWatcherObject<>(6, DataWatcherRegistry.c), 3F);
-//            watcher.register(new DataWatcherObject<>(13, DataWatcherRegistry.a), (byte) 127);
+            watcher.register(new DataWatcherObject<>(6, DataWatcherRegistry.c), (float) 20);
+            watcher.register(new DataWatcherObject<>(10, DataWatcherRegistry.a), (byte) 127);
             set(packet, "h", watcher);
-//            set(reflector, "i", watcher);
             addToTabList();
             sendPacket(packet);
         } catch (Exception e) {
