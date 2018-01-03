@@ -2,6 +2,7 @@ package de.gamechest;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.craftbukkit.v1_9_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -39,7 +40,7 @@ public class BountifulAPI {
 
     public static void sendPacket(Player player, Object packet) {
         try {
-            Object handle = player.getClass().getMethod("getHandle").invoke(player);
+            Object handle = ((CraftPlayer) player).getClass().getMethod("getHandle").invoke(player);
             Object playerConnection = handle.getClass().getField("playerConnection").get(handle);
             playerConnection.getClass().getMethod("sendPacket", getNMSClass("Packet")).invoke(playerConnection, packet);
         } catch (Exception e) {

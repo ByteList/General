@@ -51,6 +51,9 @@ public class JenkinsUpdater extends Thread {
                 update("Lobby", urlPath+"/GameChest-Lobby/lastSuccessfulBuild/", urlPath+"GameChest-Lobby/lastSuccessfulBuild/artifact/target/Lobby.jar",
                         endLocPath+"Templates/LOBBY/plugins/");
 
+                update("Survival", urlPath+"/GameChest-Survival/lastSuccessfulBuild/", urlPath+"GameChest-Survival/lastSuccessfulBuild/artifact/target/Survival.jar",
+                        endLocPath+"Servers/permanent/Survival/plugins/update/");
+
 //                update("ClickAttack", urlPath+"/GameChest-ClickAttack/lastSuccessfulBuild/", urlPath+"GameChest-ClickAttack/lastSuccessfulBuild/artifact/target/ClickAttack.jar",
 //                        endLocPath+"Templates/CLICKATTACK/plugins/");
             } catch (IOException e) {
