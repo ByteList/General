@@ -91,7 +91,7 @@ public class JenkinsUpdater extends Thread {
         if(currentBuildNumber < lastSuccessfulBuild) {
             if(new File(checkFileLocation, name+".jar").exists()) {
                 try {
-                    if(Integer.parseInt(buildNumberFromJar(endFileLocation+name+".jar")) == lastSuccessfulBuild) {
+                    if(Integer.parseInt(buildNumberFromJar(checkFileLocation+name+".jar")) == lastSuccessfulBuild) {
                         return;
                     }
                 } catch (NumberFormatException ignored) {
