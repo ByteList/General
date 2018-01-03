@@ -2,6 +2,7 @@ package de.gamechest.util;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
@@ -46,6 +47,39 @@ public class InventoryToBase64 {
             }
             dataInput.close();
             return inventory;
+        } catch (ClassNotFoundException e) {
+            throw new IOException("Unable to decode class type.", e);
+        }
+    }
+
+    public static String toBase64(PlayerInventory inventory) {
+        try {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            BukkitObjectOutputStream dataOutput = new BukkitObjectOutputStream(outputStream);
+
+            dataOutput.writeInt(inventory.getSize());
+
+            for (int i = 0; i < inventory.getSize(); i++) {
+                dataOutput.writeObject(inventory.getItem(i));
+            }
+
+            dataOutput.close();
+            return Base64Coder.encodeLines(outputStream.toByteArray());
+        } catch (Exception e) {
+            throw new IllegalStateException("Unable to save item stacks.", e);
+        }
+    }
+
+    public static PlayerInventory fromBase64(PlayerInventory playerInventory, String data) throws IOException {
+        try {
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64Coder.decodeLines(data));
+            BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
+
+            for (int i = 0; i < playerInventory.getSize(); i++) {
+                playerInventory.setItem(i, (ItemStack) dataInput.readObject());
+            }
+            dataInput.close();
+            return playerInventory;
         } catch (ClassNotFoundException e) {
             throw new IOException("Unable to decode class type.", e);
         }
