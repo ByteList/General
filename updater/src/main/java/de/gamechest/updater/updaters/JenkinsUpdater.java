@@ -52,7 +52,7 @@ public class JenkinsUpdater extends Thread {
                         endLocPath+"Templates/LOBBY/plugins/");
 
                 update("Survival", urlPath+"/GameChest-Survival/lastSuccessfulBuild/", urlPath+"GameChest-Survival/lastSuccessfulBuild/artifact/target/Survival.jar",
-                        endLocPath+"Servers/permanent/Survival/plugins/update/");
+                        endLocPath+"Servers/permanent/Survival/plugins/update/", endLocPath+"Servers/permanent/Survival/plugins/");
 
 //                update("ClickAttack", urlPath+"/GameChest-ClickAttack/lastSuccessfulBuild/", urlPath+"GameChest-ClickAttack/lastSuccessfulBuild/artifact/target/ClickAttack.jar",
 //                        endLocPath+"Templates/CLICKATTACK/plugins/");
@@ -70,6 +70,22 @@ public class JenkinsUpdater extends Thread {
     private void update(String name, String buildUrl, String artifactUrl, String endFileLocation) throws IOException {
         if(!loggedIn) return;
         int currentBuildNumber = Integer.parseInt(buildNumberFromJar(endFileLocation+name+".jar"));
+        int lastSuccessfulBuild = Integer.parseInt(jenkinsAPI.getBuildNumber(buildUrl));
+
+        if(currentBuildNumber < lastSuccessfulBuild) {
+            logger.info("["+name+"] Update found! Current build: "+currentBuildNumber+" - New build: "+lastSuccessfulBuild);
+            logger.info("["+name+"] Downloading...");
+            if(!new File(EnumFile.DOWNLOADS.getPath()).exists()) {
+                new File(EnumFile.DOWNLOADS.getPath()).mkdir();
+            }
+            logger.info("["+name+"] "+downloadFile(artifactUrl, EnumFile.DOWNLOADS.getPath()+name+".jar"));
+            logger.info("["+name+"] "+moveFile(EnumFile.DOWNLOADS.getPath()+name+".jar", endFileLocation+name+".jar"));
+        }
+    }
+
+    private void update(String name, String buildUrl, String artifactUrl, String endFileLocation, String checkFileLocation) throws IOException {
+        if(!loggedIn) return;
+        int currentBuildNumber = Integer.parseInt(buildNumberFromJar(checkFileLocation+name+".jar"));
         int lastSuccessfulBuild = Integer.parseInt(jenkinsAPI.getBuildNumber(buildUrl));
 
         if(currentBuildNumber < lastSuccessfulBuild) {
