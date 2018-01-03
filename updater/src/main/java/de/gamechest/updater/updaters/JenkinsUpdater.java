@@ -89,6 +89,15 @@ public class JenkinsUpdater extends Thread {
         int lastSuccessfulBuild = Integer.parseInt(jenkinsAPI.getBuildNumber(buildUrl));
 
         if(currentBuildNumber < lastSuccessfulBuild) {
+            if(new File(checkFileLocation).exists()) {
+                try {
+                    if(Integer.parseInt(buildNumberFromJar(endFileLocation+name+".jar")) == lastSuccessfulBuild) {
+                        return;
+                    }
+                } catch (NumberFormatException ignored) {
+                }
+            }
+
             logger.info("["+name+"] Update found! Current build: "+currentBuildNumber+" - New build: "+lastSuccessfulBuild);
             logger.info("["+name+"] Downloading...");
             if(!new File(EnumFile.DOWNLOADS.getPath()).exists()) {
