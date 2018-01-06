@@ -1,6 +1,7 @@
 package de.gamechest.listener;
 
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.server.TabCompleteEvent;
@@ -15,7 +16,7 @@ import java.util.List;
  */
 public class CommandListener implements Listener {
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerCommand(PlayerCommandPreprocessEvent e) {
         String command = e.getMessage().substring(1).split(" ")[0];
 
@@ -24,7 +25,7 @@ public class CommandListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onTabComplete(TabCompleteEvent e) {
         if(!e.getBuffer().startsWith("/")) {
             return;

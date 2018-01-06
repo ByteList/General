@@ -6,6 +6,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
+import net.md_5.bungee.event.EventPriority;
 
 /**
  * Created by ByteList on 29.12.2017.
@@ -16,7 +17,7 @@ public class ChatListener implements Listener {
 
     private final GameChest gameChest = GameChest.getInstance();
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onChat(ChatEvent e) {
         if(e.getSender() instanceof ProxiedPlayer) {
             ProxiedPlayer player = (ProxiedPlayer) e.getSender();

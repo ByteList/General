@@ -11,6 +11,7 @@ import net.md_5.bungee.api.event.ServerKickEvent;
 import net.md_5.bungee.api.event.ServerSwitchEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
+import net.md_5.bungee.event.EventPriority;
 
 /**
  * Created by ByteList on 27.06.2017.
@@ -21,7 +22,7 @@ public class ServerListener implements Listener {
 
     private final GameChest gameChest = GameChest.getInstance();
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onServerKick(ServerKickEvent e) {
         if(gameChest.isCloudEnabled()) {
             try {
@@ -37,7 +38,7 @@ public class ServerListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onServerSwitch(ServerSwitchEvent e) {
         ProxiedPlayer player = e.getPlayer();
 

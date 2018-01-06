@@ -7,6 +7,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
+import net.md_5.bungee.event.EventPriority;
 
 /**
  * Created by ByteList on 26.04.2017.
@@ -16,7 +17,7 @@ public class PostLoginListener implements Listener {
     private GameChest gameChest = GameChest.getInstance();
     private DatabaseManager databaseManager = gameChest.getDatabaseManager();
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPostLogin(PostLoginEvent e) {
         ProxiedPlayer pp = e.getPlayer();
 
