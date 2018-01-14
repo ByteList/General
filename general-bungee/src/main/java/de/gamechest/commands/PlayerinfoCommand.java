@@ -45,7 +45,7 @@ public class PlayerinfoCommand extends GCCommand {
                     String playername = args[0];
                     DatabaseOnlinePlayer databaseOnlinePlayer = new DatabaseOnlinePlayer(gameChest.getDatabaseManager(), uuid.toString(), playername);
 
-                    playername = databaseOnlinePlayer.getDatabaseElement(DatabaseOnlinePlayerObject.NAME).getAsString();
+                    playername = dbPlayer.getDatabaseElement(DatabasePlayerObject.LAST_NAME).getAsString();
                     Rank rank = Rank.getRankById(dbPlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt());
 
                     pp.sendMessage(gameChest.prefix+"§6Informationen über §c"+ playername +"§6:");
