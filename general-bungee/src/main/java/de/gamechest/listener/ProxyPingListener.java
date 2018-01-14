@@ -7,6 +7,7 @@ import net.md_5.bungee.api.connection.PendingConnection;
 import net.md_5.bungee.api.event.ProxyPingEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
+import net.md_5.bungee.event.EventPriority;
 
 /**
  * Created by ByteList on 12.02.2017.
@@ -18,7 +19,7 @@ public class ProxyPingListener implements Listener {
     private GameChest gameChest = GameChest.getInstance();
     private ConnectManager connectManager = gameChest.getConnectManager();
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPing(ProxyPingEvent e) {
         PendingConnection pc = e.getConnection();
         ServerPing serverPing = e.getResponse();

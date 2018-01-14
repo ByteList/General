@@ -14,6 +14,7 @@ import net.md_5.bungee.api.connection.PendingConnection;
 import net.md_5.bungee.api.event.LoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
+import net.md_5.bungee.event.EventPriority;
 import org.bson.Document;
 
 import java.text.SimpleDateFormat;
@@ -29,7 +30,7 @@ public class LoginListener implements Listener {
     private GameChest gameChest = GameChest.getInstance();
     private DatabaseManager databaseManager = gameChest.getDatabaseManager();
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onLogin(LoginEvent e) {
         PendingConnection pc = e.getConnection();
         ConnectManager.ConnectState currentConnectState = gameChest.getConnectManager().getConnectState();
