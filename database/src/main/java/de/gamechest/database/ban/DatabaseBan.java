@@ -3,10 +3,7 @@ package de.gamechest.database.ban;
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.model.Filters;
-import de.gamechest.database.DatabaseCollection;
-import de.gamechest.database.DatabaseElement;
-import de.gamechest.database.DatabaseManager;
-import de.gamechest.database.DatabasePlayerObject;
+import de.gamechest.database.*;
 import org.bson.Document;
 
 import java.text.SimpleDateFormat;
@@ -27,7 +24,7 @@ public class DatabaseBan {
         this.databaseManager = databaseManager;
     }
 
-    public void ban(UUID uuid, Reason reason, String addon, String onlyStaff, String sender) {
+    public void ban(UUID uuid, Reason reason, String addon, String onlyStaff, String sender, Runnable callback) {
         if (isBanned(uuid)) unBan(uuid);
         this.databaseManager.getAsync().getExecutor().execute(() -> {
 
@@ -42,19 +39,19 @@ public class DatabaseBan {
                 Calendar now = Calendar.getInstance();
 
                 if (value.equalsIgnoreCase("d")) {
-                    now.add(5, time);
+                    now.add(Calendar.DAY_OF_MONTH, time);
                 } else if (value.equalsIgnoreCase("h")) {
-                    now.add(11, time);
+                    now.add(Calendar.HOUR_OF_DAY, time);
                 } else if (value.equalsIgnoreCase("min")) {
-                    now.add(12, time);
+                    now.add(Calendar.MINUTE, time);
                 } else if (value.equalsIgnoreCase("s")) {
-                    now.add(13, time);
+                    now.add(Calendar.SECOND, time);
                 } else if (value.equalsIgnoreCase("m")) {
-                    now.add(2, time);
+                    now.add(Calendar.MONTH, time);
                 } else if (value.equalsIgnoreCase("y")) {
-                    now.add(1, time);
+                    now.add(Calendar.YEAR, time);
                 } else if (value.equalsIgnoreCase("w")) {
-                    now.add(4, time);
+                    now.add(Calendar.WEEK_OF_MONTH, time);
                 }
                 end = formatter.format(now.getTime());
             }
@@ -69,6 +66,8 @@ public class DatabaseBan {
                     .append(DatabaseBanObject.STAFF_ONLY.getName(), onlyStaff);
 
             databaseManager.getCollection(databaseCollection).insertOne(document);
+
+            callback.run();
         });
     }
 

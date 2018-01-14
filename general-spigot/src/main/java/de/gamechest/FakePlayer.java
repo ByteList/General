@@ -24,6 +24,8 @@ public class FakePlayer {
     @Getter
     private final GameProfile profile;
     @Getter
+    private final int entityId;
+    @Getter
     private String displayname;
     @Getter
     private Location location;
@@ -35,6 +37,7 @@ public class FakePlayer {
         this.profile = new GameProfile(UUID.randomUUID(), displayname);
         this.entityFakePlayer = new EntityPlayer(((CraftServer) Bukkit.getServer()).getServer(),
                 ((CraftWorld) this.location.getWorld()).getHandle(), profile, new PlayerInteractManager(((CraftWorld) getLocation().getWorld()).getHandle()));
+        this.entityId = entityFakePlayer.getId();
     }
 
     public void spawn() {

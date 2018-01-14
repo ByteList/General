@@ -115,16 +115,19 @@ public class BanCommand extends GCCommand implements TabExecutor {
                     sender.sendMessage(gameChest.pr_ban + "§7Der Ban wurde geändert.");
                     onlyStaff = "§7 - §eBan edited";
                 }
-                databaseBan.ban(uuid, Reason.getReason(reason.toUpperCase()), null, onlyStaff, sender.getName());
-                ProxiedPlayer pp = gameChest.getProxy().getPlayer(uuid);
-                if(pp != null)
-                    pp.disconnect(gameChest.getBanMessage(pp.getUniqueId()));
-                for (ProxiedPlayer player : gameChest.onlineTeam) {
-                    if (gameChest.hasRank(player.getUniqueId(), Rank.SUPPORTER)) {
-                        player.sendMessage(gameChest.pr_ban + "§a" + sender + "§7 hat §c" + playername + "§7 gebannt");
-                        player.sendMessage(gameChest.pr_ban + "§7Grund: §e" + Reason.getReason(reason.toUpperCase()).getReason() + onlyStaff);
+                String finalPlayername = playername;
+                String finalOnlyStaff = onlyStaff;
+                databaseBan.ban(uuid, Reason.getReason(reason.toUpperCase()), null, onlyStaff, sender.getName(), () -> {
+                    ProxiedPlayer pp = gameChest.getProxy().getPlayer(uuid);
+                    if(pp != null)
+                        pp.disconnect(gameChest.getBanMessage(pp.getUniqueId()));
+                    for (ProxiedPlayer player : gameChest.onlineTeam) {
+                        if (gameChest.hasRank(player.getUniqueId(), Rank.SUPPORTER)) {
+                            player.sendMessage(gameChest.pr_ban + "§a" + sender + "§7 hat §c" + finalPlayername + "§7 gebannt");
+                            player.sendMessage(gameChest.pr_ban + "§7Grund: §e" + Reason.getReason(reason.toUpperCase()).getReason() + finalOnlyStaff);
+                        }
                     }
-                }
+                });
                 return;
             } else {
                 sender.sendMessage(gameChest.prefix + "§cDieser Grund existiert nicht! - /ban reasons");
@@ -163,16 +166,20 @@ public class BanCommand extends GCCommand implements TabExecutor {
                     sender.sendMessage(gameChest.pr_ban + "§7Der Ban wurde geändert.");
                     onlyStaff = "§7 - §eBan edited";
                 }
-                databaseBan.ban(uuid, Reason.getReason(reason.toUpperCase()), extra.toString(), onlyStaff, sender.getName());
-                ProxiedPlayer pp = gameChest.getProxy().getPlayer(uuid);
-                if(pp != null)
-                    pp.disconnect(gameChest.getBanMessage(pp.getUniqueId()));
-                for (ProxiedPlayer player : gameChest.onlineTeam) {
-                    if (gameChest.hasRank(player.getUniqueId(), Rank.SUPPORTER)) {
-                        player.sendMessage(gameChest.pr_ban + "§a" + sender + "§7 hat §c" + playername + "§7 gebannt");
-                        player.sendMessage(gameChest.pr_ban + "§7Grund: §e" + Reason.getReason(reason.toUpperCase()).getReason() + " (" + extra + ")" + onlyStaff);
+                String finalPlayername = playername;
+                StringBuilder finalExtra = extra;
+                String finalOnlyStaff = onlyStaff;
+                databaseBan.ban(uuid, Reason.getReason(reason.toUpperCase()), extra.toString(), onlyStaff, sender.getName(), () -> {
+                    ProxiedPlayer pp = gameChest.getProxy().getPlayer(uuid);
+                    if(pp != null)
+                        pp.disconnect(gameChest.getBanMessage(pp.getUniqueId()));
+                    for (ProxiedPlayer player : gameChest.onlineTeam) {
+                        if (gameChest.hasRank(player.getUniqueId(), Rank.SUPPORTER)) {
+                            player.sendMessage(gameChest.pr_ban + "§a" + sender + "§7 hat §c" + finalPlayername + "§7 gebannt");
+                            player.sendMessage(gameChest.pr_ban + "§7Grund: §e" + Reason.getReason(reason.toUpperCase()).getReason() + " (" + finalExtra + ")" + finalOnlyStaff);
+                        }
                     }
-                }
+                });
                 return;
             } else {
                 sender.sendMessage(gameChest.prefix + "§cDieser Grund existiert nicht! - /ban reasons");

@@ -6,8 +6,6 @@ import de.gamechest.database.stats.clickattack.DatabaseClickAttack;
 import de.gamechest.database.stats.clickattack.DatabaseClickAttackObject;
 import de.gamechest.database.stats.deathrun.DatabaseDeathRun;
 import de.gamechest.database.stats.deathrun.DatabaseDeathRunObject;
-import de.gamechest.database.stats.jumpduell.DatabaseJumpDuell;
-import de.gamechest.database.stats.jumpduell.DatabaseJumpDuellObject;
 import de.gamechest.database.stats.shulkerdefence.DatabaseShulkerDefence;
 import de.gamechest.database.stats.shulkerdefence.DatabaseShulkerDefenceObject;
 import org.bukkit.Bukkit;
@@ -23,7 +21,7 @@ public class Stats {
 
     private HashMap<UUID, HashMap<DatabaseClickAttackObject, Integer>> ca_cache = new HashMap<>();
     private HashMap<UUID, HashMap<DatabaseShulkerDefenceObject, Integer>> sd_cache = new HashMap<>();
-    private HashMap<UUID, HashMap<DatabaseJumpDuellObject, Integer>> jd_cache = new HashMap<>();
+//    private HashMap<UUID, HashMap<DatabaseJumpDuellObject, Integer>> jd_cache = new HashMap<>();
     private HashMap<UUID, HashMap<DatabaseDeathRunObject, Integer>> dr_cache = new HashMap<>();
 
     private final String prefix = "§6Stats §8\u00BB ";
@@ -45,9 +43,9 @@ public class Stats {
         return databaseManager.getDatabaseDeathRun();
     }
 
-    public DatabaseJumpDuell getJumpDuell() {
-        return databaseManager.getDatabaseJumpDuell();
-    }
+//    public DatabaseJumpDuell getJumpDuell() {
+//        return databaseManager.getDatabaseJumpDuell();
+//    }
 
     // CA-Cache
     public void createCACache(UUID uuid) {
@@ -116,7 +114,7 @@ public class Stats {
 
         return sd_cache.get(uuid).get(type);
     }
-
+    /*
     // JD-Cache
     public  void createJDCache(UUID uuid) {
         if(existsJDCache(uuid)) return;
@@ -150,7 +148,7 @@ public class Stats {
 
         return jd_cache.get(uuid).get(type);
     }
-
+*/
     // DR-Cache
     public  void createDRCache(UUID uuid) {
         if(existsDRCache(uuid)) return;
@@ -250,7 +248,7 @@ public class Stats {
                 deleteSDCache(uuid);
                 if(p.isOnline()) p.sendMessage("");
                 break;
-            case JUMPDUELL:
+            /*case JUMPDUELL:
                 if(!existsJDCache(uuid)) return;
                 if(p.isOnline()) p.sendMessage(prefix+"§eDeine Rundenstatistik:");
                 for(DatabaseJumpDuellObject cacheType : DatabaseJumpDuellObject.values()) {
@@ -273,7 +271,7 @@ public class Stats {
                 }
                 deleteJDCache(uuid);
                 if(p.isOnline()) p.sendMessage("");
-                break;
+                break;*/
             case DEATHRUN:
                 if(!existsDRCache(uuid)) return;
                 if(p.isOnline()) p.sendMessage(prefix+"§eDeine Rundenstatistik:");
@@ -287,12 +285,18 @@ public class Stats {
                         if(cacheType == DatabaseDeathRunObject.POINTS) {
                             if(p.isOnline()) p.sendMessage("§8\u00BB §7Punkte: §a"+cacheValue);
                         }
+                        if(cacheType == DatabaseDeathRunObject.USED_DOUBLE_JUMPS) {
+                            if(p.isOnline()) p.sendMessage("§8\u00BB §7Benutze Doppelsprünge: §6"+cacheValue);
+                        }
+                        if(cacheType == DatabaseDeathRunObject.USED_ITEMS) {
+                            if(p.isOnline()) p.sendMessage("§8\u00BB §7Benutze Items: §6"+cacheValue);
+                        }
                         if(cacheType == DatabaseDeathRunObject.EARNED_COINS) {
                             if(p.isOnline()) p.sendMessage("§8\u00BB §7Verdiente Coins: §a"+cacheValue);
                         }
                     }
                 }
-                deleteJDCache(uuid);
+                deleteDRCache(uuid);
                 if(p.isOnline()) p.sendMessage("");
                 break;
         }
@@ -300,6 +304,6 @@ public class Stats {
 
 
     public enum StatsType {
-        CLICKATTACK, SHULKERDEFENCE, JUMPDUELL, DEATHRUN
+        CLICKATTACK, SHULKERDEFENCE, /*JUMPDUELL,*/ DEATHRUN
     }
 }
