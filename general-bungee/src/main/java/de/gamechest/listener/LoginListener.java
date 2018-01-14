@@ -116,7 +116,7 @@ public class LoginListener implements Listener {
         });
 
         // online database player
-        databaseManager.getAsync().getOnlinePlayer(pc.getUniqueId(), DatabaseOnlinePlayer::createOnlinePlayer);
+        databaseManager.getAsync().getOnlinePlayer(pc.getUniqueId(), pc.getName(), DatabaseOnlinePlayer::createOnlinePlayer);
     }
 
     private boolean isBanned(UUID uuid) {

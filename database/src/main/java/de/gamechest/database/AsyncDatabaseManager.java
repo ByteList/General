@@ -49,6 +49,10 @@ public class AsyncDatabaseManager {
         this.executor.execute(()-> callback.run(new DatabaseOnlinePlayer(databaseManager, uuid.toString(), null)));
     }
 
+    public void getOnlinePlayer(UUID uuid, String name, Callback<DatabaseOnlinePlayer> callback) {
+        this.executor.execute(()-> callback.run(new DatabaseOnlinePlayer(databaseManager, uuid.toString(), name)));
+    }
+
     public void getOnlinePlayer(UUID uuid, Callback<DatabaseOnlinePlayer> callback, DatabaseOnlinePlayerObject... accesses) {
         this.executor.execute(()-> callback.run(new DatabaseOnlinePlayer(databaseManager, uuid.toString(), null, accesses)));
     }
