@@ -9,7 +9,6 @@ import de.gamechest.database.DatabaseCollection;
 import de.gamechest.database.DatabaseElement;
 import de.gamechest.database.DatabaseManager;
 import de.gamechest.database.DatabasePlayerObject;
-import de.gamechest.database.stats.deathrun.DatabaseDeathRunObject;
 import org.bson.Document;
 
 import java.util.ArrayList;
@@ -28,6 +27,7 @@ public class DatabaseShulkerDefence {
     }
 
     public boolean existsPlayer(UUID uuid) {
+        if(uuid == null) return false;
         String uid = uuid.toString();
         FindIterable<Document> find = databaseManager.getCollection(databaseCollection).find(Filters.eq(DatabasePlayerObject.UUID.getName(), uid));
         Document document = find.first();
