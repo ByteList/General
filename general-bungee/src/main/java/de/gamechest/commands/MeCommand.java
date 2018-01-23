@@ -16,6 +16,6 @@ public class MeCommand extends GCCommand {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        sender.sendMessage("§6You are you and you play on Game-Chest.de!");
+        sender.sendMessage("§6You are you and you play at Game-Chest.de!");
     }
 }

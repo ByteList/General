@@ -45,19 +45,19 @@ public class JenkinsUpdater extends Thread {
     public void run() {
         while (updater.isRunning) {
             try {
-                update("GameChest-Spigot", urlPath+"/GameChest-General/lastSuccessfulBuild/", urlPath+"GameChest-General/lastSuccessfulBuild/artifact/general-spigot/target/GameChest-Spigot.jar",
+                update("GameChest-Spigot", urlPath+"GameChest-General/lastSuccessfulBuild/", urlPath+"GameChest-General/lastSuccessfulBuild/artifact/general-spigot/target/GameChest-Spigot.jar",
                         endLocPath+"Generals/plugins/");
 
-                update("Lobby", urlPath+"/GameChest-Lobby/lastSuccessfulBuild/", urlPath+"GameChest-Lobby/lastSuccessfulBuild/artifact/target/Lobby.jar",
+                update("Lobby", urlPath+"GameChest-Lobby/lastSuccessfulBuild/", urlPath+"GameChest-Lobby/lastSuccessfulBuild/artifact/target/Lobby.jar",
                         endLocPath+"Templates/LOBBY/plugins/");
 
-                update("Survival", urlPath+"/GameChest-Survival/lastSuccessfulBuild/", urlPath+"GameChest-Survival/lastSuccessfulBuild/artifact/target/Survival.jar",
+                update("Survival", urlPath+"GameChest-Survival/lastSuccessfulBuild/", urlPath+"GameChest-Survival/lastSuccessfulBuild/artifact/target/Survival.jar",
                         endLocPath+"Servers/permanent/Survival/plugins/update/", endLocPath+"Servers/permanent/Survival/plugins/");
 
 //                update("ClickAttack", urlPath+"/GameChest-ClickAttack/lastSuccessfulBuild/", urlPath+"GameChest-ClickAttack/lastSuccessfulBuild/artifact/target/ClickAttack.jar",
 //                        endLocPath+"Templates/CLICKATTACK/plugins/");
 
-                update("BuildPlugin", urlPath+"/GameChest-BuildPlugin/lastSuccessfulBuild/", urlPath+"/GameChest-BuildPlugin/lastSuccessfulBuild/artifact/target/BuildPlugin.jar",
+                update("BuildPlugin", urlPath+"GameChest-BuildPlugin/lastSuccessfulBuild/", urlPath+"GameChest-BuildPlugin/lastSuccessfulBuild/artifact/target/BuildPlugin.jar",
                         "/home/minecraft/Build2/plugins/update/", "/home/minecraft/Build2/plugins/");
             } catch (IOException e) {
                 e.printStackTrace();

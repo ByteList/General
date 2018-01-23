@@ -15,6 +15,7 @@ import de.gamechest.nick.Nick;
 import de.gamechest.packet.PacketHandlerGC;
 import de.gamechest.party.PartyManager;
 import lombok.Getter;
+import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
@@ -209,6 +210,10 @@ public class GameChest extends Plugin {
 
     public boolean isCloudEnabled() {
         return getProxy().getPluginManager().getPlugin("ByteCloudAPI") != null;
+    }
+
+    public void sendNoPermissionMessage(CommandSender sender) {
+        sender.sendMessage("§cDu hast keine Berechtigung für diesen Befehl!");
     }
 
 //    private void insertNicks() {

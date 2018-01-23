@@ -34,7 +34,7 @@ public class UnbanCommand extends GCCommand implements TabExecutor {
         if (sender instanceof ProxiedPlayer) {
             ProxiedPlayer pp = (ProxiedPlayer) sender;
             if (!gameChest.hasRank(pp.getUniqueId(), Rank.MODERATOR)) {
-                sender.sendMessage(gameChest.prefix + "§cDu hast keine Berechtigung für diesen Befehl!");
+                gameChest.sendNoPermissionMessage(sender);
                 return;
             }
         }

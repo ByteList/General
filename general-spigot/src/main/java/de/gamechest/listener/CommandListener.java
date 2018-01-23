@@ -39,6 +39,7 @@ public class CommandListener implements Listener {
                 .filter(cmd -> !cmd.contains("vvbukkit"))
                 .filter(cmd ->!cmd.contains("fakeplugins"))
                 .filter(cmd ->!cmd.contains("trigger"))
+                .filter(cmd ->!cmd.contains("map"))
                 .forEach(retur::add);
 
         e.setCompletions(retur);

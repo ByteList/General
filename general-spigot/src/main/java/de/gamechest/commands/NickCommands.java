@@ -23,7 +23,7 @@ public class NickCommands implements CommandExecutor {
             Player p = (Player) sender;
 
             if (!gameChest.hasRank(p.getUniqueId(), Rank.VIP)) {
-                sender.sendMessage(gameChest.prefix + "§cDu hast keine Berechtigung für diesen Befehl!");
+                gameChest.sendNoPermissionMessage(sender);
                 return true;
             }
 

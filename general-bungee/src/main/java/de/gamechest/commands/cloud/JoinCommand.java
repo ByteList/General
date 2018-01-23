@@ -30,7 +30,7 @@ public class JoinCommand extends GCCommand {
             if(!gameChest.isCloudEnabled()) return;
             ProxiedPlayer pp = (ProxiedPlayer) sender;
             if(!gameChest.hasRank(pp.getUniqueId(), Rank.BUILDER)) {
-                pp.sendMessage(ByteCloudMaster.getInstance().prefix+"§cDu hast keine Berechtigung für diesen Befehl!");
+                gameChest.sendNoPermissionMessage(sender);
                 return;
             }
 

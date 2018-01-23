@@ -26,7 +26,7 @@ public class TeamchatCommand extends GCCommand {
         if(sender instanceof ProxiedPlayer) {
             ProxiedPlayer pp = (ProxiedPlayer) sender;
             if(!gameChest.onlineTeam.contains(pp)) {
-                pp.sendMessage(gameChest.prefix+"§cDu hast keine Berechtigung für diesen Befehl!");
+                gameChest.sendNoPermissionMessage(sender);
                 return;
             }
             prefix = gameChest.getRank(pp.getUniqueId()).getColor()+pp.getName();

@@ -1,6 +1,5 @@
 package de.gamechest.commands;
 
-import de.bytelist.bytecloud.bungee.ByteCloudMaster;
 import de.gamechest.GameChest;
 import de.gamechest.UUIDFetcher;
 import de.gamechest.commands.base.GCCommand;
@@ -27,11 +26,11 @@ public class PlayerinfoCommand extends GCCommand {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if(!(sender instanceof ProxiedPlayer))
-            sender.sendMessage(ByteCloudMaster.getInstance().prefix+"§cDu bist die Konsole und kannst diesen Befehl nicht ausführen!");
+            sender.sendMessage("§cDu bist die Konsole und kannst diesen Befehl nicht ausführen!");
         else {
             ProxiedPlayer pp = (ProxiedPlayer) sender;
             if (!gameChest.hasRank(pp.getUniqueId(), Rank.SUPPORTER)) {
-                pp.sendMessage(ByteCloudMaster.getInstance().prefix + "§cDu hast keine Berechtigung für diesen Befehl!");
+                gameChest.sendNoPermissionMessage(sender);
                 return;
             }
 

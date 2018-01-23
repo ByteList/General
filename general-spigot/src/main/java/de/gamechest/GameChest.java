@@ -5,18 +5,25 @@ import com.voxelboxstudios.resilent.GCPacketClient;
 import de.bytelist.bytecloud.core.ByteCloudCore;
 import de.gamechest.chatlog.ChatLog;
 import de.gamechest.coins.Coins;
-import de.gamechest.commands.*;
+import de.gamechest.commands.FakePluginCommand;
+import de.gamechest.commands.NickCommands;
+import de.gamechest.commands.OpmeCommand;
+import de.gamechest.commands.ServerIdCommand;
 import de.gamechest.database.DatabaseManager;
 import de.gamechest.database.DatabasePlayer;
 import de.gamechest.database.DatabasePlayerObject;
 import de.gamechest.database.rank.Rank;
 import de.gamechest.listener.CommandListener;
+import de.gamechest.listener.JoinListener;
+import de.gamechest.listener.QuitListener;
 import de.gamechest.nick.Nick;
 import de.gamechest.reflector.PacketInjector;
 import de.gamechest.stats.Stats;
 import lombok.Getter;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.spigotmc.CustomTimingsHandler;
@@ -96,7 +103,15 @@ public class GameChest extends JavaPlugin {
         getCommand("nick").setExecutor(new NickCommands());
         getCommand("fakeplugins").setExecutor(new FakePluginCommand());
 
-        getServer().getPluginManager().registerEvents(new CommandListener(), this);
+        Listener[] listeners = {
+            new JoinListener(),
+            new QuitListener(),
+            new CommandListener()
+        };
+
+        for (Listener listener : listeners) {
+            getServer().getPluginManager().registerEvents(listener, this);
+        }
 
         getServer().getConsoleSender().sendMessage(prefix+"§aEnabled!");
     }
@@ -196,5 +211,9 @@ public class GameChest extends JavaPlugin {
             rank = Rank.SPIELER;
 
         return rank.getColor() + player.getName();
+    }
+
+    public void sendNoPermissionMessage(CommandSender sender) {
+        sender.sendMessage("§cDu hast keine Berechtigung für diesen Befehl!");
     }
 }

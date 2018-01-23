@@ -87,7 +87,7 @@ public class StatsCommand extends GCCommand {
 
         if(args.length == 2) {
             if(!gameChest.hasRank(uuid, Rank.SUPPORTER)) {
-                sender.sendMessage(gameChest.pr_stats+"§cDu hast keine Berechtigung für diesen Befehl!");
+                gameChest.sendNoPermissionMessage(sender);
                 return;
             }
             String name = args[1];

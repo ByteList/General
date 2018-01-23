@@ -27,7 +27,7 @@ public class GcgCommand extends GCCommand {
         if(sender instanceof ProxiedPlayer) {
             ProxiedPlayer pp = (ProxiedPlayer) sender;
             if(!gameChest.hasRank(pp.getUniqueId(), Rank.DEVELOPER)) {
-                sender.sendMessage(gameChest.prefix+"§cDu hast keine Berechtigung für diesen Befehl!");
+                gameChest.sendNoPermissionMessage(sender);
                 return;
             }
         }

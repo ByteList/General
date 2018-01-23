@@ -32,8 +32,8 @@ public class KickCommand extends GCCommand implements TabExecutor {
     public void execute(CommandSender sender, String[] args) {
         if (sender instanceof ProxiedPlayer) {
             ProxiedPlayer pp = (ProxiedPlayer) sender;
-            if (!gameChest.hasRank(pp.getUniqueId(), Rank.SUPPORTER)) {
-                sender.sendMessage(gameChest.prefix + "§cDu hast keine Berechtigung für diesen Befehl!");
+            if (!gameChest.hasRank(pp.getUniqueId(), Rank.BUILDER)) {
+                gameChest.sendNoPermissionMessage(sender);
                 return;
             }
         }

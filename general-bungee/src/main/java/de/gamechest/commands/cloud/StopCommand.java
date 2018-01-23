@@ -29,7 +29,7 @@ public class StopCommand extends GCCommand {
             ProxiedPlayer pp = (ProxiedPlayer) sender;
 
             if(!gameChest.hasRank(pp.getUniqueId(), Rank.DEVELOPER)) {
-                sender.sendMessage(ByteCloudMaster.getInstance().prefix+"§cDu hast keine Berechtigung für diesen Befehl!");
+                gameChest.sendNoPermissionMessage(sender);
                 return;
             }
 

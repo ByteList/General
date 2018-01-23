@@ -14,6 +14,9 @@ import de.gamechest.nick.Nick;
 import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import java.text.SimpleDateFormat;
@@ -24,11 +27,12 @@ import java.util.Calendar;
  *
  * Copyright by ByteList - https://bytelist.de/
  */
-public class JoinListener {
+public class JoinListener implements Listener {
 
     private static GameChest gameChest = GameChest.getInstance();
 
-    public static void callFirstOnJoin(PlayerJoinEvent e) {
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onJoin(PlayerJoinEvent e) {
         Player p = e.getPlayer();
         p.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
 
@@ -73,14 +77,11 @@ public class JoinListener {
         }
     }
 
-//    private static void setServerId(DatabaseOnlinePlayer databaseOnlinePlayer) {
-//        if(gameChest.isCloudEnabled())
-//            databaseOnlinePlayer.setDatabaseObject(DatabaseOnlinePlayerObject.SERVER_ID, ByteCloudCore.getInstance().getCloudHandler().getServerId());
-//        else
-//            databaseOnlinePlayer.setDatabaseObject(DatabaseOnlinePlayerObject.SERVER_ID, Bukkit.getServerName());
-//    }
+    @Deprecated
+    public static void callFirstOnJoin(PlayerJoinEvent e) {
+    }
     
-    private static void create(Player p) {
+    private void create(Player p) {
         DatabaseManager databaseManager = gameChest.getDatabaseManager();
 
         gameChest.getDatabaseManager().getAsync().getPlayer(p.getUniqueId(), databasePlayer -> {
