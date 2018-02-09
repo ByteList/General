@@ -112,6 +112,7 @@ public class DatabasePlayer {
 
         configurations.put(DatabasePlayerObject.Configurations.LOBBY_PARTY_TAG.getName(), 0);
         configurations.put(DatabasePlayerObject.Configurations.LOBBY_PARTICLES_VISIBILITY.getName(), 0);
+        configurations.put(DatabasePlayerObject.Configurations.LOBBY_ARMORSTAND_VISIBILITY.getName(), 0);
 
         configurations.put(DatabasePlayerObject.Configurations.MSG.getName(), 0);
 
@@ -160,6 +161,10 @@ public class DatabasePlayer {
         }
         if(!configurations.containsKey(DatabasePlayerObject.Configurations.LOBBY_PARTICLES_VISIBILITY.getName())) {
             configurations.put(DatabasePlayerObject.Configurations.LOBBY_PARTICLES_VISIBILITY.getName(), 0);
+            cu = true;
+        }
+        if(!configurations.containsKey(DatabasePlayerObject.Configurations.LOBBY_ARMORSTAND_VISIBILITY.getName())) {
+            configurations.put(DatabasePlayerObject.Configurations.LOBBY_ARMORSTAND_VISIBILITY.getName(), 0);
             cu = true;
         }
 
