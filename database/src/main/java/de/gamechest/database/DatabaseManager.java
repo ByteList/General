@@ -24,7 +24,6 @@ import org.bson.Document;
 import org.bson.UuidRepresentation;
 import org.bson.codecs.UuidCodec;
 import org.bson.codecs.configuration.CodecRegistries;
-import org.bson.codecs.configuration.CodecRegistry;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -75,22 +74,29 @@ public class DatabaseManager {
     private AsyncDatabaseManager async;
 
     public DatabaseManager(String host, int port, String username, String password, String database) throws Exception {
+        this(
+                new MongoClient(
+                        new ServerAddress(host, port),
+                        Collections.singletonList(
+                            MongoCredential.createCredential(username, database, password.toCharArray())
+                        ),
+                        MongoClientOptions.builder().codecRegistry(
+                                CodecRegistries.fromRegistries(
+                                        CodecRegistries.fromCodecs(new UuidCodec(UuidRepresentation.STANDARD)),
+                                        MongoClient.getDefaultCodecRegistry()
+                                )
+                        ).build()
+                ),
+                database
+        );
+    }
+
+    public DatabaseManager(MongoClient mongoClient, String database) {
         // Disable the stupid log messages from mongodb
         Logger mongoLog = Logger.getLogger("org.mongodb.driver");
         mongoLog.setLevel(Level.OFF);
 
-        // Support for new mongodb standard uuid's
-        CodecRegistry codecRegistry = CodecRegistries.fromRegistries(
-                CodecRegistries.fromCodecs(new UuidCodec(UuidRepresentation.STANDARD)),
-                MongoClient.getDefaultCodecRegistry()
-        );
-        MongoClientOptions options = MongoClientOptions.builder().codecRegistry(codecRegistry).build();
-
-        if(username != null && password != null)
-            this.mongoClient = new MongoClient(new ServerAddress(host, port), Collections.singletonList(MongoCredential.createCredential(username, database, password.toCharArray())), options);
-        else
-            this.mongoClient = new MongoClient(new ServerAddress(host, port), options);
-
+        this.mongoClient = mongoClient;
         this.mongoDatabase = this.mongoClient.getDatabase(database);
 
         this.databaseClickAttack = new DatabaseClickAttack(this);
