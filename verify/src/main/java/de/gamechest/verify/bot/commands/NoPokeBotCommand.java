@@ -1,5 +1,6 @@
 package de.gamechest.verify.bot.commands;
 
+import com.github.theholywaffle.teamspeak3.TS3ApiAsync;
 import de.gamechest.verify.Verify;
 import de.gamechest.verify.bot.BotCommand;
 import de.gamechest.verify.bot.TeamspeakBot;
@@ -13,8 +14,8 @@ public class NoPokeBotCommand extends BotCommand {
 
     private final TeamspeakBot teamspeakBot = Verify.getInstance().getTeamspeakBot();
 
-    public NoPokeBotCommand() {
-        super("nopoke", "Aktiviere/Deaktiviere Anstupser");
+    public NoPokeBotCommand(TS3ApiAsync apiAsync) {
+        super(apiAsync, "nopoke", "Aktiviere/Deaktiviere Anstupser");
     }
 
     @Override

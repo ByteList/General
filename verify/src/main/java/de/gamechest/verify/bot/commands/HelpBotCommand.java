@@ -1,5 +1,6 @@
 package de.gamechest.verify.bot.commands;
 
+import com.github.theholywaffle.teamspeak3.TS3ApiAsync;
 import de.gamechest.verify.Verify;
 import de.gamechest.verify.bot.BotCommand;
 
@@ -11,8 +12,8 @@ import de.gamechest.verify.bot.BotCommand;
 public class HelpBotCommand extends BotCommand {
 
 
-    public HelpBotCommand() {
-        super("help", "Zeigt dir alle Befehl an");
+    public HelpBotCommand(TS3ApiAsync apiAsync) {
+        super(apiAsync, "help", "Zeigt dir alle Befehl an");
     }
 
     @Override

@@ -73,8 +73,8 @@ public class TeamspeakBot {
         api.addTS3Listeners(new ClientJoinListener(apiAsync), new TextMessageListener(apiAsync, queryId));
 
         commandManager = new CommandManager();
-        commandManager.registerCommands(new HelpBotCommand(), new NoMessageBotCommand(), new NoPokeBotCommand(),
-                new VerifyBotCommand(), new GamesBotCommand());
+        commandManager.registerCommands(new HelpBotCommand(apiAsync), new NoMessageBotCommand(apiAsync), new NoPokeBotCommand(apiAsync),
+                new VerifyBotCommand(apiAsync), new GamesBotCommand(apiAsync));
     }
 
 

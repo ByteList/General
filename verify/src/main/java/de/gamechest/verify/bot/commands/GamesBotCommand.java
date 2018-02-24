@@ -1,5 +1,6 @@
 package de.gamechest.verify.bot.commands;
 
+import com.github.theholywaffle.teamspeak3.TS3ApiAsync;
 import de.gamechest.verify.Verify;
 import de.gamechest.verify.bot.BotCommand;
 import de.gamechest.verify.bot.TeamspeakBot;
@@ -18,8 +19,8 @@ public class GamesBotCommand extends BotCommand {
 
     private final HashMap<String, Integer> gameTypes = new HashMap<>();
 
-    public GamesBotCommand() {
-        super("games", "Zeige, welche Spiele du momentan spielst.");
+    public GamesBotCommand(TS3ApiAsync apiAsync) {
+        super(apiAsync, "games", "Zeige, welche Spiele du momentan spielst.");
         gameTypes.put("GTA", 64);
         gameTypes.put("CSGO", 65);
         gameTypes.put("Overwatch", 66);

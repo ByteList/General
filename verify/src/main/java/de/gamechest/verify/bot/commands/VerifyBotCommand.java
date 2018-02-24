@@ -1,5 +1,6 @@
 package de.gamechest.verify.bot.commands;
 
+import com.github.theholywaffle.teamspeak3.TS3ApiAsync;
 import com.github.theholywaffle.teamspeak3.api.ClientProperty;
 import de.gamechest.GameChest;
 import de.gamechest.UUIDFetcher;
@@ -22,8 +23,8 @@ public class VerifyBotCommand extends BotCommand {
     private final TeamspeakBot teamspeakBot = Verify.getInstance().getTeamspeakBot();
     private final GameChest gameChest = GameChest.getInstance();
 
-    public VerifyBotCommand() {
-        super("verify", "Verbinde dich mit deinem Minecraft-Account");
+    public VerifyBotCommand(TS3ApiAsync apiAsync) {
+        super(apiAsync, "verify", "Verbinde dich mit deinem Minecraft-Account");
     }
 
     @Override

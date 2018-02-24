@@ -1,7 +1,6 @@
 package de.gamechest.verify.bot;
 
 import com.github.theholywaffle.teamspeak3.TS3ApiAsync;
-import de.gamechest.verify.Verify;
 import lombok.Getter;
 
 /**
@@ -19,11 +18,10 @@ public abstract class BotCommand {
     private final String description;
 
 
-    public BotCommand(String name, String description) {
+    public BotCommand(TS3ApiAsync apiAsync, String name, String description) {
+        this.apiAsync = apiAsync;
         this.name = name;
         this.description = description;
-
-        this.apiAsync = Verify.getInstance().getTeamspeakBot().getApiAsync();
     }
 
     public abstract void execute(Integer invokerId, String[] args);
