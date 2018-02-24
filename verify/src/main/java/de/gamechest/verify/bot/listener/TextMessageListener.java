@@ -1,5 +1,6 @@
 package de.gamechest.verify.bot.listener;
 
+import com.github.theholywaffle.teamspeak3.TS3ApiAsync;
 import com.github.theholywaffle.teamspeak3.api.TextMessageTargetMode;
 import com.github.theholywaffle.teamspeak3.api.event.TextMessageEvent;
 import de.gamechest.verify.Verify;
@@ -12,9 +13,11 @@ import de.gamechest.verify.bot.BotListener;
  */
 public class TextMessageListener extends BotListener {
 
+    private final TS3ApiAsync apiAsync;
     private final int queryId;
 
-    public TextMessageListener(int queryId) {
+    public TextMessageListener(TS3ApiAsync apiAsync, int queryId) {
+        this.apiAsync = apiAsync;
         this.queryId = queryId;
     }
 

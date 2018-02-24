@@ -1,5 +1,6 @@
 package de.gamechest.verify.bot.listener;
 
+import com.github.theholywaffle.teamspeak3.TS3ApiAsync;
 import com.github.theholywaffle.teamspeak3.api.event.ClientJoinEvent;
 import de.gamechest.verify.bot.BotListener;
 
@@ -9,6 +10,12 @@ import de.gamechest.verify.bot.BotListener;
  * Copyright by ByteList - https://bytelist.de/
  */
 public class ClientJoinListener extends BotListener {
+
+    private final TS3ApiAsync apiAsync;
+
+    public ClientJoinListener(TS3ApiAsync apiAsync) {
+        this.apiAsync = apiAsync;
+    }
 
     @Override
     public void onClientJoin(ClientJoinEvent e) {

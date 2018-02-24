@@ -70,7 +70,7 @@ public class TeamspeakBot {
         queryId = api.whoAmI().getId();
         api.registerEvents(TS3EventType.SERVER, TS3EventType.TEXT_PRIVATE/*, TS3EventType.CHANNEL*/);
 
-        api.addTS3Listeners(new ClientJoinListener(), new TextMessageListener(queryId));
+        api.addTS3Listeners(new ClientJoinListener(apiAsync), new TextMessageListener(apiAsync, queryId));
 
         commandManager = new CommandManager();
         commandManager.registerCommands(new HelpBotCommand(), new NoMessageBotCommand(), new NoPokeBotCommand(),
