@@ -6,7 +6,7 @@
 
     <groupId>de.gamechest</groupId>
     <artifactId>gamechest-parent</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>${service.version}-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <organization>
@@ -22,6 +22,7 @@
     </repositories>
 
     <properties>
+        <service.version>1.0</service.version>
         <build.number>unknown</build.number>
         <git.commit>unknown</git.commit>
 
