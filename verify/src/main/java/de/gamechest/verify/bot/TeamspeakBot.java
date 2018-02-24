@@ -109,6 +109,7 @@ public class TeamspeakBot {
         boolean b = false;
         System.out.println("Bool a: "+b);
         for (int serverGroupId : specialIds) {
+            System.out.println("sgId: "+serverGroupId);
             if (clientInfo.isInServerGroup(serverGroupId)) {
                 b = true;
                 break;
