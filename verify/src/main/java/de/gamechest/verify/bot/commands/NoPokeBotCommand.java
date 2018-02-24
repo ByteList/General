@@ -23,7 +23,7 @@ public class NoPokeBotCommand extends BotCommand {
     public void execute(Integer invokerId, String[] args) {
         ClientInfo clientInfo;
         try {
-            clientInfo = apiAsync.getClientInfo(invokerId).get();
+            clientInfo = teamspeakBot.getApi().getClientInfo(invokerId);
 
             if (!teamspeakBot.hasSpecialGroup(clientInfo)) {
                 apiAsync.sendPrivateMessage(invokerId, "Du musst verifiziert sein!");
@@ -36,7 +36,7 @@ public class NoPokeBotCommand extends BotCommand {
                 apiAsync.removeClientFromServerGroup(teamspeakBot.noPokeServerGroupId, clientInfo.getDatabaseId());
                 apiAsync.sendPrivateMessage(invokerId, "[COLOR=green]Du kannst nun wieder angestupst werden![/COLOR]");
             }
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             apiAsync.sendPrivateMessage(invokerId, "[COLOR=red]Ups! Da ist etwas schief gelaufen! Bitte kontaktiere die Administration.[/COLOR]");
             return;
