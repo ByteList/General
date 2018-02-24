@@ -105,8 +105,7 @@ public class TeamspeakBot {
         return api.getClientInfo(invokerId).isInServerGroup(verifyServerGroupId);
     }
 
-    public boolean hasSpecialGroup(int invokerId) {
-        ClientInfo clientInfo = getClientInfo(invokerId);
+    public boolean hasSpecialGroup(ClientInfo clientInfo) {
         boolean b = false;
         for (int serverGroupId : specialIds) {
             if (clientInfo.isInServerGroup(serverGroupId)) {

@@ -30,10 +30,6 @@ public class GamesBotCommand extends BotCommand {
 
     @Override
     public void execute(Integer invokerId, String[] args) {
-        if (!teamspeakBot.hasSpecialGroup(invokerId)) {
-            apiAsync.sendPrivateMessage(invokerId, "Du musst verifiziert sein!");
-            return;
-        }
         if(args.length != 1) {
             apiAsync.sendPrivateMessage(invokerId, "Benutzung: [B]!games "+ Arrays.toString(gameTypes.keySet().toArray(new String[gameTypes.size()]))+"[/B]");
             return;
@@ -44,6 +40,10 @@ public class GamesBotCommand extends BotCommand {
         } catch (InterruptedException e) {
             e.printStackTrace();
             apiAsync.sendPrivateMessage(invokerId, "[COLOR=red]Ups! Da ist etwas schief gelaufen! Bitte kontaktiere die Administration.[/COLOR]");
+            return;
+        }
+        if (!teamspeakBot.hasSpecialGroup(clientInfo)) {
+            apiAsync.sendPrivateMessage(invokerId, "Du musst verifiziert sein!");
             return;
         }
         if(args[0].contains(",")) {
