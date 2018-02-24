@@ -78,7 +78,12 @@ public class TeamspeakBot {
 
 
     public ClientInfo getClientInfo(int invokerId) {
-        return api.getClientInfo(invokerId);
+        try {
+            return apiAsync.getClientInfo(invokerId).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public void getClientInfoAsync(int invokerId, BotCallback<ClientInfo> callbackSuccess, BotCallback<Exception> callbackFailure) {
@@ -99,7 +104,7 @@ public class TeamspeakBot {
     }
 
     public boolean hasSpecialGroup(int invokerId) {
-        ClientInfo clientInfo = api.getClientInfo(invokerId);
+        ClientInfo clientInfo = getClientInfo(invokerId);
         boolean b = false;
         for (int serverGroupId : specialIds) {
             if (clientInfo.isInServerGroup(serverGroupId)) {
