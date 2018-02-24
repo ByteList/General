@@ -22,10 +22,8 @@ public class NoPokeBotCommand extends BotCommand {
     @Override
     public void execute(Integer invokerId, String[] args) {
         ClientInfo clientInfo;
-        System.out.println("InvokerId: "+invokerId);
         try {
             clientInfo = apiAsync.getClientInfo(invokerId).get();
-            System.out.println("ClientInfo: "+clientInfo.toString());
         } catch (InterruptedException e) {
             e.printStackTrace();
             apiAsync.sendPrivateMessage(invokerId, "[COLOR=red]Ups! Da ist etwas schief gelaufen! Bitte kontaktiere die Administration.[/COLOR]");
