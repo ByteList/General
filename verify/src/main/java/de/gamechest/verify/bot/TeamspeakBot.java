@@ -29,7 +29,7 @@ public class TeamspeakBot {
             notifyServerGroupId = 46,
             verifyServerGroupId = 55;
     @Getter
-    private final int[] specialIds = {11, 12, 13, 14, 29, 16, verifyServerGroupId};
+    private final int[] specialIds = {11, 12, 13, 14, 29, 16, 55};
 
     private int queryId;
 
