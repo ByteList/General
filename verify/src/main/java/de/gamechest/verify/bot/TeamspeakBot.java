@@ -113,6 +113,7 @@ public class TeamspeakBot {
                 break;
             }
         }
+        System.out.println("Bool: "+b);
         return b;
     }
 
