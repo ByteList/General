@@ -84,9 +84,12 @@ public class TeamspeakBot {
     public void getClientInfoAsync(int invokerId, BotCallback<ClientInfo> callbackSuccess, BotCallback<Exception> callbackFailure) {
         Bukkit.getScheduler().runTaskAsynchronously(Verify.getInstance(), ()-> {
             try {
-                callbackSuccess.run(apiAsync.getClientInfo(invokerId).get());
-            } catch (InterruptedException e) {
-                callbackFailure.run(e);
+                ClientInfo clientInfo = api.getClientInfo(invokerId);
+                if(clientInfo != null) {
+                    callbackSuccess.run(clientInfo);
+                }
+            } catch (Exception ex) {
+                callbackFailure.run(ex);
             }
         });
     }
