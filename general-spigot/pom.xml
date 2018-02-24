@@ -129,7 +129,7 @@
                     <replacements>
                         <replacement>
                             <token>version: mvn:unknown</token>
-                            <value>version: ${project.version}.${build.number}</value>
+                            <value>version: ${service.version}.${build.number}</value>
                         </replacement>
                         <replacement>
                             <token>#description</token>
