@@ -24,22 +24,22 @@ public class NoPokeBotCommand extends BotCommand {
         ClientInfo clientInfo;
         try {
             clientInfo = apiAsync.getClientInfo(invokerId).get();
-            System.out.println("After #get();");
+
+            if (!teamspeakBot.hasSpecialGroup(clientInfo)) {
+                apiAsync.sendPrivateMessage(invokerId, "Du musst verifiziert sein!");
+                return;
+            }
+            if(!clientInfo.isInServerGroup(teamspeakBot.noPokeServerGroupId)) {
+                apiAsync.addClientToServerGroup(teamspeakBot.noPokeServerGroupId, clientInfo.getDatabaseId());
+                apiAsync.sendPrivateMessage(invokerId, "[COLOR=yellow]Du kannst nun nicht mehr angestupst werden![/COLOR]");
+            } else {
+                apiAsync.removeClientFromServerGroup(teamspeakBot.noPokeServerGroupId, clientInfo.getDatabaseId());
+                apiAsync.sendPrivateMessage(invokerId, "[COLOR=green]Du kannst nun wieder angestupst werden![/COLOR]");
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
             apiAsync.sendPrivateMessage(invokerId, "[COLOR=red]Ups! Da ist etwas schief gelaufen! Bitte kontaktiere die Administration.[/COLOR]");
             return;
-        }
-        if (!teamspeakBot.hasSpecialGroup(clientInfo)) {
-            apiAsync.sendPrivateMessage(invokerId, "Du musst verifiziert sein!");
-            return;
-        }
-        if(!clientInfo.isInServerGroup(teamspeakBot.noPokeServerGroupId)) {
-            apiAsync.addClientToServerGroup(teamspeakBot.noPokeServerGroupId, clientInfo.getDatabaseId());
-            apiAsync.sendPrivateMessage(invokerId, "[COLOR=yellow]Du kannst nun nicht mehr angestupst werden![/COLOR]");
-        } else {
-            apiAsync.removeClientFromServerGroup(teamspeakBot.noPokeServerGroupId, clientInfo.getDatabaseId());
-            apiAsync.sendPrivateMessage(invokerId, "[COLOR=green]Du kannst nun wieder angestupst werden![/COLOR]");
         }
 
 //        teamspeakBot.getClientInfoAsync(invokerId, clientInfo -> {
