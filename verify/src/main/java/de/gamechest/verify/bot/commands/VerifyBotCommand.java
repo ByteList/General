@@ -2,6 +2,7 @@ package de.gamechest.verify.bot.commands;
 
 import com.github.theholywaffle.teamspeak3.TS3ApiAsync;
 import com.github.theholywaffle.teamspeak3.api.ClientProperty;
+import com.github.theholywaffle.teamspeak3.api.wrapper.ClientInfo;
 import de.gamechest.GameChest;
 import de.gamechest.UUIDFetcher;
 import de.gamechest.database.DatabasePlayerObject;
@@ -34,50 +35,94 @@ public class VerifyBotCommand extends BotCommand {
             return;
         }
         String name = args[0];
+        UUID uuid = UUIDFetcher.getUUID(name);
 
-        teamspeakBot.getClientInfoAsync(invokerId, clientInfo -> {
-            UUID uuid = UUIDFetcher.getUUID(name);
+        if (uuid == null) {
+            apiAsync.sendPrivateMessage(invokerId, "Konnte den User nicht in der Datenbank finden!");
+            return;
+        }
 
-            if (uuid == null) {
-                apiAsync.sendPrivateMessage(invokerId, "Konnte den User nicht in der Datenbank finden!");
-                return;
-            }
+        Player player = Verify.getInstance().getServer().getPlayer(uuid);
 
-            Player player = Verify.getInstance().getServer().getPlayer(uuid);
+        if(player == null) {
+            apiAsync.sendPrivateMessage(invokerId, "Du musst auf dem Verify-Server online sein! Verbinde dich dazu auf [B]Game-Chest.de[/B] und führe den [B]/verify[/B] Befehl aus.");
+            return;
+        }
 
-            if(player == null) {
-                apiAsync.sendPrivateMessage(invokerId, "Du musst auf dem Verify-Server online sein! Verbinde dich dazu auf [B]Game-Chest.de[/B] und führe den [B]/verify[/B] Befehl aus.");
-                return;
-            }
-
-            String ipPlayer = player.getAddress().getHostString();
-            String ipTs = clientInfo.getIp();
-
-            if(!ipPlayer.equals(ipTs)) {
-                apiAsync.sendPrivateMessage(invokerId, "Der Minecraft-Account ist nicht über dem gleichen PC online!");
-                return;
-            }
-
-            gameChest.getDatabaseManager().getAsync().getPlayer(uuid, dbPlayer-> {
-                if (dbPlayer.getDatabaseElement(DatabasePlayerObject.TS_UID).getObject() != null) {
-                    apiAsync.sendPrivateMessage(invokerId, "Du bist bereits mit einer Identität verbunden!");
-                    return;
-                }
-
-                String uid = clientInfo.getUniqueIdentifier();
-
-                dbPlayer.setDatabaseObject(DatabasePlayerObject.TS_UID, uid);
-                apiAsync.addClientToServerGroup(teamspeakBot.verifyServerGroupId, clientInfo.getDatabaseId());
-                String description = "Minecraft: "+name + (clientInfo.getDescription().equals("") ? "" : " | " + clientInfo.getDescription());
-                apiAsync.editClient(invokerId, Collections.singletonMap(ClientProperty.CLIENT_DESCRIPTION, description));
-
-                apiAsync.sendPrivateMessage(invokerId, "Du bist nun mit dem Minecraft-Account [COLOR=GREEN]" + name + "[/COLOR] verbunden!");
-                player.sendMessage(Verify.getInstance().prefix+"§aDu bist nun mit deinem Teamspeak-Account verbunden!");
-
-            }, DatabasePlayerObject.TS_UID);
-        }, e -> {
-            e.printStackTrace();
+        ClientInfo clientInfo = teamspeakBot.getClientInfo(invokerId);
+        if(clientInfo == null) {
             apiAsync.sendPrivateMessage(invokerId, "[COLOR=red]Ups! Da ist etwas schief gelaufen! Bitte kontaktiere die Administration.[/COLOR]");
-        });
+            return;
+        }
+
+        String ipPlayer = player.getAddress().getHostString();
+        String ipTs = clientInfo.getIp();
+
+        if(!ipPlayer.equals(ipTs)) {
+            apiAsync.sendPrivateMessage(invokerId, "Der Minecraft-Account ist nicht über dem gleichen PC online!");
+            return;
+        }
+
+        gameChest.getDatabaseManager().getAsync().getPlayer(uuid, dbPlayer-> {
+            if (dbPlayer.getDatabaseElement(DatabasePlayerObject.TS_UID).getObject() != null) {
+                apiAsync.sendPrivateMessage(invokerId, "Du bist bereits mit einer Identität verbunden!");
+                return;
+            }
+
+            String uid = clientInfo.getUniqueIdentifier();
+
+            dbPlayer.setDatabaseObject(DatabasePlayerObject.TS_UID, uid);
+            apiAsync.addClientToServerGroup(teamspeakBot.verifyServerGroupId, clientInfo.getDatabaseId());
+            String description = "Minecraft: "+name + (clientInfo.getDescription().equals("") ? "" : " | " + clientInfo.getDescription());
+            apiAsync.editClient(invokerId, Collections.singletonMap(ClientProperty.CLIENT_DESCRIPTION, description));
+
+            apiAsync.sendPrivateMessage(invokerId, "Du bist nun mit dem Minecraft-Account [COLOR=GREEN]" + name + "[/COLOR] verbunden!");
+            player.sendMessage(Verify.getInstance().prefix+"§aDu bist nun mit deinem Teamspeak-Account verbunden!");
+
+        }, DatabasePlayerObject.TS_UID);
+//        teamspeakBot.getClientInfoAsync(invokerId, clientInfo -> {
+//            UUID uuid = UUIDFetcher.getUUID(name);
+//
+//            if (uuid == null) {
+//                apiAsync.sendPrivateMessage(invokerId, "Konnte den User nicht in der Datenbank finden!");
+//                return;
+//            }
+//
+//            Player player = Verify.getInstance().getServer().getPlayer(uuid);
+//
+//            if(player == null) {
+//                apiAsync.sendPrivateMessage(invokerId, "Du musst auf dem Verify-Server online sein! Verbinde dich dazu auf [B]Game-Chest.de[/B] und führe den [B]/verify[/B] Befehl aus.");
+//                return;
+//            }
+//
+//            String ipPlayer = player.getAddress().getHostString();
+//            String ipTs = clientInfo.getIp();
+//
+//            if(!ipPlayer.equals(ipTs)) {
+//                apiAsync.sendPrivateMessage(invokerId, "Der Minecraft-Account ist nicht über dem gleichen PC online!");
+//                return;
+//            }
+//
+//            gameChest.getDatabaseManager().getAsync().getPlayer(uuid, dbPlayer-> {
+//                if (dbPlayer.getDatabaseElement(DatabasePlayerObject.TS_UID).getObject() != null) {
+//                    apiAsync.sendPrivateMessage(invokerId, "Du bist bereits mit einer Identität verbunden!");
+//                    return;
+//                }
+//
+//                String uid = clientInfo.getUniqueIdentifier();
+//
+//                dbPlayer.setDatabaseObject(DatabasePlayerObject.TS_UID, uid);
+//                apiAsync.addClientToServerGroup(teamspeakBot.verifyServerGroupId, clientInfo.getDatabaseId());
+//                String description = "Minecraft: "+name + (clientInfo.getDescription().equals("") ? "" : " | " + clientInfo.getDescription());
+//                apiAsync.editClient(invokerId, Collections.singletonMap(ClientProperty.CLIENT_DESCRIPTION, description));
+//
+//                apiAsync.sendPrivateMessage(invokerId, "Du bist nun mit dem Minecraft-Account [COLOR=GREEN]" + name + "[/COLOR] verbunden!");
+//                player.sendMessage(Verify.getInstance().prefix+"§aDu bist nun mit deinem Teamspeak-Account verbunden!");
+//
+//            }, DatabasePlayerObject.TS_UID);
+//        }, e -> {
+//            e.printStackTrace();
+//            apiAsync.sendPrivateMessage(invokerId, "[COLOR=red]Ups! Da ist etwas schief gelaufen! Bitte kontaktiere die Administration.[/COLOR]");
+//        });
     }
 }

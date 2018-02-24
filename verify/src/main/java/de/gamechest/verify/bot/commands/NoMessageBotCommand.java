@@ -1,6 +1,7 @@
 package de.gamechest.verify.bot.commands;
 
 import com.github.theholywaffle.teamspeak3.TS3ApiAsync;
+import com.github.theholywaffle.teamspeak3.api.wrapper.ClientInfo;
 import de.gamechest.verify.Verify;
 import de.gamechest.verify.bot.BotCommand;
 import de.gamechest.verify.bot.TeamspeakBot;
@@ -24,17 +25,29 @@ public class NoMessageBotCommand extends BotCommand {
             apiAsync.sendPrivateMessage(invokerId, "Du musst verifiziert sein!");
             return;
         }
-        teamspeakBot.getClientInfoAsync(invokerId, clientInfo -> {
-            if(!clientInfo.isInServerGroup(teamspeakBot.noMessageServerGroupId)) {
-                apiAsync.addClientToServerGroup(teamspeakBot.noMessageServerGroupId, clientInfo.getDatabaseId());
-                apiAsync.sendPrivateMessage(invokerId, "[COLOR=yellow]Du kannst nun nicht mehr angeschrieben werden![/COLOR]");
-            } else {
-                apiAsync.removeClientFromServerGroup(teamspeakBot.noMessageServerGroupId, clientInfo.getDatabaseId());
-                apiAsync.sendPrivateMessage(invokerId, "[COLOR=green]Du kannst nun wieder angeschrieben werden![/COLOR]");
-            }
-        }, e -> {
-            e.printStackTrace();
+        ClientInfo clientInfo = teamspeakBot.getClientInfo(invokerId);
+        if(clientInfo == null) {
             apiAsync.sendPrivateMessage(invokerId, "[COLOR=red]Ups! Da ist etwas schief gelaufen! Bitte kontaktiere die Administration.[/COLOR]");
-        });
+            return;
+        }
+        if(!clientInfo.isInServerGroup(teamspeakBot.noMessageServerGroupId)) {
+            apiAsync.addClientToServerGroup(teamspeakBot.noMessageServerGroupId, clientInfo.getDatabaseId());
+            apiAsync.sendPrivateMessage(invokerId, "[COLOR=yellow]Du kannst nun nicht mehr angeschrieben werden![/COLOR]");
+        } else {
+            apiAsync.removeClientFromServerGroup(teamspeakBot.noMessageServerGroupId, clientInfo.getDatabaseId());
+            apiAsync.sendPrivateMessage(invokerId, "[COLOR=green]Du kannst nun wieder angeschrieben werden![/COLOR]");
+        }
+//        teamspeakBot.getClientInfoAsync(invokerId, clientInfo -> {
+//            if(!clientInfo.isInServerGroup(teamspeakBot.noMessageServerGroupId)) {
+//                apiAsync.addClientToServerGroup(teamspeakBot.noMessageServerGroupId, clientInfo.getDatabaseId());
+//                apiAsync.sendPrivateMessage(invokerId, "[COLOR=yellow]Du kannst nun nicht mehr angeschrieben werden![/COLOR]");
+//            } else {
+//                apiAsync.removeClientFromServerGroup(teamspeakBot.noMessageServerGroupId, clientInfo.getDatabaseId());
+//                apiAsync.sendPrivateMessage(invokerId, "[COLOR=green]Du kannst nun wieder angeschrieben werden![/COLOR]");
+//            }
+//        }, e -> {
+//            e.printStackTrace();
+//            apiAsync.sendPrivateMessage(invokerId, "[COLOR=red]Ups! Da ist etwas schief gelaufen! Bitte kontaktiere die Administration.[/COLOR]");
+//        });
     }
 }
