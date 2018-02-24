@@ -5,7 +5,6 @@ import com.github.theholywaffle.teamspeak3.TS3ApiAsync;
 import com.github.theholywaffle.teamspeak3.TS3Config;
 import com.github.theholywaffle.teamspeak3.TS3Query;
 import com.github.theholywaffle.teamspeak3.api.ChannelProperty;
-import com.github.theholywaffle.teamspeak3.api.CommandFuture;
 import com.github.theholywaffle.teamspeak3.api.event.TS3EventType;
 import com.github.theholywaffle.teamspeak3.api.wrapper.ClientInfo;
 import de.gamechest.verify.Verify;
@@ -82,8 +81,14 @@ public class TeamspeakBot {
         return api.getClientInfo(invokerId);
     }
 
-    public void getClientInfoAsync(int invokerId, CommandFuture.SuccessListener<ClientInfo> success, CommandFuture.FailureListener failure) {
-        apiAsync.getClientInfo(invokerId).onFailure(failure).onSuccess(success);
+    public void getClientInfoAsync(int invokerId, BotCallback<ClientInfo> callbackSuccess, BotCallback<Exception> callbackFailure) {
+        Bukkit.getScheduler().runTaskAsynchronously(Verify.getInstance(), ()-> {
+            try {
+                callbackSuccess.run(apiAsync.getClientInfo(invokerId).get());
+            } catch (InterruptedException e) {
+                callbackFailure.run(e);
+            }
+        });
     }
 
     public boolean isVerified(int invokerId) {

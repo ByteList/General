@@ -59,7 +59,7 @@ public class Verify extends JavaPlugin {
 
     @Override
     public void onDisable() {
-
+        teamspeakBot.getQuery().exit();
         getServer().getConsoleSender().sendMessage(prefix + "§cDisabled!");
     }
 }
