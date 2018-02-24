@@ -42,7 +42,7 @@ public class TeamspeakBot {
     @Getter
     private CommandManager commandManager;
 
-    TeamspeakBot() {
+    public TeamspeakBot() {
         Logger logger = Verify.getInstance().getLogger();
         logger.info("[Teamspeak] Try to connect...");
 
