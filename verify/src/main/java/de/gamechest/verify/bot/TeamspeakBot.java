@@ -5,6 +5,7 @@ import com.github.theholywaffle.teamspeak3.TS3ApiAsync;
 import com.github.theholywaffle.teamspeak3.TS3Config;
 import com.github.theholywaffle.teamspeak3.TS3Query;
 import com.github.theholywaffle.teamspeak3.api.ChannelProperty;
+import com.github.theholywaffle.teamspeak3.api.CommandFuture;
 import com.github.theholywaffle.teamspeak3.api.event.TS3EventType;
 import com.github.theholywaffle.teamspeak3.api.wrapper.ClientInfo;
 import de.gamechest.verify.Verify;
@@ -79,7 +80,8 @@ public class TeamspeakBot {
 
     public ClientInfo getClientInfo(int invokerId) {
         try {
-            return apiAsync.getClientInfo(invokerId).get();
+            CommandFuture<ClientInfo> commandFuture =  apiAsync.getClientInfo(invokerId);
+            return commandFuture.get();
         } catch (InterruptedException e) {
             e.printStackTrace();
             return null;

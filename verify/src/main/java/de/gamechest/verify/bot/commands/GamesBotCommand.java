@@ -38,8 +38,11 @@ public class GamesBotCommand extends BotCommand {
             apiAsync.sendPrivateMessage(invokerId, "Benutzung: [B]!games "+ Arrays.toString(gameTypes.keySet().toArray(new String[gameTypes.size()]))+"[/B]");
             return;
         }
-        ClientInfo clientInfo = teamspeakBot.getClientInfo(invokerId);
-        if(clientInfo == null) {
+        ClientInfo clientInfo;
+        try {
+            clientInfo = apiAsync.getClientInfo(invokerId).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
             apiAsync.sendPrivateMessage(invokerId, "[COLOR=red]Ups! Da ist etwas schief gelaufen! Bitte kontaktiere die Administration.[/COLOR]");
             return;
         }
