@@ -1,5 +1,6 @@
 package de.gamechest.verify;
 
+import de.gamechest.verify.bot.TeamspeakBot;
 import de.gamechest.verify.commands.UnverifyCommand;
 import de.gamechest.verify.listener.Listeners;
 import lombok.Getter;
