@@ -7,31 +7,43 @@ import lombok.Getter;
  */
 public enum DatabaseCollection {
 
-    PLAYERS("players"),
-    ONLINE_PLAYER("online-player"),
-    PREMIUM_PLAYER("premium-player"),
-    UUID_BUFFER("uuid-buffer"),
-    ACTIVATE_CODES("activate-codes"),
-    PARTY("party"),
+    PLAYERS(0, "players"),
+    ONLINE_PLAYER(1, "online-player"),
+    PREMIUM_PLAYER(2, "premium-player"),
+    UUID_BUFFER(3, "uuid-buffer"),
+    ACTIVATE_CODES(4, "activate-codes"),
+    PARTY(5, "party"),
 
-    POLL("poll"),
+    POLL(6, "poll"),
 
-    NICKNAMES("nicknames"),
+    NICKNAMES(7, "nicknames"),
 
-    CA_STATISTICS("ca-statistics"),
-    SD_STATISTICS("sd-statistics"),
-    DR_STATISTICS("dr-statistics"),
-    JD_STATISTICS("jd-statistics"),
+    CA_STATISTICS(8, "ca-statistics"),
+    SD_STATISTICS(9, "sd-statistics"),
+    DR_STATISTICS(10, "dr-statistics"),
+    JD_STATISTICS(11, "jd-statistics"),
 
-    BANS("bans"),
-    BAN_HISTORY("ban-history"),
-    CHAT_REPORTS("chat-reports"),
-    BUG_REPORTS("bug-reports");
+    BANS(12, "bans"),
+    BAN_HISTORY(13, "ban-history"),
+    CHAT_REPORTS(14, "chat-reports"),
+    BUG_REPORTS(15, "bug-reports");
 
+    @Getter
+    private int id;
     @Getter
     private String name;
 
-    DatabaseCollection(String name) {
+    DatabaseCollection(int id, String name) {
+        this.id = id;
         this.name = name;
+    }
+
+    public static DatabaseCollection getDatabaseCollectionFromId(int id) {
+        for(DatabaseCollection collection : values()) {
+            if(id == collection.getId()) {
+                return collection;
+            }
+        }
+        throw new IllegalArgumentException("This collection doesn't exist! ("+id+")");
     }
 }
