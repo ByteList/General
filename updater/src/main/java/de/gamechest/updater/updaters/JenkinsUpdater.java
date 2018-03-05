@@ -51,6 +51,9 @@ public class JenkinsUpdater extends Thread {
                 update("Lobby", urlPath+"GameChest-Lobby/lastSuccessfulBuild/", urlPath+"GameChest-Lobby/lastSuccessfulBuild/artifact/target/Lobby.jar",
                         endLocPath+"Templates/LOBBY/plugins/");
 
+                update("Survival", urlPath+"GameChest-Survival/lastSuccessfulBuild/", urlPath+"GameChest-Survival/lastSuccessfulBuild/artifact/target/Survival.jar",
+                        endLocPath+"Servers/permanent/Survival/plugins/update/", endLocPath+"Servers/permanent/Survival/plugins/");
+
                 update("Verify", urlPath+"GameChest-General/lastSuccessfulBuild/", urlPath+"GameChest-General/lastSuccessfulBuild/artifact/verify/target/Verify.jar",
                         endLocPath+"Servers/permanent/Verify/plugins/update/", endLocPath+"Servers/permanent/Verify/plugins/");
 
