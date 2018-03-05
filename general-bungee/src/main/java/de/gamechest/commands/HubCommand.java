@@ -3,6 +3,7 @@ package de.gamechest.commands;
 import de.bytelist.bytecloud.bungee.ByteCloudMaster;
 import de.gamechest.GameChest;
 import de.gamechest.commands.base.GCCommand;
+import de.gamechest.database.rank.Rank;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
@@ -12,7 +13,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 public class HubCommand extends GCCommand {
 
     public HubCommand() {
-        super("hub", "lobby", "leave", "l", "lb");
+        super("hub", "lobby", "l", "lb");
     }
     
     private GameChest gameChest = GameChest.getInstance();
@@ -25,6 +26,12 @@ public class HubCommand extends GCCommand {
         }
 
         ProxiedPlayer pp = (ProxiedPlayer) sender;
+
+        if(pp.getServer().getInfo().getName().equals("BauEvent") && gameChest.hasRank(pp.getUniqueId(), Rank.BUILDER)) {
+            pp.sendMessage("§cAuf dem BauEvent-Server ist der Lobby-Befehl deaktiviert.");
+            return;
+        }
+
         int i = ByteCloudMaster.getInstance().getCloudHandler().connect(
                 ByteCloudMaster.getInstance().getCloudHandler().getRandomLobbyId(), pp);
 

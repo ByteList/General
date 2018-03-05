@@ -55,6 +55,7 @@ public class GameChest extends Plugin {
     public final String pr_stats = "§6Stats §8\u00BB ";
     public final String pr_kick = "§cKick §8\u00BB ";
     public final String pr_ban = "§cBan §8\u00BB ";
+    public final String pr_report = "§9Report §8\u00BB ";
     public final String pr_bug = "§9BugReport §8\u00BB ";
     public final String pr_activate = "§6Activate §8\u00BB ";
     public final String pr_party = "§dParty §8\u00BB ";
