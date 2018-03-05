@@ -32,6 +32,11 @@ public class PlayerReportCommand extends GCCommand {
                 return;
             }
 
+            if(sender.getName().equals(player.getName())) {
+                sender.sendMessage(gameChest.pr_report+"§cDu kannst dich nicht selbst melden!");
+                return;
+            }
+
             StringBuilder reason = new StringBuilder();
 
             for (int i = 1; i < args.length; i++) {

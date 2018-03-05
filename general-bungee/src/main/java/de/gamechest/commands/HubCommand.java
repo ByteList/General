@@ -27,7 +27,7 @@ public class HubCommand extends GCCommand {
 
         ProxiedPlayer pp = (ProxiedPlayer) sender;
 
-        if(pp.getServer().getInfo().getName().equals("BauEvent") && gameChest.hasRank(pp.getUniqueId(), Rank.BUILDER)) {
+        if(pp.getServer().getInfo().getName().equals("BauEvent") && !gameChest.hasRank(pp.getUniqueId(), Rank.BUILDER)) {
             pp.sendMessage("§cAuf dem BauEvent-Server ist der Lobby-Befehl deaktiviert.");
             return;
         }
