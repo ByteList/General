@@ -44,7 +44,7 @@ public class PlayerReportCommand extends GCCommand {
             }
             reason.append("§$#~$~§/~");
 
-            TextComponent accept = new TextComponent(player.getServer().getInfo().getName());
+            TextComponent accept = new TextComponent("§e"+player.getServer().getInfo().getName());
             accept.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/join "+player.getServer().getInfo().getName()));
             accept.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§aVerbinde dich auf den Server.").create()));
 
@@ -55,7 +55,7 @@ public class PlayerReportCommand extends GCCommand {
 
             gameChest.onlineTeam.forEach(teamPlayer -> {
                 teamPlayer.sendMessage(gameChest.pr_report+"§a"+sender.getName()+"§7 hat §c"+player.getName()+"§7 reportet!");
-                teamPlayer.sendMessage(new TextComponent("§8\u00BB §7Server: §e"), accept);
+                teamPlayer.sendMessage(new TextComponent("§8\u00BB §7Server: "), accept);
                 teamPlayer.sendMessage("§8\u00BB §7Grund: §e"+reason.toString().replace(" §$#~$~§/~", ""));
             });
             sender.sendMessage(gameChest.pr_report+"§eDu hast §c"+player.getName()+"§e erfolgreich gemeldet!");

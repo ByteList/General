@@ -16,6 +16,7 @@ import net.md_5.bungee.event.EventPriority;
 public class ChatListener implements Listener {
 
     private final GameChest gameChest = GameChest.getInstance();
+    private final String[] plot = { "p","plot","ps","plotsquared","p2","2","plotme" };
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onChat(ChatEvent e) {
@@ -41,6 +42,15 @@ public class ChatListener implements Listener {
 
                 if(command.startsWith("/spigot:")) {
                     e.setMessage(message.replace("/spigot:", "/"));
+                }
+
+                for(String plotCmd : plot) {
+                    if(command.startsWith(plotCmd)) {
+                        if (!gameChest.hasRank(player.getUniqueId(), Rank.DEVELOPER)) {
+                            e.setCancelled(true);
+                            gameChest.sendNoPermissionMessage(player);
+                        }
+                    }
                 }
             }
         }
