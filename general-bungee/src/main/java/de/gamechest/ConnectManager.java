@@ -37,6 +37,7 @@ public class ConnectManager {
                 cfg.set("Motd", "&cWartungsmodus");
                 cfg.set("PlayerLimit", 150);
                 cfg.set("WhiteList", whiteList);
+                cfg.set("EventServer", "---");
 
                 ConfigurationProvider.getProvider(YamlConfiguration.class).save(cfg, file);
             } else
@@ -121,6 +122,10 @@ public class ConnectManager {
             uuids.add(UUID.fromString(uuid));
 
         return uuids;
+    }
+
+    public String getEventServer() {
+        return  cfg.getString("EventServer");
     }
 
     public enum ConnectState {

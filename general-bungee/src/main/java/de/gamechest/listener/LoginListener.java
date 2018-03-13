@@ -38,6 +38,14 @@ public class LoginListener implements Listener {
         switch (currentConnectState) {
 
             case OPEN:
+                String eventServer = gameChest.getConnectManager().getEventServer();
+                if(!eventServer.equals("---")) {
+                    if (!gameChest.getProxy().getServers().containsKey(eventServer) && !gameChest.hasRank(pc.getUniqueId(), Rank.BUILDER)) {
+                        e.setCancelled(true);
+                        e.setCancelReason("§cDer Event-Server konnte nicht erreicht werden!");
+                        return;
+                    }
+                }
                 break;
             case WHITELIST:
                 if(!gameChest.getConnectManager().getWhiteList().contains(pc.getUniqueId())) {
