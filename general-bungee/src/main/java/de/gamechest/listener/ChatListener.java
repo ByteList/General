@@ -16,7 +16,7 @@ import net.md_5.bungee.event.EventPriority;
 public class ChatListener implements Listener {
 
     private final GameChest gameChest = GameChest.getInstance();
-    private final String[] plot = { "/p","/plot","/ps","/plotsquared","/p2","/2","/plotme", "//pos2", "//pos1" };
+    private final String[] plot = { "/p","/plot","/ps","/plotsquared","/p2","/2","/plotme", "//pos2", "//pos1", "/party" };
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onChat(ChatEvent e) {
@@ -28,7 +28,22 @@ public class ChatListener implements Listener {
 
                 if(command.equalsIgnoreCase("/pl") || command.equalsIgnoreCase("/plugins")) {
                     if(!gameChest.hasRank(player.getUniqueId(), Rank.DEVELOPER)) {
-                        e.setMessage("/fakeplugins s6adD4g146 exec");
+//                        e.setMessage("/fakeplugins s6adD4g146 exec");
+                        e.setCancelled(true);
+                        player.sendMessage("§fPlugins (x): §aAAC§f, §aPlotMe§f, §aWorldGuard§f, §cAuthMe§f, §aEssentials§f, §aPermissionEx§f, §eCloud");
+                        return;
+                    }
+                }
+
+                if(player.getServer().getInfo().getName().equalsIgnoreCase("BauEvent")) {
+                    for (String plotCmd : plot) {
+                        if (command.equalsIgnoreCase(plotCmd)) {
+                            if (!gameChest.hasRank(player.getUniqueId(), Rank.DEVELOPER)) {
+                                e.setCancelled(true);
+                                gameChest.sendNoPermissionMessage(player);
+                                return;
+                            }
+                        }
                     }
                 }
 
@@ -42,15 +57,6 @@ public class ChatListener implements Listener {
 
                 if(command.startsWith("/spigot:")) {
                     e.setMessage(message.replace("/spigot:", "/"));
-                }
-
-                for(String plotCmd : plot) {
-                    if(command.startsWith(plotCmd)) {
-                        if (!gameChest.hasRank(player.getUniqueId(), Rank.DEVELOPER)) {
-                            e.setCancelled(true);
-                            gameChest.sendNoPermissionMessage(player);
-                        }
-                    }
                 }
             }
         }
