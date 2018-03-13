@@ -16,7 +16,7 @@ import net.md_5.bungee.event.EventPriority;
 public class ChatListener implements Listener {
 
     private final GameChest gameChest = GameChest.getInstance();
-    private final String[] plot = { "p","plot","ps","plotsquared","p2","2","plotme" };
+    private final String[] plot = { "/p","/plot","/ps","/plotsquared","/p2","/2","/plotme", "//pos2", "//pos1" };
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onChat(ChatEvent e) {
