@@ -61,7 +61,6 @@ public class CommandListener implements Listener {
                 .filter(cmd -> !cmd.equalsIgnoreCase("//superpickaxe"))
                 .filter(cmd -> !cmd.equalsIgnoreCase("//gui"))
                 .filter(cmd -> !cmd.equalsIgnoreCase("//help"))
-                .filter(cmd -> !cmd.equalsIgnoreCase("//schematic"))
                 .filter(cmd -> !cmd.equalsIgnoreCase("//anvil"))
                 .filter(cmd -> !cmd.equalsIgnoreCase("//toggleplace"))
                 .filter(cmd -> !cmd.equalsIgnoreCase("/targetmask"))
@@ -78,8 +77,12 @@ public class CommandListener implements Listener {
                 .filter(cmd -> !cmd.equalsIgnoreCase("/visual"))
                 .filter(cmd -> !cmd.equalsIgnoreCase("/visualize"))
                 .filter(cmd -> !cmd.equalsIgnoreCase("/tool"))
-                .filter(cmd -> !cmd.equalsIgnoreCase("/fawe"))
-                .filter(cmd -> !cmd.equalsIgnoreCase("//fawe"))
+                .filter(cmd -> !cmd.equalsIgnoreCase("/scroll"))
+                .filter(cmd -> !cmd.contains("secondary"))
+                .filter(cmd -> !cmd.contains("fawe"))
+                .filter(cmd -> !cmd.contains("cancel"))
+                .filter(cmd -> !cmd.contains("schem"))
+                .filter(cmd -> !cmd.startsWith("/mv"))
                 .forEach(retur::add);
 
         e.setCompletions(retur);
