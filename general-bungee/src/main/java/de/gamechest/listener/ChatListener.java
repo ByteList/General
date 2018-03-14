@@ -21,7 +21,8 @@ public class ChatListener implements Listener {
             "//pos2", "//pos1", "//1", "//2", "/posa", "/posb", "//posa", "//posb", "/brush",
             "/sp", "/superpickaxe", "//superpickaxe", "//gui", "//help", "//schematic", "//anvil",
             "//toggleplace", "/targetmask", "/tarmask", "/tool", "/transforms", "/tm", "/to", "/targetoffset",
-            "/snap", "/snapshot", "/primary", "/vis", "/visual", "/visualize", "/tool"
+            "/snap", "/snapshot", "/primary", "/vis", "/visual", "/visualize", "/tool", "/fawe", "//fawe", "/we",
+            "/worldedit", "//worldedit"
     };
 
     @EventHandler(priority = EventPriority.HIGHEST)
