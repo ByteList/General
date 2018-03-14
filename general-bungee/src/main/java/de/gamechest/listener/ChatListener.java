@@ -17,12 +17,12 @@ public class ChatListener implements Listener {
 
     private final GameChest gameChest = GameChest.getInstance();
     private final String[] plot = { "/party",
-            "/p","/plot","/ps","/plotsquared","/p2","/2","/plotme",
+            "/p","/plot","/ps","/plotsquared","/p2","/2","/plotme","/plots",
             "//pos2", "//pos1", "//1", "//2", "/posa", "/posb", "//posa", "//posb", "/brush",
             "/sp", "/superpickaxe", "//superpickaxe", "//gui", "//help", "//schematic", "//anvil",
             "//toggleplace", "/targetmask", "/tarmask", "/tool", "/transforms", "/tm", "/to", "/targetoffset",
             "/snap", "/snapshot", "/primary", "/vis", "/visual", "/visualize", "/tool", "/fawe", "//fawe", "/we",
-            "/worldedit", "//worldedit"
+            "/worldedit", "//worldedit", "/toggleplace", "/patterns"
     };
 
     @EventHandler(priority = EventPriority.HIGHEST)
