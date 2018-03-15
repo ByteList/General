@@ -38,6 +38,7 @@ public class HelpCommand extends GCCommand {
                 sender.sendMessage("§8\u00BB §e/delete §7- Plot löschen");
                 sender.sendMessage("§8\u00BB §e/clear §7- Plot resetten");
                 sender.sendMessage("§8\u00BB §e/submit §7- Plot einsenden");
+                sender.sendMessage("§8\u00BB §e/barrier §7- Erhalte eine Barriere");
                 break;
             default :
                 sender.sendMessage(gameChest.prefix + "§6Befehle des Game-Chest.de Netzwerkes: §7(1/2)");

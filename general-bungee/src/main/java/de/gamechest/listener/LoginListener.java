@@ -79,6 +79,12 @@ public class LoginListener implements Listener {
             }
         }
 
+        if(gameChest.getProxy().getPlayer(pc.getUniqueId()) != null) {
+            e.setCancelled(true);
+            e.setCancelReason("§cDer Account ist schon auf dem Netzwerk online!");
+            return;
+        }
+
         if(databaseManager.getDatabaseBan().isBanned(pc.getUniqueId())) {
             if(isBanned(pc.getUniqueId())) {
                 e.setCancelled(true);
