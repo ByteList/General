@@ -21,19 +21,27 @@ import net.md_5.bungee.event.EventPriority;
 public class ServerListener implements Listener {
 
     private final GameChest gameChest = GameChest.getInstance();
+    private final ByteCloudMaster byteCloudMaster = ByteCloudMaster.getInstance();
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onServerKick(ServerKickEvent e) {
+        ProxiedPlayer player = e.getPlayer();
+
         if(gameChest.isCloudEnabled()) {
             try {
-                String randomLobbyId = ByteCloudMaster.getInstance().getCloudHandler().getRandomLobbyId(e.getKickedFrom().getName());
+                if(byteCloudMaster.getServerIdOnConnect().equals(e.getKickedFrom().getName())) {
+                    e.setCancelled(false);
+                    e.setKickReason("§7Du wurdest vom Server gekickt:§r "+e.getKickReason());
+                    return;
+                }
                 e.setCancelled(true);
+                String randomLobbyId = byteCloudMaster.getCloudHandler().getRandomLobbyId(e.getKickedFrom().getName());
                 ServerInfo serverInfo = gameChest.getProxy().getServerInfo(randomLobbyId);
                 e.setCancelServer(serverInfo);
-                e.getPlayer().sendMessage("§7Du wurdest vom Server gekickt:§r "+e.getKickReason());
+                player.sendMessage("§7Du wurdest vom Server gekickt:§r "+e.getKickReason());
             } catch (Exception ignored) {
                 e.setCancelled(false);
-                e.setKickReason(ByteCloudMaster.getInstance().prefix+"§cDer Cloud-Server hat deine Verbindung getrennt.");
+                e.setKickReason("§7Du wurdest vom Server gekickt:§r "+e.getKickReason());
             }
         }
     }
