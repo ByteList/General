@@ -21,9 +21,13 @@ public class NoMessageBotCommand extends BotCommand {
     @Override
     public void execute(String invokerUniqueId, Integer invokerId, String[] args) {
         teamspeakBot.getClientInfoAsync(invokerId, clientInfo -> {
+            if (!teamspeakBot.hasSpecialGroup(clientInfo)) {
+                apiAsync.sendPrivateMessage(invokerId, "Du musst verifiziert sein!");
+                return;
+            }
             if(!clientInfo.isInServerGroup(teamspeakBot.noMessageServerGroupId)) {
                 apiAsync.addClientToServerGroup(teamspeakBot.noMessageServerGroupId, clientInfo.getDatabaseId());
-                apiAsync.sendPrivateMessage(invokerId, "[COLOR=yellow]Du kannst nun nicht mehr angeschrieben werden![/COLOR]");
+                apiAsync.sendPrivateMessage(invokerId, "[COLOR=#FF005F]Du kannst nun nicht mehr angeschrieben werden![/COLOR]");
             } else {
                 apiAsync.removeClientFromServerGroup(teamspeakBot.noMessageServerGroupId, clientInfo.getDatabaseId());
                 apiAsync.sendPrivateMessage(invokerId, "[COLOR=green]Du kannst nun wieder angeschrieben werden![/COLOR]");

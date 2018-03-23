@@ -50,13 +50,13 @@ public class TeamspeakBot {
        Bukkit.getScheduler().runTaskAsynchronously(Verify.getInstance(), ()-> {
            System.out.println("[Teamspeak] Try to connect...");
 
-//           TS3Config config = new TS3Config();
-//           config.setHost("127.0.0.1");
-//           config.setQueryPort(10011);
-//           config.setFloodRate(TS3Query.FloodRate.UNLIMITED);
-//           config.setDebugLevel(Level.WARNING);
-////           config.setReconnectStrategy(ReconnectStrategy.exponentialBackoff())
-           query = new TS3Query();
+           TS3Config config = new TS3Config();
+           config.setHost("127.0.0.1");
+           config.setQueryPort(10011);
+           config.setFloodRate(TS3Query.FloodRate.UNLIMITED);
+           config.setDebugLevel(Level.WARNING);
+//           config.setReconnectStrategy(ReconnectStrategy.exponentialBackoff())
+           query = new TS3Query(config);
            query.connect();
 
            api = query.getApi();
@@ -102,15 +102,12 @@ public class TeamspeakBot {
 
     public boolean hasSpecialGroup(ClientInfo clientInfo) {
         boolean b = false;
-        System.out.println("Bool a: "+ false);
         for (int serverGroupId : specialIds) {
-            System.out.println("sgId: "+serverGroupId);
             if (clientInfo.isInServerGroup(serverGroupId)) {
                 b = true;
                 break;
             }
         }
-        System.out.println("Bool b: "+b);
         return b;
     }
 
