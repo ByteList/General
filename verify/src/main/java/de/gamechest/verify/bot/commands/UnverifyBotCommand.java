@@ -1,8 +1,7 @@
 package de.gamechest.verify.bot.commands;
 
-import de.gamechest.verify.Verify;
+import com.github.theholywaffle.teamspeak3.TS3ApiAsync;
 import de.gamechest.verify.bot.BotCommand;
-import de.gamechest.verify.bot.TeamspeakBot;
 
 /**
  * Created by ByteList on 23.03.2018.
@@ -11,10 +10,8 @@ import de.gamechest.verify.bot.TeamspeakBot;
  */
 public class UnverifyBotCommand extends BotCommand {
 
-    private final TeamspeakBot teamspeakBot = Verify.getInstance().getTeamspeakBot();
-
-    public UnverifyBotCommand() {
-        super(null, "unverify", "Unverify nur auf dem MC-Server");
+    public UnverifyBotCommand(TS3ApiAsync apiAsync) {
+        super(apiAsync, "unverify", "Unverify nur auf dem MC-Server");
     }
 
     @Override

@@ -83,7 +83,7 @@ public class TeamspeakBot {
 
            commandManager = new CommandManager();
            commandManager.registerCommands(new HelpBotCommand(apiAsync), new NoMessageBotCommand(apiAsync), new NoPokeBotCommand(apiAsync),
-                   new VerifyBotCommand(apiAsync), new GamesBotCommand(apiAsync), new UnverifyBotCommand());
+                   new VerifyBotCommand(apiAsync), new GamesBotCommand(apiAsync), new UnverifyBotCommand(apiAsync));
        });
     }
 
