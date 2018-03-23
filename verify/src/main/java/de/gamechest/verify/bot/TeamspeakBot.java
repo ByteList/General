@@ -49,19 +49,19 @@ public class TeamspeakBot {
         config.setHost("127.0.0.1");
         config.setQueryPort(10011);
         config.setFloodRate(TS3Query.FloodRate.UNLIMITED);
-        query = new TS3Query();
+        query = new TS3Query(config);
         query.connect();
 
-        if(!query.isConnected()) {
+        api = query.getApi();
+        apiAsync = query.getAsyncApi();
+        api.login("teamspeakQueryBot", "hg63Afdp");
+
+        if(api.whoAmI() != null) {
             logger.info("[Teamspeak] Query can not connect!");
             return;
         } else {
             logger.info("[Teamspeak] Query connected!");
         }
-
-        api = query.getApi();
-        apiAsync = query.getAsyncApi();
-        api.login("teamspeakQueryBot", "hg63Afdp");
 
 
         api.selectVirtualServerById(1);
@@ -69,7 +69,7 @@ public class TeamspeakBot {
         queryId = api.whoAmI().getId();
         api.registerEvents(TS3EventType.SERVER, TS3EventType.TEXT_PRIVATE/*, TS3EventType.CHANNEL*/);
 
-        if(api.getClientInfo(20) != null) apiAsync.sendPrivateMessage(20, "Bot started.");
+        if(api.getClientInfo(20) != null) apiAsync.sendPrivateMessage(20, "Bot started. (Version: "+Verify.getInstance().getVersion()+")");
 
         api.addTS3Listeners(new ClientJoinListener(apiAsync), new TextMessageListener(apiAsync, queryId));
 
