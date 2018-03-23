@@ -23,24 +23,24 @@ public class NoPokeBotCommand extends BotCommand {
     @Override
     public void execute(String invokerUniqueId, Integer invokerId, String[] args) {
         System.out.println("NoPokeBotCommand#execute()->"+invokerId);
-        try {
-            ClientInfo clientInfo = teamspeakBot.getClientInfo(invokerId);
 
-            if (!teamspeakBot.hasSpecialGroup(clientInfo)) {
-                apiAsync.sendPrivateMessage(invokerId, "Du musst verifiziert sein!");
-                return;
-            }
-            if(!clientInfo.isInServerGroup(teamspeakBot.noPokeServerGroupId)) {
-                apiAsync.addClientToServerGroup(teamspeakBot.noPokeServerGroupId, clientInfo.getDatabaseId());
-                apiAsync.sendPrivateMessage(invokerId, "[COLOR=yellow]Du kannst nun nicht mehr angestupst werden![/COLOR]");
-            } else {
-                apiAsync.removeClientFromServerGroup(teamspeakBot.noPokeServerGroupId, clientInfo.getDatabaseId());
-                apiAsync.sendPrivateMessage(invokerId, "[COLOR=green]Du kannst nun wieder angestupst werden![/COLOR]");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        ClientInfo clientInfo = teamspeakBot.getClientInfo(invokerId);
+
+        if(clientInfo == null) {
             apiAsync.sendPrivateMessage(invokerId, "[COLOR=red]Ups! Da ist etwas schief gelaufen! Bitte kontaktiere die Administration.[/COLOR]");
             return;
+        }
+
+        if (!teamspeakBot.hasSpecialGroup(clientInfo)) {
+            apiAsync.sendPrivateMessage(invokerId, "Du musst verifiziert sein!");
+            return;
+        }
+        if(!clientInfo.isInServerGroup(teamspeakBot.noPokeServerGroupId)) {
+            apiAsync.addClientToServerGroup(teamspeakBot.noPokeServerGroupId, clientInfo.getDatabaseId());
+            apiAsync.sendPrivateMessage(invokerId, "[COLOR=yellow]Du kannst nun nicht mehr angestupst werden![/COLOR]");
+        } else {
+            apiAsync.removeClientFromServerGroup(teamspeakBot.noPokeServerGroupId, clientInfo.getDatabaseId());
+            apiAsync.sendPrivateMessage(invokerId, "[COLOR=green]Du kannst nun wieder angestupst werden![/COLOR]");
         }
 
 //        teamspeakBot.getClientInfoAsync(invokerId, clientInfo -> {
