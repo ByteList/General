@@ -56,7 +56,7 @@ public class TeamspeakBot {
         apiAsync = query.getAsyncApi();
         api.login("teamspeakQueryBot", "hg63Afdp");
 
-        if(api.whoAmI() != null) {
+        if(api.whoAmI() == null) {
             logger.info("[Teamspeak] Query can not connect!");
             return;
         } else {
