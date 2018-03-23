@@ -64,6 +64,11 @@ public class Listeners implements Listener {
     }
 
     @EventHandler
+    public void onChat(AsyncPlayerChatEvent e) {
+        e.setCancelled(true);
+    }
+
+    @EventHandler
     public void onWeatherChange(WeatherChangeEvent e) {
         e.setCancelled(true);
     }
