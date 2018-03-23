@@ -15,7 +15,6 @@ import lombok.Getter;
 import org.bukkit.Bukkit;
 
 import java.util.HashMap;
-import java.util.logging.Logger;
 
 /**
  * Created by ByteList on 01.05.2017.
@@ -42,40 +41,45 @@ public class TeamspeakBot {
     private CommandManager commandManager;
 
     public TeamspeakBot() {
-        Logger logger = Verify.getInstance().getLogger();
-        logger.info("[Teamspeak] Try to connect...");
+        init();
+    }
 
-        TS3Config config = new TS3Config();
-        config.setHost("127.0.0.1");
-        config.setQueryPort(10011);
-        config.setFloodRate(TS3Query.FloodRate.UNLIMITED);
-        query = new TS3Query(config);
-        query.connect();
+    private void init() {
+       Bukkit.getScheduler().runTaskAsynchronously(Verify.getInstance(), ()-> {
+           System.out.println("[Teamspeak] Try to connect...");
 
-        api = query.getApi();
-        apiAsync = query.getAsyncApi();
-        api.login("teamspeakQueryBot", "hg63Afdp");
+           TS3Config config = new TS3Config();
+           config.setHost("127.0.0.1");
+           config.setQueryPort(10011);
+           config.setFloodRate(TS3Query.FloodRate.UNLIMITED);
+           query = new TS3Query(config);
+           query.connect();
 
-        if(api.whoAmI() == null) {
-            logger.info("[Teamspeak] Query can not connect!");
-            return;
-        } else {
-            logger.info("[Teamspeak] Query connected!");
-        }
+           api = query.getApi();
+           apiAsync = query.getAsyncApi();
+           api.login("teamspeakQueryBot", "hg63Afdp");
+
+           if(api.whoAmI() == null) {
+               System.out.println("[Teamspeak] Query can not connect!");
+               return;
+           } else {
+               System.out.println("[Teamspeak] Query connected!");
+           }
 
 
-        api.selectVirtualServerById(1);
-        api.setNickname("ChestBot");
-        queryId = api.whoAmI().getId();
-        api.registerEvents(TS3EventType.SERVER, TS3EventType.TEXT_PRIVATE/*, TS3EventType.CHANNEL*/);
+           api.selectVirtualServerById(1);
+           api.setNickname("ChestBot");
+           queryId = api.whoAmI().getId();
+           api.registerEvents(TS3EventType.SERVER, TS3EventType.TEXT_PRIVATE/*, TS3EventType.CHANNEL*/);
 
-        if(api.getClientInfo(20) != null) apiAsync.sendPrivateMessage(20, "Bot started. (Version: "+Verify.getInstance().getVersion()+")");
+           if(api.getClientInfo(20) != null) apiAsync.sendPrivateMessage(20, "Bot started. (Version: "+Verify.getInstance().getVersion()+")");
 
-        api.addTS3Listeners(new ClientJoinListener(apiAsync), new TextMessageListener(apiAsync, queryId));
+           api.addTS3Listeners(new ClientJoinListener(apiAsync), new TextMessageListener(apiAsync, queryId));
 
-        commandManager = new CommandManager();
-        commandManager.registerCommands(new HelpBotCommand(apiAsync), new NoMessageBotCommand(apiAsync), new NoPokeBotCommand(apiAsync),
-                new VerifyBotCommand(apiAsync), new GamesBotCommand(apiAsync));
+           commandManager = new CommandManager();
+           commandManager.registerCommands(new HelpBotCommand(apiAsync), new NoMessageBotCommand(apiAsync), new NoPokeBotCommand(apiAsync),
+                   new VerifyBotCommand(apiAsync), new GamesBotCommand(apiAsync));
+       });
     }
 
 
