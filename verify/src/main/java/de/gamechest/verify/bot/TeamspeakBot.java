@@ -133,4 +133,9 @@ public class TeamspeakBot {
             }, 25L);
         }
     }
+
+    @Override
+    public String toString() {
+        return "TeamspeakBot{v:"+Verify.getInstance().getVersion()+"}";
+    }
 }
