@@ -56,7 +56,7 @@ public class CommandManager {
         if (target == null) {
             return false;
         }
-
+        System.out.println("dispatchCommand()->"+invokerId);
         target.execute(invokerUniqueId, invokerId, Arrays_copyOfRange(args, 1, args.length));
 
         return true;

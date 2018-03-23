@@ -81,7 +81,7 @@ public class TeamspeakBot {
 
 
     public ClientInfo getClientInfo(int invokerId) {
-        System.out.println(invokerId);
+        System.out.println("getClientInfo()->"+invokerId);
         try {
             CommandFuture<ClientInfo> commandFuture =  apiAsync.getClientInfo(invokerId);
             return commandFuture.get();

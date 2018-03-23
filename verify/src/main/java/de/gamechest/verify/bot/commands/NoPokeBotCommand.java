@@ -13,14 +13,16 @@ import de.gamechest.verify.bot.TeamspeakBot;
  */
 public class NoPokeBotCommand extends BotCommand {
 
-    private final TeamspeakBot teamspeakBot = Verify.getInstance().getTeamspeakBot();
+    private final TeamspeakBot teamspeakBot;
 
     public NoPokeBotCommand(TS3ApiAsync apiAsync) {
         super(apiAsync, "nopoke", "Aktiviere/Deaktiviere Anstupser");
+        teamspeakBot = Verify.getInstance().getTeamspeakBot();
     }
 
     @Override
     public void execute(String invokerUniqueId, Integer invokerId, String[] args) {
+        System.out.println("NoPokeBotCommand#execute()->"+invokerId);
         ClientInfo clientInfo;
         try {
             clientInfo = teamspeakBot.getClientInfo(invokerId);
