@@ -3,7 +3,6 @@ package de.gamechest.commands;
 import de.bytelist.bytecloud.bungee.ByteCloudMaster;
 import de.gamechest.GameChest;
 import de.gamechest.commands.base.GCCommand;
-import de.gamechest.database.rank.Rank;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
@@ -27,24 +26,27 @@ public class HubCommand extends GCCommand {
 
         ProxiedPlayer pp = (ProxiedPlayer) sender;
 
-        if(pp.getServer().getInfo().getName().equals("BauEvent") && !gameChest.hasRank(pp.getUniqueId(), Rank.BUILDER)) {
-            pp.sendMessage("§cAuf dem BauEvent-Server ist der Lobby-Befehl deaktiviert.");
-            return;
+        String serverId, display;
+
+        if(!ByteCloudMaster.getInstance().getServerIdOnConnect().equals("-1")) {
+            serverId = display = ByteCloudMaster.getInstance().getServerIdOnConnect();
+        } else {
+            serverId = ByteCloudMaster.getInstance().getCloudHandler().getRandomLobbyId();
+            display = "Lobby";
         }
 
-        int i = ByteCloudMaster.getInstance().getCloudHandler().connect(
-                ByteCloudMaster.getInstance().getCloudHandler().getRandomLobbyId(), pp);
+        int i = ByteCloudMaster.getInstance().getCloudHandler().connect(serverId, pp);
 
         if(i == 0) {
-            pp.sendMessage(gameChest.prefix+"§eVerbinde zur Lobby...");
+            pp.sendMessage(gameChest.prefix+"§eVerbinde zum "+display+"-Server...");
             return;
         }
         if(i == 1) {
-            pp.sendMessage(gameChest.prefix+"§6Du befindest dich bereits auf der Lobby!");
+            pp.sendMessage(gameChest.prefix+"§6Du befindest dich bereits auf dem "+display+"-Server!");
             return;
         }
         if(i == 2) {
-            pp.sendMessage(gameChest.prefix+"§cKonnte keinen Lobby-Server finden! Bitte melde dies dem Support!");
+            pp.sendMessage(gameChest.prefix+"§cKonnte keinen "+display+"-Server finden! Bitte melde dies dem Support!");
             return;
         }
         pp.sendMessage(gameChest.prefix+"§cError: Konnte keine passende Aktion ausführen!");
