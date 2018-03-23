@@ -27,7 +27,6 @@ public class TextMessageListener extends BotListener {
             int invokerId = e.getInvokerId();
             String invokerUniqueId = e.getInvokerUniqueId();
             if (e.getMessage().startsWith("!")) {
-                System.out.println("onTextMessage()->"+invokerId);
                 if(!Verify.getInstance().getTeamspeakBot().getCommandManager().dispatchCommand(invokerUniqueId, invokerId, e.getMessage().replaceFirst("!", ""))) {
                     apiAsync.sendPrivateMessage(invokerId, "Unbekannter Befehl! Liste dir alle Befehle mit [B]!help[/B] auf.");
                 }

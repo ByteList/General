@@ -84,14 +84,6 @@ public class TeamspeakBot {
 
 
     public ClientInfo getClientInfo(int invokerId) {
-        System.out.println("getClientInfo()->"+invokerId);
-//        try {
-//            CommandFuture<ClientInfo> commandFuture =  apiAsync.getClientInfo(invokerId);
-//            return commandFuture.get();
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//            return null;
-//        }
         return api.getClientInfo(invokerId);
     }
 
