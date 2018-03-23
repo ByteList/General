@@ -47,7 +47,7 @@ public class NoPokeBotCommand extends BotCommand {
             }
             if (!clientInfo.isInServerGroup(teamspeakBot.noPokeServerGroupId)) {
                 apiAsync.addClientToServerGroup(teamspeakBot.noPokeServerGroupId, clientInfo.getDatabaseId());
-                apiAsync.sendPrivateMessage(invokerId, "[COLOR=FF00D0]Du kannst nun nicht mehr angestupst werden![/COLOR]");
+                apiAsync.sendPrivateMessage(invokerId, "[COLOR=#FF00D0]Du kannst nun nicht mehr angestupst werden![/COLOR]");
             } else {
                 apiAsync.removeClientFromServerGroup(teamspeakBot.noPokeServerGroupId, clientInfo.getDatabaseId());
                 apiAsync.sendPrivateMessage(invokerId, "[COLOR=green]Du kannst nun wieder angestupst werden![/COLOR]");

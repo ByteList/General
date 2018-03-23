@@ -6,6 +6,7 @@ import com.github.theholywaffle.teamspeak3.TS3Config;
 import com.github.theholywaffle.teamspeak3.TS3Query;
 import com.github.theholywaffle.teamspeak3.api.ChannelProperty;
 import com.github.theholywaffle.teamspeak3.api.event.TS3EventType;
+import com.github.theholywaffle.teamspeak3.api.exception.TS3Exception;
 import com.github.theholywaffle.teamspeak3.api.wrapper.ClientInfo;
 import de.gamechest.verify.Verify;
 import de.gamechest.verify.bot.commands.*;
@@ -15,6 +16,7 @@ import lombok.Getter;
 import org.bukkit.Bukkit;
 
 import java.util.HashMap;
+import java.util.logging.Level;
 
 /**
  * Created by ByteList on 01.05.2017.
@@ -52,6 +54,8 @@ public class TeamspeakBot {
            config.setHost("127.0.0.1");
            config.setQueryPort(10011);
            config.setFloodRate(TS3Query.FloodRate.UNLIMITED);
+           config.setDebugLevel(Level.WARNING);
+//           config.setReconnectStrategy(ReconnectStrategy.exponentialBackoff())
            query = new TS3Query(config);
            query.connect();
 
@@ -61,6 +65,7 @@ public class TeamspeakBot {
 
            if(api.whoAmI() == null) {
                System.out.println("[Teamspeak] Query can not connect!");
+               query.exit();
                return;
            } else {
                System.out.println("[Teamspeak] Query connected!");
@@ -87,17 +92,18 @@ public class TeamspeakBot {
         return api.getClientInfo(invokerId);
     }
 
-    public void getClientInfoAsync(int invokerId, BotCallback<ClientInfo> callbackSuccess, BotCallback<Exception> callbackFailure) {
-        Bukkit.getScheduler().runTaskAsynchronously(Verify.getInstance(), ()-> {
-            try {
-                ClientInfo clientInfo = api.getClientInfo(invokerId);
-                if(clientInfo != null) {
-                    callbackSuccess.run(clientInfo);
-                }
-            } catch (Exception ex) {
-                callbackFailure.run(ex);
-            }
-        });
+    public void getClientInfoAsync(int invokerId, BotCallback<ClientInfo> callbackSuccess, BotCallback<TS3Exception> callbackFailure) {
+        apiAsync.getClientInfo(invokerId).onSuccess(callbackSuccess::run).onFailure(callbackFailure::run);
+//        Bukkit.getScheduler().runTaskAsynchronously(Verify.getInstance(), ()-> {
+//            try {
+//                ClientInfo clientInfo = api.getClientInfo(invokerId);
+//                if(clientInfo != null) {
+//                    callbackSuccess.run(clientInfo);
+//                }
+//            } catch (Exception ex) {
+//                callbackFailure.run(ex);
+//            }
+//        });
     }
 
     public boolean isVerified(int invokerId) {
