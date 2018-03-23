@@ -21,6 +21,7 @@ public class NoPokeBotCommand extends BotCommand {
 
     @Override
     public void execute(Integer invokerId, String[] args) {
+        System.out.println(invokerId);
         ClientInfo clientInfo;
         try {
             clientInfo = teamspeakBot.getApi().getClientInfo(invokerId);
