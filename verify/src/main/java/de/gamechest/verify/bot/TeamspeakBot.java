@@ -50,13 +50,13 @@ public class TeamspeakBot {
        Bukkit.getScheduler().runTaskAsynchronously(Verify.getInstance(), ()-> {
            System.out.println("[Teamspeak] Try to connect...");
 
-           TS3Config config = new TS3Config();
-           config.setHost("127.0.0.1");
-           config.setQueryPort(10011);
-           config.setFloodRate(TS3Query.FloodRate.UNLIMITED);
-           config.setDebugLevel(Level.WARNING);
-//           config.setReconnectStrategy(ReconnectStrategy.exponentialBackoff())
-           query = new TS3Query(config);
+//           TS3Config config = new TS3Config();
+//           config.setHost("127.0.0.1");
+//           config.setQueryPort(10011);
+//           config.setFloodRate(TS3Query.FloodRate.UNLIMITED);
+//           config.setDebugLevel(Level.WARNING);
+////           config.setReconnectStrategy(ReconnectStrategy.exponentialBackoff())
+           query = new TS3Query();
            query.connect();
 
            api = query.getApi();
@@ -94,16 +94,6 @@ public class TeamspeakBot {
 
     public void getClientInfoAsync(int invokerId, BotCallback<ClientInfo> callbackSuccess, BotCallback<TS3Exception> callbackFailure) {
         apiAsync.getClientInfo(invokerId).onSuccess(callbackSuccess::run).onFailure(callbackFailure::run);
-//        Bukkit.getScheduler().runTaskAsynchronously(Verify.getInstance(), ()-> {
-//            try {
-//                ClientInfo clientInfo = api.getClientInfo(invokerId);
-//                if(clientInfo != null) {
-//                    callbackSuccess.run(clientInfo);
-//                }
-//            } catch (Exception ex) {
-//                callbackFailure.run(ex);
-//            }
-//        });
     }
 
     public boolean isVerified(int invokerId) {
