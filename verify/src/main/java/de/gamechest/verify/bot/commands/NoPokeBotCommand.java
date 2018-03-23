@@ -21,10 +21,9 @@ public class NoPokeBotCommand extends BotCommand {
 
     @Override
     public void execute(String invokerUniqueId, Integer invokerId, String[] args) {
-        System.out.println(invokerId+" :: "+invokerUniqueId);
         ClientInfo clientInfo;
         try {
-            clientInfo = teamspeakBot.getApi().getClientByUId(invokerUniqueId);
+            clientInfo = teamspeakBot.getClientInfo(invokerId);
 
             if (!teamspeakBot.hasSpecialGroup(clientInfo)) {
                 apiAsync.sendPrivateMessage(invokerId, "Du musst verifiziert sein!");

@@ -70,7 +70,7 @@ public class TeamspeakBot {
         queryId = api.whoAmI().getId();
         api.registerEvents(TS3EventType.SERVER, TS3EventType.TEXT_PRIVATE/*, TS3EventType.CHANNEL*/);
 
-        if(api.getClientInfo(8) != null) apiAsync.sendPrivateMessage(8, "Bot started.");
+        if(api.getClientInfo(20) != null) apiAsync.sendPrivateMessage(20, "Bot started.");
 
         api.addTS3Listeners(new ClientJoinListener(apiAsync), new TextMessageListener(apiAsync, queryId));
 
@@ -81,6 +81,7 @@ public class TeamspeakBot {
 
 
     public ClientInfo getClientInfo(int invokerId) {
+        System.out.println(invokerId);
         try {
             CommandFuture<ClientInfo> commandFuture =  apiAsync.getClientInfo(invokerId);
             return commandFuture.get();
