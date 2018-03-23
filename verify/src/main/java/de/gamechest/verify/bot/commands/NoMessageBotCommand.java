@@ -20,7 +20,7 @@ public class NoMessageBotCommand extends BotCommand {
     }
 
     @Override
-    public void execute(Integer invokerId, String[] args) {
+    public void execute(String invokerUniqueId, Integer invokerId, String[] args) {
         ClientInfo clientInfo;
         try {
             clientInfo = apiAsync.getClientInfo(invokerId).get();

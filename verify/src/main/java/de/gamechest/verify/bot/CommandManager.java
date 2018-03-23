@@ -43,7 +43,7 @@ public class CommandManager {
         return commands.containsKey(command);
     }
 
-    public boolean dispatchCommand(int invokerId, String commandLine) {
+    public boolean dispatchCommand(String invokerUniqueId, int invokerId, String commandLine) {
         String[] args = PATTERN_ON_SPACE.split(commandLine);
 
         if (args.length == 0) {
@@ -57,7 +57,7 @@ public class CommandManager {
             return false;
         }
 
-        target.execute(invokerId, Arrays_copyOfRange(args, 1, args.length));
+        target.execute(invokerUniqueId, invokerId, Arrays_copyOfRange(args, 1, args.length));
 
         return true;
     }

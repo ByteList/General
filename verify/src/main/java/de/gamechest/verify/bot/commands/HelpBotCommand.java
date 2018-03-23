@@ -17,7 +17,7 @@ public class HelpBotCommand extends BotCommand {
     }
 
     @Override
-    public void execute(Integer invokerId, String[] args) {
+    public void execute(String invokerUniqueId, Integer invokerId, String[] args) {
         StringBuilder message = new StringBuilder();
         message.append("Alle Befehle:\n\n");
 

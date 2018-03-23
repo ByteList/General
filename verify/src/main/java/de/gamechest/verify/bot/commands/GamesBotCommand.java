@@ -29,7 +29,7 @@ public class GamesBotCommand extends BotCommand {
     }
 
     @Override
-    public void execute(Integer invokerId, String[] args) {
+    public void execute(String invokerUniqueId, Integer invokerId, String[] args) {
         if(args.length != 1) {
             apiAsync.sendPrivateMessage(invokerId, "Benutzung: [B]!games "+ Arrays.toString(gameTypes.keySet().toArray(new String[gameTypes.size()]))+"[/B]");
             return;

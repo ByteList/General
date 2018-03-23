@@ -24,5 +24,5 @@ public abstract class BotCommand {
         this.description = description;
     }
 
-    public abstract void execute(Integer invokerId, String[] args);
+    public abstract void execute(String invokerUniqueId, Integer invokerId, String[] args);
 }
