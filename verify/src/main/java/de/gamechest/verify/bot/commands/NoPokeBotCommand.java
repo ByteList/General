@@ -24,6 +24,7 @@ public class NoPokeBotCommand extends BotCommand {
     public void execute(String invokerUniqueId, Integer invokerId, String[] args) {
         System.out.println("NoPokeBotCommand#execute()->"+invokerId);
         System.out.println(teamspeakBot.toString());
+        System.out.println("Bla");
 
         ClientInfo clientInfo = teamspeakBot.getClientInfo(invokerId);
 
