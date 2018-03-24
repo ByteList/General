@@ -73,17 +73,17 @@ public class TeamspeakBot {
 
 
            api.selectVirtualServerById(1);
-           api.setNickname("ChestBot");
            queryId = api.whoAmI().getId();
            api.registerEvents(TS3EventType.SERVER, TS3EventType.TEXT_PRIVATE/*, TS3EventType.CHANNEL*/);
 
-           if(api.getClientInfo(20) != null) apiAsync.sendPrivateMessage(20, "Bot started. (Version: "+Verify.getInstance().getVersion()+")");
 
            api.addTS3Listeners(new ClientJoinListener(apiAsync), new TextMessageListener(apiAsync, queryId));
 
            commandManager = new CommandManager();
            commandManager.registerCommands(new HelpBotCommand(apiAsync), new NoMessageBotCommand(apiAsync), new NoPokeBotCommand(apiAsync),
                    new VerifyBotCommand(apiAsync), new GamesBotCommand(apiAsync), new UnverifyBotCommand(apiAsync));
+           api.setNickname("ChestBot");
+           if(api.getClientInfo(20) != null) apiAsync.sendPrivateMessage(20, "Bot started. (Version: "+Verify.getInstance().getVersion()+")");
        });
     }
 

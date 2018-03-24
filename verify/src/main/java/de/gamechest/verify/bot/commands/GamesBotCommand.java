@@ -44,25 +44,23 @@ public class GamesBotCommand extends BotCommand {
                 StringBuilder wrongGroup = new StringBuilder();
 
                 for(String game : args[0].split(",")) {
-                    if(!gameTypes.keySet().contains(game)) {
+                    if(!isGame(game)) {
                         wrongGroup.append(game).append("[/B],[B]");
-                        return;
-                    }
-
-                    for (String g : gameTypes.keySet()) {
-                        if(g.equalsIgnoreCase(game)) {
-                            game = g;
-                            break;
-                        }
-                    }
-
-                    int serverGroupId = gameTypes.get(game);
-                    if(clientInfo.isInServerGroup(serverGroupId)) {
-                        apiAsync.removeClientFromServerGroup(serverGroupId, clientInfo.getDatabaseId());
-                        removed.append(game).append("[/B],[B]");
                     } else {
-                        apiAsync.addClientToServerGroup(serverGroupId, clientInfo.getDatabaseId());
-                        added.append(game).append("[/B],[B]");
+                        for (String g : gameTypes.keySet()) {
+                            if(g.equalsIgnoreCase(game)) {
+                                game = g;
+                                break;
+                            }
+                        }
+                        int serverGroupId = gameTypes.get(game);
+                        if(clientInfo.isInServerGroup(serverGroupId)) {
+                            apiAsync.removeClientFromServerGroup(serverGroupId, clientInfo.getDatabaseId());
+                            removed.append(game).append("[/B],[B]");
+                        } else {
+                            apiAsync.addClientToServerGroup(serverGroupId, clientInfo.getDatabaseId());
+                            added.append(game).append("[/B],[B]");
+                        }
                     }
                 }
 
@@ -82,7 +80,7 @@ public class GamesBotCommand extends BotCommand {
             } else {
                 String game = args[0];
 
-                if(!gameTypes.keySet().contains(game)) {
+                if(!isGame(game)) {
                     apiAsync.sendPrivateMessage(invokerId, "Die Spiele-Gruppe [B]"+game+"[/B] exisiert nicht!");
                     return;
                 }
@@ -105,5 +103,14 @@ public class GamesBotCommand extends BotCommand {
             e.printStackTrace();
             apiAsync.sendPrivateMessage(invokerId, "[COLOR=red]Ups! Da ist etwas schief gelaufen! Bitte kontaktiere die Administration.[/COLOR]");
         });
+    }
+
+    private boolean isGame(String s) {
+        for (String game : gameTypes.keySet()) {
+            if(game.equalsIgnoreCase(s)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
