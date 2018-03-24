@@ -1,14 +1,15 @@
 package de.gamechest.verify.listener;
 
+import de.bytelist.bytecloud.core.ByteCloudCore;
 import de.gamechest.BountifulAPI;
-import de.gamechest.listener.JoinListener;
-import de.gamechest.listener.QuitListener;
+import de.gamechest.GameChest;
 import de.gamechest.verify.Verify;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
@@ -24,9 +25,10 @@ import org.bukkit.potion.PotionEffectType;
  */
 public class Listeners implements Listener {
 
-    @EventHandler
+    private final GameChest gameChest = GameChest.getInstance();
+
+    @EventHandler(priority = EventPriority.HIGH)
     public void onJoin(PlayerJoinEvent e) {
-        JoinListener.callFirstOnJoin(e);
         Player player = e.getPlayer();
 
         e.setJoinMessage(null);
@@ -38,16 +40,31 @@ public class Listeners implements Listener {
             p.hidePlayer(player);
             player.hidePlayer(p);
         }
+
+        if (gameChest.isCloudEnabled()) {
+            if(gameChest.getNick().isNicked(player.getUniqueId()))
+                ByteCloudCore.getInstance().getCloudAPI().addPlayer(player.getCustomName());
+            else
+                ByteCloudCore.getInstance().getCloudAPI().addPlayer(player.getName());
+        }
         player.sendMessage(Verify.getInstance().prefix+"§c/unverify §7- §eEntferne deinen Teamspeak-Account.");
         player.sendMessage(Verify.getInstance().prefix+"§c/lobby §7- §eVerbinde dich wieder zur Lobby.");
         BountifulAPI.sendTitle(player, 5, 100000, 10, "§6Ts³ Verify-Server", "§fSchreibe den ChestBot mit §e!verify§f an.");
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOW)
     public void onQuit(PlayerQuitEvent e) {
+        Player player = e.getPlayer();
+
         e.setQuitMessage(null);
         BountifulAPI.sendTitle(e.getPlayer(), 1, 1, 1, "§r", "§r");
-        QuitListener.callLastOnQuit(e);
+
+        if(gameChest.isCloudEnabled()) {
+            if(gameChest.getNick().isNicked(player.getUniqueId()))
+                ByteCloudCore.getInstance().getCloudAPI().removePlayer(player.getCustomName());
+            else
+                ByteCloudCore.getInstance().getCloudAPI().removePlayer(player.getName());
+        }
     }
 
     @EventHandler
