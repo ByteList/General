@@ -42,48 +42,64 @@ public class GamesBotCommand extends BotCommand {
                 StringBuilder removed = new StringBuilder();
                 StringBuilder added = new StringBuilder();
                 StringBuilder wrongGroup = new StringBuilder();
+
                 for(String game : args[0].split(",")) {
-                    gameTypes.forEach((s, serverGroupId) -> {
-                        if(s.equalsIgnoreCase(game)) {
-                            if(clientInfo.isInServerGroup(serverGroupId)) {
-                                apiAsync.removeClientFromServerGroup(serverGroupId, clientInfo.getDatabaseId());
-                                removed.append(s).append("[/B],[B]");
-                            } else {
-                                apiAsync.addClientToServerGroup(serverGroupId, clientInfo.getDatabaseId());
-                                added.append(s).append("[/B],[B]");
-                            }
-                        } else {
-                            wrongGroup.append(game).append("[/B],[B]");
+                    if(!gameTypes.keySet().contains(game)) {
+                        wrongGroup.append(game).append("[/B],[B]");
+                        return;
+                    }
+
+                    for (String g : gameTypes.keySet()) {
+                        if(g.equalsIgnoreCase(game)) {
+                            game = g;
+                            break;
                         }
-                    });
+                    }
+
+                    int serverGroupId = gameTypes.get(game);
+                    if(clientInfo.isInServerGroup(serverGroupId)) {
+                        apiAsync.removeClientFromServerGroup(serverGroupId, clientInfo.getDatabaseId());
+                        removed.append(game).append("[/B],[B]");
+                    } else {
+                        apiAsync.addClientToServerGroup(serverGroupId, clientInfo.getDatabaseId());
+                        added.append(game).append("[/B],[B]");
+                    }
                 }
+
                 removed.append("#");
                 added.append("#");
                 wrongGroup.append("#");
+
                 if(removed.toString().contains(",")) {
-                    apiAsync.sendPrivateMessage(invokerId, "Du wurdest aus folgenden Spielen entfernt: [B]" + removed.toString().replace(",#", "[/B]"));
+                    apiAsync.sendPrivateMessage(invokerId, "Du wurdest aus folgenden Spielen entfernt: [B]" + removed.toString().replace(",[B]#", "[/B]"));
                 }
                 if(added.toString().contains(",")) {
-                    apiAsync.sendPrivateMessage(invokerId, "Du wurdest folgenden Spielen hinzugefügt: [B]" + added.toString().replace(",#", "[/B]"));
+                    apiAsync.sendPrivateMessage(invokerId, "Du wurdest folgenden Spielen hinzugefügt: [B]" + added.toString().replace(",[B]#", "[/B]"));
                 }
                 if(wrongGroup.toString().contains(",")) {
-                    apiAsync.sendPrivateMessage(invokerId, "Folgende Spiele-Gruppen existieren nicht: [B]" + wrongGroup.toString().replace(",#", "[/B]"));
+                    apiAsync.sendPrivateMessage(invokerId, "Folgende Spiele-Gruppen existieren nicht: [B]" + wrongGroup.toString().replace(",[B]#", "[/B]"));
                 }
             } else {
                 String game = args[0];
-                gameTypes.forEach((s, serverGroupId) -> {
-                    if(s.equalsIgnoreCase(game)) {
+
+                if(!gameTypes.keySet().contains(game)) {
+                    apiAsync.sendPrivateMessage(invokerId, "Die Spiele-Gruppe [B]"+game+"[/B] exisiert nicht!");
+                    return;
+                }
+
+                for (String g : gameTypes.keySet()) {
+                    int serverGroupId = gameTypes.get(g);
+                    if(g.equalsIgnoreCase(game)) {
                         if(clientInfo.isInServerGroup(serverGroupId)) {
                             apiAsync.removeClientFromServerGroup(serverGroupId, clientInfo.getDatabaseId());
-                            apiAsync.sendPrivateMessage(invokerId, "Du wurdest aus dem Spiel [B]"+game+"[/B] entfernt.");
+                            apiAsync.sendPrivateMessage(invokerId, "Du wurdest aus dem Spiel [B]"+g+"[/B] entfernt.");
                         } else {
                             apiAsync.addClientToServerGroup(serverGroupId, clientInfo.getDatabaseId());
-                            apiAsync.sendPrivateMessage(invokerId, "Du wurdest dem Spiel [B]"+game+"[/B] hinzugefügt.");
+                            apiAsync.sendPrivateMessage(invokerId, "Du wurdest dem Spiel [B]"+g+"[/B] hinzugefügt.");
                         }
-                    } else {
-                        apiAsync.sendPrivateMessage(invokerId, "Die Spiele-Gruppe [B]"+game+"[/B] exisiert nicht!");
+                        break;
                     }
-                });
+                }
             }
         }, e -> {
             e.printStackTrace();
