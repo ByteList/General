@@ -34,8 +34,8 @@ public class GamesBotCommand extends BotCommand {
             return;
         }
         teamspeakBot.getClientInfoAsync(invokerId, clientInfo -> {
-            if (!(clientInfo.isInServerGroup(12) || clientInfo.isInServerGroup(11))) {
-                apiAsync.sendPrivateMessage(invokerId, "Du hast keine Berechtigung für diesen Befehl!");
+            if (!teamspeakBot.hasSpecialGroup(clientInfo)) {
+                apiAsync.sendPrivateMessage(invokerId, "Du musst verifiziert sein!");
                 return;
             }
             if(args[0].contains(",")) {
@@ -69,13 +69,13 @@ public class GamesBotCommand extends BotCommand {
                 wrongGroup.append("#");
 
                 if(removed.toString().contains(",")) {
-                    apiAsync.sendPrivateMessage(invokerId, "Du wurdest aus folgenden Spielen entfernt: [B]" + removed.toString().replace(",[B]#", "[/B]"));
+                    apiAsync.sendPrivateMessage(invokerId, "Du wurdest aus folgenden Spielen entfernt: [B]" + removed.toString().replace(",[B]#", ""));
                 }
                 if(added.toString().contains(",")) {
-                    apiAsync.sendPrivateMessage(invokerId, "Du wurdest folgenden Spielen hinzugefügt: [B]" + added.toString().replace(",[B]#", "[/B]"));
+                    apiAsync.sendPrivateMessage(invokerId, "Du wurdest folgenden Spielen hinzugefügt: [B]" + added.toString().replace(",[B]#", ""));
                 }
                 if(wrongGroup.toString().contains(",")) {
-                    apiAsync.sendPrivateMessage(invokerId, "Folgende Spiele-Gruppen existieren nicht: [B]" + wrongGroup.toString().replace(",[B]#", "[/B]"));
+                    apiAsync.sendPrivateMessage(invokerId, "Folgende Spiele-Gruppen existieren nicht: [B]" + wrongGroup.toString().replace(",[B]#", ""));
                 }
             } else {
                 String game = args[0];
