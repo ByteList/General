@@ -41,7 +41,6 @@ import java.util.concurrent.ThreadLocalRandom;
 public class GameChest extends JavaPlugin {
 
     private static final char[] POOL = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
-
     public HashMap<UUID, Rank> rankCache = new HashMap<>();
 
     @Getter
@@ -68,8 +67,10 @@ public class GameChest extends JavaPlugin {
     @Override
     public void onEnable() {
         //Enable timings
-        ((SimplePluginManager) Bukkit.getPluginManager()).useTimings( true );
-        CustomTimingsHandler.reload();
+        if(Bukkit.getName().toLowerCase().contains("spigot")) {
+            ((SimplePluginManager) Bukkit.getPluginManager()).useTimings(true);
+            CustomTimingsHandler.reload();
+        }
 
         instance = this;
 
