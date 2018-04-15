@@ -31,7 +31,8 @@ public class DatabaseWebRegister {
         Document document = new Document()
                 .append(DatabaseWebRegisterObject.UUID.getName(), uuid.toString())
                 .append(DatabaseWebRegisterObject.MAIL_ADDRESS.getName(), mail)
-                .append(DatabaseWebRegisterObject.VERIFY_CODE.getName(), code);
+                .append(DatabaseWebRegisterObject.VERIFY_CODE.getName(), code)
+                .append(DatabaseWebRegisterObject.STATE.getName(), "0");
 
         databaseManager.getCollection(databaseCollection).insertOne(document);
     }

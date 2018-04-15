@@ -9,7 +9,8 @@ public enum DatabaseWebRegisterObject {
 
     UUID("UUID"),
     MAIL_ADDRESS("Mail-Address"),
-    VERIFY_CODE("Verify-Code");
+    VERIFY_CODE("Verify-Code"),
+    STATE("State");
 
     @Getter
     private String name;

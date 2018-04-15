@@ -37,6 +37,7 @@ public class WebsiteCommand implements CommandExecutor {
                         if(!database.existsUser(player.getUniqueId())) {
                             String[] str = cache.get(player.getUniqueId()).split(";");
                             database.register(player.getUniqueId(), str[1], str[0]);
+                            cache.remove(player.getUniqueId());
                             sender.sendMessage(gameChest.prefix+"§aÜberprüfe nun dein Email-Postfach (auch den Spam-Ordner) und fahre mit der Registrierung fort.");
                         } else {
                             sender.sendMessage(gameChest.prefix+"§7Du hast bereits ein Account.");
@@ -65,7 +66,7 @@ public class WebsiteCommand implements CommandExecutor {
                         return;
                     }
 
-                    String verifyCode = gameChest.random(20);
+                    String verifyCode = gameChest.random(50);
                     cache.put(player.getUniqueId(), verifyCode+";"+address);
                     sender.sendMessage("§8\u00BB §7Damit du die Registrierung fortsetzen kannst, musst du unsere §eDatenschutzerklärung §7und §eAGB §7lesen und bestätigen.");
                     sender.sendMessage("§8\u00BB §7Zum Bestätigen: §6/website accept <Code>");
