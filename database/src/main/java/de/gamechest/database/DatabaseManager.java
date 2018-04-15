@@ -19,6 +19,7 @@ import de.gamechest.database.stats.deathrun.DatabaseDeathRun;
 import de.gamechest.database.stats.jumpduell.DatabaseJumpDuell;
 import de.gamechest.database.stats.shulkerdefence.DatabaseShulkerDefence;
 import de.gamechest.database.uuidbuffer.DatabaseUuidBuffer;
+import de.gamechest.database.webregister.DatabaseWebRegister;
 import lombok.Getter;
 import org.bson.Document;
 import org.bson.UuidRepresentation;
@@ -71,6 +72,9 @@ public class DatabaseManager {
     @Getter
     private DatabasePoll databasePoll;
     @Getter
+    private DatabaseWebRegister databaseWebRegister;
+
+    @Getter
     private AsyncDatabaseManager async;
 
     public DatabaseManager(String host, int port, String username, String password, String database) throws Exception {
@@ -112,6 +116,7 @@ public class DatabaseManager {
         this.databaseActivate = new DatabaseActivate(this);
         this.databaseParty = new DatabaseParty(this);
         this.databasePoll = new DatabasePoll(this);
+        this.databaseWebRegister = new DatabaseWebRegister(this);
 
         this.async = new AsyncDatabaseManager(this);
     }

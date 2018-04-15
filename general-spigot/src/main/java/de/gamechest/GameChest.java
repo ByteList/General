@@ -5,10 +5,7 @@ import com.voxelboxstudios.resilent.GCPacketClient;
 import de.bytelist.bytecloud.core.ByteCloudCore;
 import de.gamechest.chatlog.ChatLog;
 import de.gamechest.coins.Coins;
-import de.gamechest.commands.FakePluginCommand;
-import de.gamechest.commands.NickCommands;
-import de.gamechest.commands.OpmeCommand;
-import de.gamechest.commands.ServerIdCommand;
+import de.gamechest.commands.*;
 import de.gamechest.database.DatabaseManager;
 import de.gamechest.database.DatabasePlayer;
 import de.gamechest.database.DatabasePlayerObject;
@@ -103,6 +100,7 @@ public class GameChest extends JavaPlugin {
         getCommand("serverid").setExecutor(new ServerIdCommand());
         getCommand("nick").setExecutor(new NickCommands());
         getCommand("fakeplugins").setExecutor(new FakePluginCommand());
+        getCommand("website").setExecutor(new WebsiteCommand());
 
         Listener[] listeners = {
             new JoinListener(),
@@ -137,7 +135,21 @@ public class GameChest extends JavaPlugin {
         return POOL[ThreadLocalRandom.current().nextInt(POOL.length)];
     }
 
+    /**
+     * Use the non-static random() method.
+     * @param length of the key
+     * @return random char key
+     */
+    @Deprecated
     public static String randomKey(int length) {
+        StringBuilder kb = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            kb.append(randomChar());
+        }
+        return kb.toString();
+    }
+
+    public String random(int length) {
         StringBuilder kb = new StringBuilder();
         for (int i = 0; i < length; i++) {
             kb.append(randomChar());

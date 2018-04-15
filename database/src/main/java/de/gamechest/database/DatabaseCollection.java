@@ -26,7 +26,9 @@ public enum DatabaseCollection {
     BANS(12, "bans"),
     BAN_HISTORY(13, "ban-history"),
     CHAT_REPORTS(14, "chat-reports"),
-    BUG_REPORTS(15, "bug-reports");
+    BUG_REPORTS(15, "bug-reports"),
+
+    WEB_REGISTER(16, "web-register");
 
     @Getter
     private int id;

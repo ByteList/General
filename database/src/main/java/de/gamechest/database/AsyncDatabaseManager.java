@@ -2,6 +2,7 @@ package de.gamechest.database;
 
 import de.gamechest.database.onlineplayer.DatabaseOnlinePlayer;
 import de.gamechest.database.onlineplayer.DatabaseOnlinePlayerObject;
+import de.gamechest.database.webregister.DatabaseWebRegister;
 import lombok.Getter;
 
 import java.util.UUID;
@@ -55,5 +56,9 @@ public class AsyncDatabaseManager {
 
     public void getOnlinePlayer(UUID uuid, Callback<DatabaseOnlinePlayer> callback, DatabaseOnlinePlayerObject... accesses) {
         this.executor.execute(()-> callback.run(new DatabaseOnlinePlayer(databaseManager, uuid.toString(), null, accesses)));
+    }
+
+    public void getWebRegister(Callback<DatabaseWebRegister> callback) {
+        this.executor.execute(()-> callback.run(this.databaseManager.getDatabaseWebRegister()));
     }
 }
