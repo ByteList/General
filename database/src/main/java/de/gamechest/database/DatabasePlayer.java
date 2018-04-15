@@ -85,8 +85,6 @@ public class DatabasePlayer {
     public void createPlayer() {
         if(existsPlayer()) return;
 
-
-
         Calendar now = Calendar.getInstance();
         SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm");
         String onlineDate = formatter.format(now.getTime());
@@ -131,6 +129,7 @@ public class DatabasePlayer {
             .append(DatabasePlayerObject.FIRST_LOGIN.getName(), onlineDate)
             .append(DatabasePlayerObject.LAST_LOGIN.getName(), onlineDate)
             .append(DatabasePlayerObject.TS_UID.getName(), null)
+            .append(DatabasePlayerObject.WEB_USER_ID.getName(), null)
             .append(DatabasePlayerObject.LAST_DAILY_REWARD.getName(), null)
             .append(DatabasePlayerObject.FOUND_SECRETS.getName(), null)
             .append(DatabasePlayerObject.BOUGHT_SHOP_ITEMS.getName(), null)
@@ -147,6 +146,10 @@ public class DatabasePlayer {
         if(!shopItems.containsKey(DatabasePlayerObject.ActiveShopItems.GADGET.getName())) {
             shopItems.put(DatabasePlayerObject.ActiveShopItems.GADGET.getName(), 0);
             setDatabaseObject(DatabasePlayerObject.ACTIVE_SHOP_ITEMS, shopItems);
+        }
+
+        if(!find.first().containsKey(DatabasePlayerObject.WEB_USER_ID.getName())) {
+            setDatabaseObject(DatabasePlayerObject.WEB_USER_ID, null);
         }
 
         updateConfig();
