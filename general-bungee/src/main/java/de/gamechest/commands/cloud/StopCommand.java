@@ -1,7 +1,7 @@
 package de.gamechest.commands.cloud;
 
 import de.bytelist.bytecloud.bungee.ByteCloudMaster;
-import de.bytelist.bytecloud.network.bungee.packet.PacketInStopServer;
+import de.bytelist.bytecloud.network.bungee.PacketInStopServer;
 import de.gamechest.GameChest;
 import de.gamechest.commands.base.GCCommand;
 import de.gamechest.database.rank.Rank;
