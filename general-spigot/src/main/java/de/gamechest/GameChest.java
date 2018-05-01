@@ -21,9 +21,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.spigotmc.CustomTimingsHandler;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -63,12 +61,6 @@ public class GameChest extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        //Enable timings
-        if(Bukkit.getName().toLowerCase().contains("spigot")) {
-            ((SimplePluginManager) Bukkit.getPluginManager()).useTimings(true);
-            CustomTimingsHandler.reload();
-        }
-
         instance = this;
 
         // 2.0.23:00342580cc947e7bf8d1eeb7fb8650ab456dc3e2
@@ -166,36 +158,11 @@ public class GameChest extends JavaPlugin {
     }
 
     public boolean hasRank(UUID uuid, Rank rank) {
-        Rank playerRank;
-        if(!rankCache.containsKey(uuid)) {
-            DatabasePlayer dbPlayer = new DatabasePlayer(this.databaseManager, uuid);
-            if(dbPlayer.existsPlayer()) {
-                playerRank = Rank.getRankById(dbPlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt());
-                rankCache.put(uuid, playerRank);
-            } else {
-                return false;
-            }
-        } else {
-            playerRank = rankCache.get(uuid);
-        }
-
-        return playerRank.getId() <= rank.getId();
+        return getRank(uuid).getId() <= rank.getId();
     }
 
     public boolean equalsRank(UUID uuid, Rank rank) {
-        Rank playerRank;
-        if(!rankCache.containsKey(uuid)) {
-            DatabasePlayer dbPlayer = new DatabasePlayer(this.databaseManager, uuid);
-            if(dbPlayer.existsPlayer()) {
-                playerRank = Rank.getRankById(dbPlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt());
-                rankCache.put(uuid, playerRank);
-            } else {
-                return false;
-            }
-        } else {
-            playerRank = rankCache.get(uuid);
-        }
-        return Objects.equals(playerRank.getId(), rank.getId());
+        return Objects.equals(getRank(uuid).getId(), rank.getId());
     }
 
     public Rank getRank(UUID uuid) {

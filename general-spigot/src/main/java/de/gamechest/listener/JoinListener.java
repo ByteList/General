@@ -29,7 +29,7 @@ import java.util.Calendar;
  */
 public class JoinListener implements Listener {
 
-    private static GameChest gameChest = GameChest.getInstance();
+    private final GameChest gameChest = GameChest.getInstance();
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onJoin(PlayerJoinEvent e) {
@@ -40,35 +40,28 @@ public class JoinListener implements Listener {
             create(p);
         }
 
-        gameChest.getPacketInjector().addPlayer(p);
-//
-//        gameChest.getDatabaseManager().getAsync().getOnlinePlayer(p.getUniqueId(), databaseOnlinePlayer -> {
-//            if(databaseOnlinePlayer.getDatabaseElement(DatabaseOnlinePlayerObject.SERVER_ID).getObject() == null) {
-//                setServerId(databaseOnlinePlayer);
-//            } else {
-//                databaseOnlinePlayer.setDatabaseObject(DatabaseOnlinePlayerObject.PREVIOUS_SERVER_ID, databaseOnlinePlayer.getDatabaseElement(DatabaseOnlinePlayerObject.SERVER_ID).getAsString());
-//                setServerId(databaseOnlinePlayer);
-//            }
-//        }, DatabaseOnlinePlayerObject.SERVER_ID, DatabaseOnlinePlayerObject.PREVIOUS_SERVER_ID);
+        Bukkit.getScheduler().runTaskAsynchronously(gameChest, ()-> gameChest.getPacketInjector().addPlayer(p));
 
-        String serverId = Bukkit.getServerName();
+        Bukkit.getScheduler().runTaskAsynchronously(gameChest, ()-> {
+            String serverId = Bukkit.getServerName();
 
-        if(gameChest.isCloudEnabled()) {
-            String group = ByteCloudCore.getInstance().getCloudHandler().getDatabaseServerValue(
-                    ByteCloudCore.getInstance().getCloudHandler().getServerId(), DatabaseServerObject.GROUP).getAsString();
-            if(!group.equals("PERMANENT")) {
-                serverId = group +"-" + ByteCloudCore.getInstance().getCloudHandler().getServerId().split("-")[1];
-            } else {
-                serverId = ByteCloudCore.getInstance().getCloudHandler().getServerId();
+            if(gameChest.isCloudEnabled()) {
+                String group = ByteCloudCore.getInstance().getCloudHandler().getDatabaseServerValue(
+                        ByteCloudCore.getInstance().getCloudHandler().getServerId(), DatabaseServerObject.GROUP).getAsString();
+                if(!group.equals("PERMANENT")) {
+                    serverId = group +"-" + ByteCloudCore.getInstance().getCloudHandler().getServerId().split("-")[1];
+                } else {
+                    serverId = ByteCloudCore.getInstance().getCloudHandler().getServerId();
+                }
             }
-        }
 
-        BountifulAPI.sendTabTitle(p,
-                " §6Game-Chest§f.§6de §8[§b1.9 §f§l- §c1.12§8]  \n"+
-                        "§fAktueller Server: §e"+ serverId,
-                "§7Willkommen, §c"+p.getName()+"§7!\n"+
-                        "  §fInformationen findest du unter §a/help§f!  ");
-        BountifulAPI.sendTitle(e.getPlayer(), 1, 2, 1, "§r", "§r");
+            BountifulAPI.sendTabTitle(p,
+                    " §6Game-Chest§f.§6de §8[§b1.9 §f§l- §c1.12§8]  \n"+
+                            "§fAktueller Server: §e"+ serverId,
+                    "§7Willkommen, §c"+p.getName()+"§7!\n"+
+                            "  §fInformationen findest du unter §a/help§f!  ");
+            BountifulAPI.sendTitle(e.getPlayer(), 1, 2, 1, "§r", "§r");
+        });
 
         Nick nick = gameChest.getNick();
 
@@ -78,8 +71,7 @@ public class JoinListener implements Listener {
     }
 
     @Deprecated
-    public static void callFirstOnJoin(PlayerJoinEvent e) {
-    }
+    public static void callFirstOnJoin(PlayerJoinEvent e) {}
     
     private void create(Player p) {
         DatabaseManager databaseManager = gameChest.getDatabaseManager();

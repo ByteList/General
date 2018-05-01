@@ -14,7 +14,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
  */
 public class QuitListener implements Listener {
 
-    private static final GameChest gameChest = GameChest.getInstance();
+    private final GameChest gameChest = GameChest.getInstance();
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onQuit(PlayerQuitEvent e) {
@@ -43,7 +43,7 @@ public class QuitListener implements Listener {
     }
 
     private void delete(Player p) {
-        GameChest.getInstance().getNick().unnickOnDisconnect(p);
+        gameChest.getNick().unnickOnDisconnect(p);
         gameChest.getDatabaseManager().getAsync().getOnlinePlayer(p.getUniqueId(), DatabaseOnlinePlayer::removeOnlinePlayer);
     }
 }
