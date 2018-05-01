@@ -26,6 +26,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,9 +35,10 @@ import java.util.UUID;
  */
 public class Nick {
 
-    private NickPackets packets;
-
+    private final NickPackets packets;
     private final DatabaseManager databaseManager = GameChest.getInstance().getDatabaseManager();
+
+    private HashMap<UUID, String> nickCache = new HashMap<>();
 
     public final String prefix = "§5Nick §8\u00BB";
 
@@ -44,74 +46,87 @@ public class Nick {
         packets = new NickPackets(this);
     }
 
-    public void nick(Player p) {
-        nick(p, getRandomNickName());
+    public void nick(Player player) {
+        nick(player, getRandomNickName(), false);
     }
 
-    public void nick(Player p, String nickname) {
-        p.setCustomName(p.getName());
-        databaseManager.getDatabaseNick().setDatabaseObject(nickname, DatabaseNickObject.USED, p.getName());
-        databaseManager.getAsync().getOnlinePlayer(p.getUniqueId(), databaseOnlinePlayer-> databaseOnlinePlayer.setDatabaseObject(DatabaseOnlinePlayerObject.NICKNAME, nickname), DatabaseOnlinePlayerObject.NICKNAME);
+    public void nick(Player player, String nick) {
+        nick(player, nick, false);
+    }
+
+    public void nickOnConnect(Player player, String nick) {
+        nick(player, nick, true);
+    }
+
+    private void nick(Player player, String nick, boolean onJoin) {
+        player.setCustomName(player.getName());
+        databaseManager.getDatabaseNick().setDatabaseObject(nick, DatabaseNickObject.USED, player.getName());
+        databaseManager.getAsync().getOnlinePlayer(player.getUniqueId(), databaseOnlinePlayer-> databaseOnlinePlayer.setDatabaseObject(DatabaseOnlinePlayerObject.NICKNAME, nick), DatabaseOnlinePlayerObject.NICKNAME);
         try {
-            packets.nickPlayer(p, nickname, false);
+            packets.nickPlayer(player, nick, onJoin);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        p.sendMessage(GameChest.getInstance().getNick().prefix + "§bDein Nickname ist nun: §9"+nickname);
-        Bukkit.getPluginManager().callEvent(new UserNickEvent(p, p.getCustomName(), p.getName()));
+        this.nickCache.put(player.getUniqueId(), nick);
+        player.sendMessage(GameChest.getInstance().getNick().prefix + "§bDein Nickname ist nun: §9"+nick);
+        Bukkit.getPluginManager().callEvent(new UserNickEvent(player, player.getCustomName(), player.getName()));
     }
 
-    public void nickOnConnect(Player p, String nickname) {
-        p.setCustomName(p.getName());
-        databaseManager.getDatabaseNick().setDatabaseObject(nickname, DatabaseNickObject.USED, p.getName());
-        databaseManager.getAsync().getOnlinePlayer(p.getUniqueId(), databaseOnlinePlayer-> databaseOnlinePlayer.setDatabaseObject(DatabaseOnlinePlayerObject.NICKNAME, nickname), DatabaseOnlinePlayerObject.NICKNAME);
+    public void unNick(Player player) {
+        if(!isNicked(player.getUniqueId())) return;
+
+        databaseManager.getDatabaseNick().setDatabaseObject(player.getName(), DatabaseNickObject.USED, false);
+        databaseManager.getAsync().getOnlinePlayer(player.getUniqueId(), databaseOnlinePlayer ->
+                databaseOnlinePlayer.setDatabaseObject(DatabaseOnlinePlayerObject.NICKNAME, null),
+                DatabaseOnlinePlayerObject.NICKNAME);
         try {
-            packets.nickPlayer(p, nickname, true);
+            packets.unnickPlayer(player);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        p.sendMessage(GameChest.getInstance().getNick().prefix + "§bDein Nickname ist nun: §9"+nickname);
-        Bukkit.getPluginManager().callEvent(new UserNickEvent(p, p.getCustomName(), p.getName()));
+        this.nickCache.put(player.getUniqueId(), null);
+        player.setCustomName(null);
+        player.sendMessage(GameChest.getInstance().getNick().prefix + "§bDein Nickname wurde zurückgesetzt.");
+        Bukkit.getPluginManager().callEvent(new UserUnnickEvent(player));
     }
 
-    public void unNick(Player p) {
-        if(!isNicked(p.getUniqueId()))
-            return;
-        databaseManager.getDatabaseNick().setDatabaseObject(p.getName(), DatabaseNickObject.USED, false);
-        databaseManager.getAsync().getOnlinePlayer(p.getUniqueId(), databaseOnlinePlayer-> databaseOnlinePlayer.setDatabaseObject(DatabaseOnlinePlayerObject.NICKNAME, null), DatabaseOnlinePlayerObject.NICKNAME);
-        try {
-            packets.unnickPlayer(p);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        p.setCustomName(null);
-        p.sendMessage(GameChest.getInstance().getNick().prefix + "§bDein Nickname wurde zurückgesetzt.");
-        Bukkit.getPluginManager().callEvent(new UserUnnickEvent(p));
-    }
-
-    public void unnickOnDisconnect(Player p) {
-        if(isNicked(p.getUniqueId())) {
-            databaseManager.getAsync().getOnlinePlayer(p.getUniqueId(), dbOPlayer-> {
+    public void unnickOnDisconnect(Player player) {
+        if(isNicked(player.getUniqueId())) {
+            databaseManager.getAsync().getOnlinePlayer(player.getUniqueId(), dbOPlayer-> {
                 String nick = dbOPlayer.getDatabaseElement(DatabaseOnlinePlayerObject.NICKNAME).getAsString();
                 databaseManager.getDatabaseNick().setDatabaseObject(nick, DatabaseNickObject.USED, false);
             }, DatabaseOnlinePlayerObject.NICKNAME);
+            this.nickCache.remove(player.getUniqueId());
         }
     }
 
     public boolean isNicked(UUID uuid) {
-        try {
-            return new DatabaseOnlinePlayer(databaseManager, uuid.toString(),
-                    new DatabasePlayer(databaseManager, uuid).getDatabaseElement(DatabasePlayerObject.LAST_NAME).getAsString())
-                    .getDatabaseElement(DatabaseOnlinePlayerObject.NICKNAME).getObject() != null;
-        } catch (Exception ex) {
-            return false;
+        if(!this.nickCache.containsKey(uuid)) {
+            try {
+                Object obj = new DatabaseOnlinePlayer(databaseManager, uuid.toString(),
+                        new DatabasePlayer(databaseManager, uuid).getDatabaseElement(DatabasePlayerObject.LAST_NAME).getAsString())
+                        .getDatabaseElement(DatabaseOnlinePlayerObject.NICKNAME).getObject();
+                if(obj != null) {
+                    this.nickCache.put(uuid, obj.toString());
+                } else {
+                    this.nickCache.put(uuid, null);
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                return false;
+            }
         }
+        return this.nickCache.get(uuid) != null;
     }
 
     public String getNick(UUID uuid) {
-        return new DatabaseOnlinePlayer(databaseManager, uuid.toString(),
-                new DatabasePlayer(databaseManager, uuid).getDatabaseElement(DatabasePlayerObject.LAST_NAME).getAsString())
-                .getDatabaseElement(DatabaseOnlinePlayerObject.NICKNAME).getAsString();
+        if(!nickCache.containsKey(uuid)) {
+            String nick = new DatabaseOnlinePlayer(databaseManager, uuid.toString(),
+                    new DatabasePlayer(databaseManager, uuid).getDatabaseElement(DatabasePlayerObject.LAST_NAME).getAsString())
+                    .getDatabaseElement(DatabaseOnlinePlayerObject.NICKNAME).getAsString();
+            this.nickCache.put(uuid, nick);
+        }
+        return nickCache.get(uuid);
     }
 
     public String getPlayernameFromNick(String nick) {

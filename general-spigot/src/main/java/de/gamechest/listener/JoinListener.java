@@ -33,14 +33,14 @@ public class JoinListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onJoin(PlayerJoinEvent e) {
-        Player p = e.getPlayer();
-        p.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+        Player player = e.getPlayer();
+        player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
 
         if(Bukkit.getServerName().contains("nonBungee")) {
-            create(p);
+            create(player);
         }
 
-        Bukkit.getScheduler().runTaskAsynchronously(gameChest, ()-> gameChest.getPacketInjector().addPlayer(p));
+        Bukkit.getScheduler().runTaskAsynchronously(gameChest, ()-> gameChest.getPacketInjector().addPlayer(player));
 
         Bukkit.getScheduler().runTaskAsynchronously(gameChest, ()-> {
             String serverId = Bukkit.getServerName();
@@ -55,18 +55,18 @@ public class JoinListener implements Listener {
                 }
             }
 
-            BountifulAPI.sendTabTitle(p,
+            BountifulAPI.sendTabTitle(player,
                     " §6Game-Chest§f.§6de §8[§b1.9 §f§l- §c1.12§8]  \n"+
                             "§fAktueller Server: §e"+ serverId,
-                    "§7Willkommen, §c"+p.getName()+"§7!\n"+
+                    "§7Willkommen, §c"+player.getName()+"§7!\n"+
                             "  §fInformationen findest du unter §a/help§f!  ");
             BountifulAPI.sendTitle(e.getPlayer(), 1, 2, 1, "§r", "§r");
         });
 
         Nick nick = gameChest.getNick();
 
-        if(nick.isNicked(p.getUniqueId())) {
-            nick.nickOnConnect(p, nick.getNick(p.getUniqueId()));
+        if(nick.isNicked(player.getUniqueId())) {
+            nick.nickOnConnect(player, nick.getNick(player.getUniqueId()));
         }
     }
 
