@@ -14,20 +14,15 @@
 
     <repositories>
         <repository>
-            <id>spigot-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
-        </repository>
-        <repository>
             <id>ossrh</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </repository>
     </repositories>
 
     <dependencies>
-        <!--Bukkit API-->
         <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
+            <groupId>com.destroystokyo.paper</groupId>
+            <artifactId>paper</artifactId>
             <version>1.9.4-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
