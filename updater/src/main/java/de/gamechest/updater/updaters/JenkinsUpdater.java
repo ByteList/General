@@ -23,7 +23,7 @@ public class JenkinsUpdater extends Thread {
     private final JenkinsAPI jenkinsAPI;
 
     private final boolean loggedIn;
-    private final String urlPath = "https://vs.bytelist.de/jenkins/job/";
+    private final String urlPath = "https://kvm.bytelist.de/jenkins/job/GameChest/job/old/job/";
     private final String endLocPath = "/home/minecraft/CloudSystem/";
 
 
