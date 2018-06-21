@@ -9,13 +9,14 @@ import de.gamechest.database.DatabaseManager;
 import org.bson.Document;
 
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created by ByteList on 11.04.2017.
  */
 public class DatabaseNick {
 
-    private final Random random = new Random();
+    private final Random random;
     private final DatabaseManager databaseManager;
     private final DatabaseCollection databaseCollection = DatabaseCollection.NICKNAMES;
 
@@ -23,13 +24,14 @@ public class DatabaseNick {
 
     public DatabaseNick(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;
-        this.NICK_SIZE = 64;
+        this.NICK_SIZE = 180;
+        this.random = ThreadLocalRandom.current();
     }
 
     private int TRIES = 0;
 
     public String getRandomNickname() {
-        int id = random.nextInt(NICK_SIZE);
+        int id = random.nextInt(NICK_SIZE)-1;
         FindIterable<Document> find = databaseManager.getCollection(databaseCollection).find(Filters.eq(DatabaseNickObject.SORT_ID.getName(), id));
         Document document = find.first();
 
