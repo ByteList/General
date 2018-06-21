@@ -217,13 +217,12 @@ public class GameChest extends Plugin {
         sender.sendMessage("§cDu hast keine Berechtigung für diesen Befehl!");
     }
 
-//    private void insertNicks() {
-//        new Thread("Init Nicks Thread") {
-//            @Override
-//            public void run() {
-//
-//                System.out.println("Init Nicks...");
-//                HashMap<String, String> list = new HashMap<>();
+    private void insertNicks() {
+        new Thread("Init Nicks Thread") {
+            @Override
+            public void run() {
+                System.out.println("Init Nicks...");
+                HashMap<String, String> list = new HashMap<>();
 //                list.put("KnoeterichHD", "carletto66");
 //                list.put("KaffesatzNab", "classic594");
 //                list.put("TeppichLp_Xx", "aftertast");
@@ -289,16 +288,135 @@ public class GameChest extends Plugin {
 //                list.put("HDGround", "costou12");// noSkin
 //
 //                list.put("EzRek4Life", "drdiggler");// noSkin
+
+                list.put("NinjaTaksforce", "Nanoll");
+                list.put("ProllMC", "Jimmypl");
+                list.put("Santastic", "sonicthegamer");
+                list.put("LeoLatschik", "uti23400");
+                list.put("Heanker", "Winhard");
+                list.put("KingOfWorldz", "leoumbrella");
+                list.put("StitchyB0y", "OrangeRage");
+                list.put("PriesterFr3553", "acdccharlie");
+                list.put("RIckTheChIck", "zyguy25");
+                list.put("Bl0ckFuerst", "oliver4888");
+                list.put("OlliVonWell", "MissLPop");
+                list.put("PvPManHD_", "TheKingShooter");
+                list.put("SuperTomm", "dpanell");
+                list.put("plsshoot21", "zenkl");
+                list.put("myhegrid", "low");
+                list.put("ThunderplayerHD", "Piepen_Paule");
+                list.put("Icemaster001", "eagletamer225");
+                list.put("ItzPaule7", "Vczelda1998");
+                list.put("UmadAndso", "thebeef94");
+                list.put("_EpicGlasses_", "UselessMouth");
+                list.put("Masteroppa", "Mandez228");
+                list.put("CrackMasterIV", "Epic428");
+                list.put("CollCill", "Rzco");
+                list.put("DuckThatShxt", "MLGDuck");
+                list.put("YellowFistus", "FuriousRobot");
+                list.put("HighMen", "Best_lp");
+                list.put("ThatsBlacked", "TheStealthyLion");
+                list.put("aufTour_", "SoupTheBagel");
+                list.put("Grimmichy", "thetitadeierro");
+                list.put("WhiteRainboy", "creeperkiller644");
+                list.put("_RazorFace", "_DarkRazor_");
+                list.put("Nexusbro", "jeddhillon");
+                list.put("Plattphillip", "sam_power");
+                list.put("CaptianDurk", "jedisimin");
+                list.put("GrazerYT", "haroben");
+                list.put("ScheiteHD", "adam070803");
+                list.put("TakeMeHomer_", "RoanHawk");
+                list.put("StrugglingSam", "Sogeking_Sama");
+                list.put("LookBehindU", "Dan");
+                list.put("Nassasine", "kRISStELLA");
+                list.put("AtomicStallac", "Spirec");
+                list.put("LilTimXx", "tim901204");
+                list.put("KrossChriss", "maddx32");
+                list.put("MuscleSamuel", "Nicho930");
+                list.put("IMinedMuffis", "MixCrazy");
+                list.put("WholeHole", "Bloggman");
+                list.put("SchnuffelPusher", "kat88101");
+                list.put("BrakedBad", "italiansausage");
+                list.put("R0flBlocky", "Troffl");
+                list.put("Be4rdyB0y", "Creepy_Crawlers");
+                list.put("_Herobrain_", "TheRN095");
+                list.put("GhettoPrayer", "zShadowBR");
+                list.put("LeckerBratze00", "Sketchgirl28");
+                list.put("Tr00lMaul", "Lends");
+                list.put("Photovoltaic", "ReaktorPlays");
+                list.put("NotAMelon_", "devetious7");
+                list.put("Dild0lliver", "towskii");
+                list.put("Stumpfscheadel", "Twixellzz");
+                list.put("xSupranleader", "xSupraex");
+                list.put("ChickdIch", "calippoblue");
+                list.put("XxFichDichsxX", "XLokChanX");
+                list.put("CringeGrince", "Mipr");
+                list.put("CasualFr3ss3", "Flint_n_steel_");
+                list.put("LetsDockl", "awilson");
+                list.put("2Cool2Win", "Faith");
+                list.put("laurin2008", "AeonBlack8");
+                list.put("_ChesterThat_", "Forzaje");
+                list.put("WilsOnonrOad", "gogreygo");
+                list.put("Finanzberater", "danibakero");
+                list.put("Shr3kIsL0ve", "pixelstick100");
+                list.put("dokkingTurtle", "luisay");
+                list.put("PCforbidden", "PGebharrd");
+                list.put("de4dpool", "Marti98P");
+                list.put("Oedem", "jdhovie");
+                list.put("_SpIderman_", "crimina");
+                list.put("C_U_LOL", "aretu");
+                list.put("RealT0ny", "Tehovarlord");
+                list.put("Eosine", "minnnydude1");
+                list.put("Lionbrett", "skiye");
+                list.put("iNtHeBuSh", "edibledude");
+                list.put("evryD4y", "jader_zr007");
+                list.put("n0Tg4YaT4Ll", "lightningx10");
+                list.put("s3riousB00Y", "TheBestPTE");
+                list.put("lookingdum", "jdog4999");
+                list.put("chromakEy", "pandrales");
+                list.put("PolloHermano", "glider");
+                list.put("QuasimodoB34t3r", "LucasLotus");
+                list.put("Minemaster00", "nicopop");
+                list.put("mockinggay", "Mockingjay_21");
+                list.put("sp33dRubbler", "MadeBomb");
+                list.put("FullHouseTime_", "Majczel97");
+                list.put("N3verUni0n", "Paralyx");
+                list.put("SkillNotKennidy", "Ragsy");
+                list.put("Brickminister", "Hammer145");
+                list.put("chilledOfLife", "speedd");
+                list.put("danielChef", "Webess");
+                list.put("kardman", "flashdadash99");
+                list.put("SpinnetFidget", "iandamater");
+                list.put("t4keMYm0ney", "Liquidman01");
+                list.put("Stammbruder", "oolo");
+                list.put("Lutsched", "SilenZFinnyBoy");
+                list.put("WurzelbhdlngPLS", "TheTroller");
+                list.put("oestrogenbuddy", "EpicOstrich");
+                list.put("kaaaarl", "effect117");
+                list.put("NyanTHC", "CheesyChan");
+                list.put("SawUrMum", "Bozz99");
+                list.put("M4ngel", "aytonryan");
+                list.put("Alphamenshc", "AlphaGamesHD");
+                list.put("HiatNight", "_Piglet__");
+                list.put("FavoritPilz", "CrazyCreeper1o1");
+                list.put("W00denKnive", "DirtPig");
+                list.put("Isol4ted", "memphis_nutella");
+                list.put("lolPrank3rYEE", "31h3");
+                list.put("Mallemade", "AnimusCustodius");
+                list.put("Epicleptic", "PablElTroll");
+                list.put("Wasagirl", "Consolation");
+                list.put("Speccy", "TheVkz2000");
+                list.put("BallfOfSteel", "Smaug");
 //
-//                int i = 0;
-//
-//                for (String nick : list.keySet()) {
-//                    String skinname = list.get(nick);
-//                    Skin skin = new Skin(skinname, true);
-//                    databaseManager.getDatabaseNick().createNick(i, nick, skin.getSkinValue(), skin.getSkinSignature());
-//                    i++;
-//                }
-//            }
-//        }.start();
-//    }
+                int i = 0;
+
+                for (String nick : list.keySet()) {
+                    String skinname = list.get(nick);
+                    Skin skin = new Skin(skinname, true);
+                    databaseManager.getDatabaseNick().createNick(i, nick, skin.getSkinValue(), skin.getSkinSignature());
+                    i++;
+                }
+            }
+        }.start();
+    }
 }
