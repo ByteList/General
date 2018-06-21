@@ -275,9 +275,9 @@ public class GameChest extends Plugin {
                 list.put("MatzePlays", "blobfish12");
                 list.put("Anominous", "bigfootyeti");
                 list.put("Alertguy1", "creeperded");
-                list.put("B3dm4st3r", "coolwalker");
+                list.put("B3dm4st3r", "betorqa");
                 list.put("AndreasRedet", "DA_SWAMPMONSTA");
-                list.put("_RazorLP", "cocosboy10");
+                list.put("_RazorLP", "cygnusdesign");
                 list.put("Ofenkartofel", "dandilion");
                 list.put("DerLaborant", "dallas13");
                 list.put("LucasRex", "Clubwho");
@@ -331,7 +331,7 @@ public class GameChest extends Plugin {
                 list.put("Nassasine", "kRISStELLA");
                 list.put("AtomicStallac", "Spirec");
                 list.put("LilTimXx", "tim901204");
-                list.put("KrossChriss", "maddx32");
+                list.put("KrossChriss", "sam_power");
                 list.put("MuscleSamuel", "Nicho930");
                 list.put("IMinedMuffis", "MixCrazy");
                 list.put("WholeHole", "Bloggman");
