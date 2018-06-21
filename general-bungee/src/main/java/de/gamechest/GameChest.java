@@ -91,7 +91,7 @@ public class GameChest extends Plugin {
 
         CommandHandler.registerAllCommands();
 
-//        insertNicks();
+        insertNicks();
 
         Listener[] listeners = {
                 new LoginListener(),
