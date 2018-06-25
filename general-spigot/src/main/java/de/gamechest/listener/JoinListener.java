@@ -9,6 +9,7 @@ import de.gamechest.database.DatabaseManager;
 import de.gamechest.database.DatabasePlayerObject;
 import de.gamechest.database.nick.DatabaseNickObject;
 import de.gamechest.database.onlineplayer.DatabaseOnlinePlayer;
+import de.gamechest.database.terms.DatabaseTermsObject;
 import de.gamechest.database.uuidbuffer.DatabaseUuidBuffer;
 import de.gamechest.nick.Nick;
 import org.bson.Document;
@@ -63,6 +64,10 @@ public class JoinListener implements Listener {
             BountifulAPI.sendTitle(e.getPlayer(), 1, 2, 1, "§r", "§r");
         });
 
+        if(gameChest.getDatabaseManager().getDatabaseTerms().existsPlayer(player.getUniqueId()) &&
+                gameChest.getDatabaseManager().getDatabaseTerms().getDatabaseElement(player.getUniqueId(), DatabaseTermsObject.STATE).getAsInt() == 0) {
+            return;
+        }
         Nick nick = gameChest.getNick();
 
         if(nick.isNicked(player.getUniqueId())) {
