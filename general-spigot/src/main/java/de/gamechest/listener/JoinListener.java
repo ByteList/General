@@ -76,6 +76,11 @@ public class JoinListener implements Listener {
     private void create(Player p) {
         DatabaseManager databaseManager = gameChest.getDatabaseManager();
 
+        if(!databaseManager.getDatabaseTerms().existsPlayer(p.getUniqueId())) {
+            databaseManager.getDatabaseTerms().createPlayer(p.getUniqueId());
+            return;
+        }
+
         gameChest.getDatabaseManager().getAsync().getPlayer(p.getUniqueId(), databasePlayer -> {
             databasePlayer.createPlayer();
             databasePlayer.updatePlayer();

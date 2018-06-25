@@ -93,6 +93,11 @@ public class LoginListener implements Listener {
             }
         }
 
+        if(!databaseManager.getDatabaseTerms().existsPlayer(pc.getUniqueId())) {
+            databaseManager.getDatabaseTerms().createPlayer(pc.getUniqueId());
+            return;
+        }
+
         // database player
         databaseManager.getAsync().getPlayer(pc.getUniqueId(), dbPlayer -> {
             dbPlayer.createPlayer();

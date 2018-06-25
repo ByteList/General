@@ -31,19 +31,12 @@ public class QuitListener implements Listener {
     public static void callLastOnQuit(PlayerQuitEvent e) {
     }
 
-    /**
-     * Is used by some plugins but it's a logical mistake from me.
-     *
-     * The method have to called at the end of the PlayerQuitListener.
-     *
-     * @param e
-     */
-    @Deprecated
-    public static void OLD_callFirstOnQuit(PlayerQuitEvent e) {
-    }
-
     private void delete(Player p) {
-        gameChest.getNick().unnickOnDisconnect(p);
-        gameChest.getDatabaseManager().getAsync().getOnlinePlayer(p.getUniqueId(), DatabaseOnlinePlayer::removeOnlinePlayer);
+        gameChest.getDatabaseManager().getAsync().getPlayer(p.getUniqueId(), dbPlayer -> {
+            if(dbPlayer.existsPlayer()) {
+                gameChest.getNick().unnickOnDisconnect(p);
+                gameChest.getDatabaseManager().getAsync().getOnlinePlayer(p.getUniqueId(), DatabaseOnlinePlayer::removeOnlinePlayer);
+            }
+        });
     }
 }

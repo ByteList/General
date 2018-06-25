@@ -18,6 +18,7 @@ import de.gamechest.database.stats.clickattack.DatabaseClickAttack;
 import de.gamechest.database.stats.deathrun.DatabaseDeathRun;
 import de.gamechest.database.stats.jumpduell.DatabaseJumpDuell;
 import de.gamechest.database.stats.shulkerdefence.DatabaseShulkerDefence;
+import de.gamechest.database.terms.DatabaseTerms;
 import de.gamechest.database.uuidbuffer.DatabaseUuidBuffer;
 import de.gamechest.database.webregister.DatabaseWebRegister;
 import lombok.Getter;
@@ -73,11 +74,13 @@ public class DatabaseManager {
     private DatabasePoll databasePoll;
     @Getter
     private DatabaseWebRegister databaseWebRegister;
+    @Getter
+    private DatabaseTerms databaseTerms;
 
     @Getter
     private AsyncDatabaseManager async;
 
-    public DatabaseManager(String host, int port, String username, String password, String database) throws Exception {
+    public DatabaseManager(String host, int port, String username, String password, String database) {
         this(
                 new MongoClient(
                         new ServerAddress(host, port),
@@ -117,6 +120,7 @@ public class DatabaseManager {
         this.databaseParty = new DatabaseParty(this);
         this.databasePoll = new DatabasePoll(this);
         this.databaseWebRegister = new DatabaseWebRegister(this);
+        this.databaseTerms = new DatabaseTerms(this);
 
         this.async = new AsyncDatabaseManager(this);
     }

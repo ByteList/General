@@ -28,7 +28,8 @@ public enum DatabaseCollection {
     CHAT_REPORTS(14, "chat-reports"),
     BUG_REPORTS(15, "bug-reports"),
 
-    WEB_REGISTER(16, "web-register");
+    WEB_REGISTER(16, "web-register"),
+    TERMS(17, "terms");
 
     @Getter
     private int id;
