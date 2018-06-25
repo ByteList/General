@@ -26,7 +26,7 @@ public class PostLoginListener implements Listener {
         if(databaseManager.getDatabaseTerms().existsPlayer(player.getUniqueId()) &&
                 databaseManager.getDatabaseTerms().getDatabaseElement(player.getUniqueId(), DatabaseTermsObject.STATE).getAsInt() == 0) {
 
-            player.connect(ProxyServer.getInstance().getServerInfo("Pre-Login"));
+            player.connect(ProxyServer.getInstance().getServerInfo("PreLogin"));
             return;
         }
 
