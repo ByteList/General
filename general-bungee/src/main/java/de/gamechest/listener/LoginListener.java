@@ -95,6 +95,7 @@ public class LoginListener implements Listener {
 
         if(!databaseManager.getDatabaseTerms().existsPlayer(pc.getUniqueId())) {
             databaseManager.getDatabaseTerms().createPlayer(pc.getUniqueId());
+            gameChest.getPreLogin().add(pc.getUniqueId());
             return;
         }
 

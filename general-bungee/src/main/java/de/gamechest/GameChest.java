@@ -49,6 +49,8 @@ public class GameChest extends Plugin {
     private PacketHandlerGC packetHandler;
 
     public HashMap<UUID, Rank> rankCache = new HashMap<>();
+    @Getter
+    private ArrayList<UUID> preLogin = new ArrayList<>();
 
     public final String prefix = "§2GameChest §8\u00BB ";
     public final String pr_nick = "§5Nick §8\u00BB ";
