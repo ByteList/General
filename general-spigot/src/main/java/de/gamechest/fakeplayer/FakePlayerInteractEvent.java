@@ -34,6 +34,7 @@ public class FakePlayerInteractEvent extends Event {
 
     public enum Action {
         INTERACT,
+        INTERACT_AT,
         ATTACK
     }
 }

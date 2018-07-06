@@ -108,8 +108,6 @@ public class GameChest extends JavaPlugin {
             getServer().getPluginManager().registerEvents(listener, this);
         }
 
-        this.fakePlayerManager.register();
-
         getServer().getConsoleSender().sendMessage(prefix+"§aEnabled!");
     }
 

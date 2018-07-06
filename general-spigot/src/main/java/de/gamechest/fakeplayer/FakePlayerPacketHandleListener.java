@@ -30,13 +30,17 @@ public class FakePlayerPacketHandleListener extends PacketHandleListener {
                 ArrayList<FakePlayer> fakePlayers = GameChest.getInstance().getFakePlayerManager().getFakePlayers(player.getUniqueId());
                 fakePlayers.forEach(fakePlayer -> {
                     if(fakePlayer.getEntityId() == id && !fakePlayer.isInteracted()) {
-                        try {
-                            FakePlayerInteractEvent fakePlayerInteractEvent = new FakePlayerInteractEvent(fakePlayer, player,
-                                    FakePlayerInteractEvent.Action.valueOf(Reflection.getFieldValue(object, "action").toString()));
-                            Bukkit.getPluginManager().callEvent(fakePlayerInteractEvent);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                        fakePlayer.setInteracted(true);
+                        Bukkit.getScheduler().runTask(GameChest.getInstance(), ()-> {
+                            try {
+                                FakePlayerInteractEvent fakePlayerInteractEvent = new FakePlayerInteractEvent(fakePlayer, player,
+                                        FakePlayerInteractEvent.Action.valueOf(Reflection.getFieldValue(object, "action").toString()));
+                                Bukkit.getPluginManager().callEvent(fakePlayerInteractEvent);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        });
+                        Bukkit.getScheduler().runTaskLaterAsynchronously(GameChest.getInstance(), ()-> fakePlayer.setInteracted(false), 10L);
                     }
                 });
             } catch (CancelledPacketHandleException ex) {

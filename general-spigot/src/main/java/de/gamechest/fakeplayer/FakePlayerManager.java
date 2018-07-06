@@ -16,17 +16,10 @@ import java.util.UUID;
 public class FakePlayerManager {
 
     private HashMap<UUID, ArrayList<FakePlayer>> fakePlayers = new HashMap<>();
-    private int fakePlayerCount;
 
     public FakePlayerManager() {
-        this.fakePlayerCount = 0;
-    }
-
-    public void register() {
         GameChest.getInstance().getPacketInjector().registerListener(new FakePlayerPacketHandleListener());
         Bukkit.getScheduler().scheduleSyncRepeatingTask(GameChest.getInstance(), ()-> {
-            if (this.fakePlayerCount == 0) return;
-
             Bukkit.getOnlinePlayers().forEach(player -> getFakePlayers(player.getUniqueId()).forEach(fakePlayer -> {
                 fakePlayer.getRunnable().run(fakePlayer, player);
             }));
@@ -46,7 +39,6 @@ public class FakePlayerManager {
                 fake.spawn();
             }
         }
-        this.fakePlayerCount = this.fakePlayerCount + fakePlayer.length;
     }
 
     public void removeFakePlayer(UUID uuid, int... entityIds) {
@@ -56,7 +48,6 @@ public class FakePlayerManager {
             for (FakePlayer fakePlayer : clone) {
                 if(fakePlayer.getEntityId() == id) {
                     fakePlayers.remove(fakePlayer);
-                    this.fakePlayerCount--;
                 }
             }
         }
