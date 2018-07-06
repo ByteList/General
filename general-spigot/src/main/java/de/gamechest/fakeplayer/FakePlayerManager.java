@@ -1,7 +1,6 @@
 package de.gamechest.fakeplayer;
 
 import de.gamechest.GameChest;
-import lombok.Getter;
 import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
@@ -17,19 +16,21 @@ import java.util.UUID;
 public class FakePlayerManager {
 
     private HashMap<UUID, ArrayList<FakePlayer>> fakePlayers = new HashMap<>();
-    @Getter
     private int fakePlayerCount;
-    @Getter
-    private FakePlayerTask fakePlayerTask;
 
     public FakePlayerManager() {
         this.fakePlayerCount = 0;
-        this.fakePlayerTask = new FakePlayerTask();
     }
 
     public void register() {
         GameChest.getInstance().getPacketInjector().registerListener(new FakePlayerPacketHandleListener());
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(GameChest.getInstance(), this.fakePlayerTask, 60L, 2L);
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(GameChest.getInstance(), ()-> {
+            if (this.fakePlayerCount == 0) return;
+
+            Bukkit.getOnlinePlayers().forEach(player -> getFakePlayers(player.getUniqueId()).forEach(fakePlayer -> {
+                fakePlayer.getRunnable().run(fakePlayer, player);
+            }));
+        }, 60L, 2L);
     }
 
     public ArrayList<FakePlayer> getFakePlayers(UUID uuid) {
