@@ -55,9 +55,9 @@ public class FakePlayer {
     private byte bitMaskStatus = 0;
 
     @Getter
-    private final Runnable runnable;
+    private final FakePlayerRunnable<Player> runnable;
 
-    private FakePlayer(Player player, Location location, String displayname, Runnable runnable) {
+    private FakePlayer(Player player, Location location, String displayname, FakePlayerRunnable<Player> runnable) {
         this.player = player;
         this.location = location.clone();
         this.displayname = displayname;
@@ -68,7 +68,7 @@ public class FakePlayer {
         this.entityId = entityFakePlayer.getId();
     }
 
-    private FakePlayer(Player player, Location location, String displayname, Runnable runnable, String skinValue, String skinSignature) {
+    private FakePlayer(Player player, Location location, String displayname, FakePlayerRunnable<Player> runnable, String skinValue, String skinSignature) {
         this.player = player;
         this.location = location.clone();
         this.displayname = displayname;
@@ -323,7 +323,7 @@ public class FakePlayer {
         private String displayname, skinValue, skinSignature;
         private Player player;
         private Location location;
-        private Runnable runnable;
+        private FakePlayerRunnable<Player> runnable;
 
         public static FakePlayerBuilder newInstance() {
             return new FakePlayerBuilder();
@@ -344,7 +344,7 @@ public class FakePlayer {
             return this;
         }
 
-        public FakePlayerBuilder runnable(Runnable runnable) {
+        public FakePlayerBuilder runnable(FakePlayerRunnable<Player> runnable) {
             this.runnable = runnable;
             return this;
         }
