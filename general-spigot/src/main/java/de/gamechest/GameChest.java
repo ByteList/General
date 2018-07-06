@@ -10,6 +10,7 @@ import de.gamechest.database.DatabaseManager;
 import de.gamechest.database.DatabasePlayer;
 import de.gamechest.database.DatabasePlayerObject;
 import de.gamechest.database.rank.Rank;
+import de.gamechest.fakeplayer.FakePlayerManager;
 import de.gamechest.listener.CommandListener;
 import de.gamechest.listener.JoinListener;
 import de.gamechest.listener.QuitListener;
@@ -53,6 +54,8 @@ public class GameChest extends JavaPlugin {
     private Coins coins;
     @Getter
     private PacketInjector packetInjector;
+    @Getter
+    private FakePlayerManager fakePlayerManager;
 
     public final String prefix = "§2GameChest §8\u00BB ";
 
@@ -75,6 +78,7 @@ public class GameChest extends JavaPlugin {
         this.chatLog = new ChatLog();
         this.nick = new Nick();
         this.coins = new Coins();
+        this.fakePlayerManager = new FakePlayerManager();
 
         if(!Bukkit.getServerName().contains("nonBungee")) {
             GCPacketClient.start();

@@ -24,15 +24,16 @@ public class PlayerDisconnectListener implements Listener {
 
         gameChest.rankCache.remove(uuid);
 
-        if(gameChest.getPreLogin().contains(uuid)) {
-            return;
-        }
-        gameChest.getNick().unnickOnDisconnect(e.getPlayer());
+        gameChest.getDatabaseManager().getAsync().getPlayer(uuid, dbPlayer -> {
+            if(dbPlayer.existsPlayer()) {
+                gameChest.getNick().unnickOnDisconnect(e.getPlayer());
 
-        databaseManager.getAsync().getOnlinePlayer(uuid, DatabaseOnlinePlayer::removeOnlinePlayer);
+                databaseManager.getAsync().getOnlinePlayer(uuid, DatabaseOnlinePlayer::removeOnlinePlayer);
 
-        gameChest.TELL_FROM_TO.remove(e.getPlayer());
-        gameChest.onlineTeam.remove(e.getPlayer());
-        gameChest.getPartyManager().leaveParty(gameChest.getPartyManager().getParty(uuid).getPartyId(), e.getPlayer());
+                gameChest.TELL_FROM_TO.remove(e.getPlayer());
+                gameChest.onlineTeam.remove(e.getPlayer());
+                gameChest.getPartyManager().leaveParty(gameChest.getPartyManager().getParty(uuid).getPartyId(), e.getPlayer());
+            }
+        });
     }
 }

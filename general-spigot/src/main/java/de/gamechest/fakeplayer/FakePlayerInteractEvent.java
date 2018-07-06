@@ -1,7 +1,6 @@
 package de.gamechest.fakeplayer;
 
-import de.gamechest.FakePlayer;
-import lombok.Data;
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.bukkit.entity.Player;
@@ -13,7 +12,7 @@ import org.bukkit.event.HandlerList;
  * <p>
  * Copyright by ByteList - https://bytelist.de/
  */
-@Data
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class FakePlayerInteractEvent extends Event {
 
@@ -31,6 +30,7 @@ public class FakePlayerInteractEvent extends Event {
     public HandlerList getHandlers() {
         return handlerList;
     }
+
 
     public enum Action {
         INTERACT,
