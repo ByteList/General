@@ -23,6 +23,7 @@ public class FakePlayerManager {
     private FakePlayerTask fakePlayerTask;
 
     public FakePlayerManager() {
+        this.fakePlayerCount = 0;
         this.fakePlayerTask = new FakePlayerTask();
         Bukkit.getScheduler().scheduleSyncRepeatingTask(GameChest.getInstance(), this.fakePlayerTask, 60L, 2L);
         GameChest.getInstance().getPacketInjector().registerListener(new FakePlayerPacketHandleListener());
