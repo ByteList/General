@@ -17,7 +17,7 @@ public class FakePlayerTask implements Runnable {
         if (fakePlayerManager.getFakePlayerCount() == 0) return;
 
         Bukkit.getOnlinePlayers().forEach(player -> fakePlayerManager.getFakePlayers(player.getUniqueId()).forEach(fakePlayer -> {
-            fakePlayer.getRunnable().run(player);
+            fakePlayer.getRunnable().run(fakePlayer, player);
         }));
     }
 }
