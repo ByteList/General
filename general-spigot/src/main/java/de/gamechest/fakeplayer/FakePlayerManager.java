@@ -25,8 +25,11 @@ public class FakePlayerManager {
     public FakePlayerManager() {
         this.fakePlayerCount = 0;
         this.fakePlayerTask = new FakePlayerTask();
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(GameChest.getInstance(), this.fakePlayerTask, 60L, 2L);
+    }
+
+    public void register() {
         GameChest.getInstance().getPacketInjector().registerListener(new FakePlayerPacketHandleListener());
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(GameChest.getInstance(), this.fakePlayerTask, 60L, 2L);
     }
 
     public ArrayList<FakePlayer> getFakePlayers(UUID uuid) {

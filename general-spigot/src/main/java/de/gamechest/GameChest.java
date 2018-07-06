@@ -69,9 +69,9 @@ public class GameChest extends JavaPlugin {
         // 2.0.23:00342580cc947e7bf8d1eeb7fb8650ab456dc3e2
         String[] v = this.getClass().getPackage().getImplementationVersion().split(":");
         // 2.0.23:0034258
-        version = v[0]+":"+v[1].substring(0, 7);
+       this.version = v[0]+":"+v[1].substring(0, 7);
 
-        initDatabase();
+        this.initDatabase();
 
         this.stats = new Stats();
         this.packetInjector = new PacketInjector();
@@ -107,6 +107,8 @@ public class GameChest extends JavaPlugin {
         for (Listener listener : listeners) {
             getServer().getPluginManager().registerEvents(listener, this);
         }
+
+        this.fakePlayerManager.register();
 
         getServer().getConsoleSender().sendMessage(prefix+"§aEnabled!");
     }
