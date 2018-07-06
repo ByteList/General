@@ -167,6 +167,8 @@ public class FakePlayer {
         // Set values, convert to degrees (invert the yaw since Bukkit uses a different yaw dimension format)
         location.setYaw(-location.getYaw() * 180f / (float) Math.PI);
         location.setPitch(location.getPitch() * 180f / (float) Math.PI);
+
+        headRotation(location);
     }
 
     public void equip(EnumItemSlot slot, ItemStack istack) {
@@ -200,7 +202,7 @@ public class FakePlayer {
         this.onFire = state;
     }
 
-    public void updateMetadata(int bit, boolean state) {
+    private void updateMetadata(int bit, boolean state) {
         if(!this.spawned) return;
 
         DataWatcher dataWatcher = new DataWatcher(entityFakePlayer);
@@ -210,12 +212,12 @@ public class FakePlayer {
     }
 
 
-    public void headRotation(Location loc) {
+    private void headRotation(Location loc) {
         sendPacket(new PacketPlayOutEntity.PacketPlayOutEntityLook(entityFakePlayer.getId(), getFixRotation(loc.getYaw()), getFixRotation(loc.getPitch()), true));
         sendPacket(new PacketPlayOutEntityHeadRotation(entityFakePlayer, getFixRotation(loc.getYaw())));
     }
 
-    public void sendPacket(Object packet) {
+    private void sendPacket(Object packet) {
         String path = Bukkit.getServer().getClass().getPackage().getName();
         String version = path.substring(path.lastIndexOf(".") + 1, path.length());
         try {
