@@ -18,12 +18,15 @@ public class QuitListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onQuit(PlayerQuitEvent e) {
-        gameChest.rankCache.remove(e.getPlayer().getUniqueId());
+        Player player = e.getPlayer();
+
+        gameChest.rankCache.remove(player.getUniqueId());
 
         if(Bukkit.getServerName().contains("nonBungee")) {
             delete(e.getPlayer());
         }
 
+        gameChest.getNick().removeFromCache(player.getUniqueId());
         gameChest.getPacketInjector().removePlayer(e.getPlayer());
     }
 

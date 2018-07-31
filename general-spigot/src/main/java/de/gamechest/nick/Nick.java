@@ -96,8 +96,11 @@ public class Nick {
                 String nick = dbOPlayer.getDatabaseElement(DatabaseOnlinePlayerObject.NICKNAME).getAsString();
                 databaseManager.getDatabaseNick().setDatabaseObject(nick, DatabaseNickObject.USED, false);
             }, DatabaseOnlinePlayerObject.NICKNAME);
-            this.nickCache.remove(player.getUniqueId());
         }
+    }
+
+    public void removeFromCache(UUID uuid) {
+        this.nickCache.remove(uuid);
     }
 
     public boolean isNicked(UUID uuid) {
