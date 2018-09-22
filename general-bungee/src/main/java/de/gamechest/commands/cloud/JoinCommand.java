@@ -1,5 +1,6 @@
 package de.gamechest.commands.cloud;
 
+import de.bytelist.bytecloud.ServerIdResolver;
 import de.bytelist.bytecloud.bungee.ByteCloudMaster;
 import de.gamechest.GameChest;
 import de.gamechest.commands.base.GCCommand;
@@ -7,6 +8,8 @@ import de.gamechest.database.DatabasePlayer;
 import de.gamechest.database.DatabasePlayerObject;
 import de.gamechest.database.rank.Rank;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 /**
@@ -63,7 +66,21 @@ public class JoinCommand extends GCCommand {
                 return;
             }
             if(args.length == 2) {
-                String srvid = args[0];
+                String srvid = ServerIdResolver.getUniqueServerId(args[0]);
+
+                if(args[0].equals("@all")) {
+                    if(!gameChest.hasRank(pp.getUniqueId(), Rank.ADMIN)) {
+                        gameChest.sendNoPermissionMessage(pp);
+                        return;
+                    }
+
+                    ServerInfo serverInfo = ProxyServer.getInstance().getServerInfo(srvid);
+                    ProxyServer.getInstance().getPlayers().forEach(proxiedPlayer -> proxiedPlayer.connect(serverInfo));
+
+                    ProxyServer.getInstance().broadcast(ByteCloudMaster.getInstance().prefix+"§7Alle Spieler wurden auf §e"+srvid+"§7 verschoben!");
+                    return;
+                }
+
                 ProxiedPlayer target = GameChest.getInstance().getProxy().getPlayer(args[1]);
 
                 if(target == null) {
@@ -76,13 +93,6 @@ public class JoinCommand extends GCCommand {
                         < rankId) {
                     pp.sendMessage(ByteCloudMaster.getInstance().prefix+"§cDu hast keine Berechtigung diesen Spieler zu verschieben!");
                     return;
-                }
-
-                if(srvid.contains("-")) {
-                    String[] srv = srvid.split("-");
-
-                    if(srv.length == 2)
-                        srvid = ByteCloudMaster.getInstance().getCloudHandler().getUniqueServerId(srvid);
                 }
 
                 int con = ByteCloudMaster.getInstance().getCloudHandler().connect(srvid, target);

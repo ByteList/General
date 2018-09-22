@@ -28,11 +28,11 @@ public class PlayerDisconnectListener implements Listener {
             if(dbPlayer.existsPlayer()) {
                 gameChest.getNick().unnickOnDisconnect(e.getPlayer());
 
-                databaseManager.getAsync().getOnlinePlayer(uuid, DatabaseOnlinePlayer::removeOnlinePlayer);
-
                 gameChest.TELL_FROM_TO.remove(e.getPlayer());
                 gameChest.onlineTeam.remove(e.getPlayer());
                 gameChest.getPartyManager().leaveParty(gameChest.getPartyManager().getParty(uuid).getPartyId(), e.getPlayer());
+
+                databaseManager.getAsync().getOnlinePlayer(uuid, DatabaseOnlinePlayer::removeOnlinePlayer);
             }
         });
     }
