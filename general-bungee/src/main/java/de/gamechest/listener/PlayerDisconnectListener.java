@@ -30,7 +30,9 @@ public class PlayerDisconnectListener implements Listener {
 
                 gameChest.TELL_FROM_TO.remove(e.getPlayer());
                 gameChest.onlineTeam.remove(e.getPlayer());
-                gameChest.getPartyManager().leaveParty(gameChest.getPartyManager().getParty(uuid).getPartyId(), e.getPlayer());
+
+                if(gameChest.getPartyManager().isPlayerInAParty(uuid))
+                    gameChest.getPartyManager().leaveParty(gameChest.getPartyManager().getParty(uuid).getPartyId(), e.getPlayer());
 
                 databaseManager.getAsync().getOnlinePlayer(uuid, DatabaseOnlinePlayer::removeOnlinePlayer);
             }
