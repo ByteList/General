@@ -138,10 +138,10 @@ public class TeamspeakBot {
     public boolean isInNoSupportChannel(Client client) {
         for (int noSupportChannelId : noSupportChannelIds) {
             if (client.getChannelId() == noSupportChannelId) {
-                return false;
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     public void checkChannelPassword(int channelId, int invokerId, String name, String password) {
