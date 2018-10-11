@@ -21,6 +21,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
@@ -38,6 +39,9 @@ public class TeamspeakBot {
             supportWaitChannelId = 99;
     @Getter
     private final int[] specialIds = {11, 12, 13, 14, 29, 16, 55}, supportNotifyIds = { 13, 14, notifyServerGroupId };
+
+    private final String noSupportMessage = "[size=14][b][color=RED]Der Support ist geschlossen, da kein Teammitglied zum Support " +
+            "zur Verfügung steht.[/color][/b][/size]\n\n\n";
 
     private int queryId;
 
@@ -149,6 +153,7 @@ public class TeamspeakBot {
 
     public void checkSupport() {
         HashMap<ChannelProperty, String> properties = new HashMap<>();
+        ArrayList<Client> clientInChannel = new ArrayList<>();
         AtomicInteger i = new AtomicInteger(0);
 
         AsyncTasks.getInstance().runTaskAsync(()-> {
@@ -158,6 +163,8 @@ public class TeamspeakBot {
                 if(this.hasSupportNotifyGroup(client)) {
                     i.addAndGet(1);
                 }
+                if(client.getChannelId() == this.supportWaitChannelId)
+                    clientInChannel.add(client);
             });
 
             if(i.get() > 0) {
@@ -165,6 +172,7 @@ public class TeamspeakBot {
                     properties.put(ChannelProperty.CHANNEL_MAXCLIENTS, "1");
                     properties.put(ChannelProperty.CHANNEL_FLAG_MAXCLIENTS_UNLIMITED, "1");
                     properties.put(ChannelProperty.CHANNEL_NAME, "Support | Warteraum");
+                    properties.put(ChannelProperty.CHANNEL_DESCRIPTION, channel.getDescription().replaceFirst(noSupportMessage, ""));
                     this.getApi().editChannel(this.supportWaitChannelId, properties);
                 }
             } else {
@@ -172,7 +180,12 @@ public class TeamspeakBot {
                     properties.put(ChannelProperty.CHANNEL_MAXCLIENTS, "0");
                     properties.put(ChannelProperty.CHANNEL_FLAG_MAXCLIENTS_UNLIMITED, "0");
                     properties.put(ChannelProperty.CHANNEL_NAME, "Support | Warteraum [Geschlossen]");
+                    properties.put(ChannelProperty.CHANNEL_DESCRIPTION, noSupportMessage+channel.getDescription());
                     this.getApi().editChannel(this.supportWaitChannelId, properties);
+                    clientInChannel.forEach(client -> {
+                        this.getApiAsync().kickClientFromChannel(client);
+                        this.getApiAsync().sendPrivateMessage(client.getId(), "Der Support wurde geschlossen, da kein Teammitglied zum Support zur Verfügung steht.");
+                    });
                 }
             }
         });
