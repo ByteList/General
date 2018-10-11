@@ -176,14 +176,18 @@ public class TeamspeakBot {
                 if(client.getChannelId() == this.supportWaitChannelId)
                     clientInChannel.add(client);
             });
+            String newTopic = "supportende Teammitglieder: "+canSupport.get()+"/"+hasGroup.get();
 
             if(canSupport.get() > 0) {
                 if(!channel.getName().equals("Support | Warteraum")) {
                     properties.put(ChannelProperty.CHANNEL_MAXCLIENTS, "1");
                     properties.put(ChannelProperty.CHANNEL_FLAG_MAXCLIENTS_UNLIMITED, "1");
                     properties.put(ChannelProperty.CHANNEL_NAME, "Support | Warteraum");
-                    properties.put(ChannelProperty.CHANNEL_TOPIC, "supportende Teammitglieder: "+canSupport.get()+"/"+hasGroup.get());
+                    properties.put(ChannelProperty.CHANNEL_TOPIC, newTopic);
                     properties.put(ChannelProperty.CHANNEL_DESCRIPTION, channel.getDescription().replace(noSupportMessage, ""));
+                    this.getApi().editChannel(this.supportWaitChannelId, properties);
+                } else if(!channel.getTopic().equals(newTopic)) {
+                    properties.put(ChannelProperty.CHANNEL_TOPIC, newTopic);
                     this.getApi().editChannel(this.supportWaitChannelId, properties);
                 }
             } else {
@@ -195,8 +199,11 @@ public class TeamspeakBot {
                     properties.put(ChannelProperty.CHANNEL_MAXCLIENTS, "0");
                     properties.put(ChannelProperty.CHANNEL_FLAG_MAXCLIENTS_UNLIMITED, "0");
                     properties.put(ChannelProperty.CHANNEL_NAME, "Support | Warteraum [Geschlossen]");
-                    properties.put(ChannelProperty.CHANNEL_TOPIC, "supportende Teammitglieder: "+canSupport.get()+"/"+hasGroup.get());
+                    properties.put(ChannelProperty.CHANNEL_TOPIC, newTopic);
                     properties.put(ChannelProperty.CHANNEL_DESCRIPTION, noSupportMessage+channel.getDescription());
+                    this.getApi().editChannel(this.supportWaitChannelId, properties);
+                } else if(!channel.getTopic().equals(newTopic)) {
+                    properties.put(ChannelProperty.CHANNEL_TOPIC, newTopic);
                     this.getApi().editChannel(this.supportWaitChannelId, properties);
                 }
             }
