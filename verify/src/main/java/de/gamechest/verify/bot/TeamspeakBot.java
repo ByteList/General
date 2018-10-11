@@ -96,8 +96,8 @@ public class TeamspeakBot {
            this.specialUsersOnline = new AtomicInteger(0);
            api.setNickname("ChestBot");
 
+           Bukkit.getScheduler().scheduleSyncRepeatingTask(Verify.getInstance(), this::checkSupport, 0L, 40L);
        });
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(Verify.getInstance(), this::checkSupport, 0L, 40L);
     }
 
 
