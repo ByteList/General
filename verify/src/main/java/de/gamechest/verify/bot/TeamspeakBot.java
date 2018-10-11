@@ -162,13 +162,15 @@ public class TeamspeakBot {
 
             if(i.get() > 0) {
                 if(!channel.getName().equals("Support | Warteraum")) {
-                    properties.put(ChannelProperty.CHANNEL_MAXCLIENTS, "unlimited");
+                    properties.put(ChannelProperty.CHANNEL_MAXCLIENTS, "0");
+                    properties.put(ChannelProperty.CHANNEL_FLAG_MAXCLIENTS_UNLIMITED, "true");
                     properties.put(ChannelProperty.CHANNEL_NAME, "Support | Warteraum");
                     this.getApi().editChannel(this.supportWaitChannelId, properties);
                 }
             } else {
                 if(!channel.getName().equals("Support | Warteraum [Geschlossen]")) {
                     properties.put(ChannelProperty.CHANNEL_MAXCLIENTS, "0");
+                    properties.put(ChannelProperty.CHANNEL_FLAG_MAXCLIENTS_UNLIMITED, "false");
                     properties.put(ChannelProperty.CHANNEL_NAME, "Support | Warteraum [Geschlossen]");
                     this.getApi().editChannel(this.supportWaitChannelId, properties);
                 }
