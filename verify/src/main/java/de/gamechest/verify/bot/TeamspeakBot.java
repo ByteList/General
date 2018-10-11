@@ -38,7 +38,8 @@ public class TeamspeakBot {
             verifyServerGroupId = 55,
             supportWaitChannelId = 99;
     @Getter
-    private final int[] specialIds = {11, 12, 13, 14, 29, 16, 55}, supportNotifyIds = { 13, 14, notifyServerGroupId };
+    private final int[] specialIds = { 11, 12, 13, 14, 29, 16, 55 },
+            supportNotifyIds = { 13, 14, notifyServerGroupId }, noSupportChannelIds = { 112, 204, 97, 98, 726, 727, 93 };
 
     private final String noSupportMessage = "[size=14][b][color=RED]Der Support ist geschlossen, da kein Teammitglied zum Support " +
             "zur Verfügung steht.[/color][/b][/size]\n\n\n";
@@ -118,25 +119,32 @@ public class TeamspeakBot {
     }
 
     public boolean hasSpecialGroup(Client client) {
-        boolean b = false;
         for (int serverGroupId : specialIds) {
             if (client.isInServerGroup(serverGroupId)) {
-                b = true;
-                break;
+                return true;
             }
         }
-        return b;
+        return false;
     }
 
     public boolean hasSupportNotifyGroup(Client client) {
-        boolean b = false;
         for (int supportNotifyId : supportNotifyIds) {
             if (client.isInServerGroup(supportNotifyId)) {
-                b = true;
-                break;
+                return true;
             }
         }
-        return b;
+        return false;
+    }
+
+    public boolean canSupport(Client client) {
+        if(!hasSupportNotifyGroup(client)) return false;
+
+        for (int noSupportChannelId : noSupportChannelIds) {
+            if (client.getChannelId() == noSupportChannelId) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void checkChannelPassword(int channelId, int invokerId, String name, String password) {
@@ -160,7 +168,7 @@ public class TeamspeakBot {
             ChannelInfo channel = this.getApi().getChannelInfo(this.supportWaitChannelId);
 
             this.getApi().getClients().forEach(client -> {
-                if(this.hasSupportNotifyGroup(client)) {
+                if(this.canSupport(client)) {
                     i.addAndGet(1);
                 }
                 if(client.getChannelId() == this.supportWaitChannelId)
