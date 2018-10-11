@@ -136,7 +136,7 @@ public class TeamspeakBot {
         return false;
     }
 
-    public boolean canSupport(Client client) {
+    public boolean isInNoSupportChannel(Client client) {
         if(!hasSupportNotifyGroup(client)) return false;
 
         for (int noSupportChannelId : noSupportChannelIds) {
@@ -162,24 +162,28 @@ public class TeamspeakBot {
     public void checkSupport() {
         HashMap<ChannelProperty, String> properties = new HashMap<>();
         ArrayList<Client> clientInChannel = new ArrayList<>();
-        AtomicInteger i = new AtomicInteger(0);
+        AtomicInteger hasGroup = new AtomicInteger(0), canSupport = new AtomicInteger(0);
 
         AsyncTasks.getInstance().runTaskAsync(()-> {
             ChannelInfo channel = this.getApi().getChannelInfo(this.supportWaitChannelId);
 
             this.getApi().getClients().forEach(client -> {
-                if(this.canSupport(client)) {
-                    i.addAndGet(1);
+                if(this.hasSupportNotifyGroup(client)) {
+                    if(!this.isInNoSupportChannel(client)) {
+                        canSupport.addAndGet(1);
+                    }
+                    hasGroup.addAndGet(1);
                 }
                 if(client.getChannelId() == this.supportWaitChannelId)
                     clientInChannel.add(client);
             });
 
-            if(i.get() > 0) {
+            if(canSupport.get() > 0) {
                 if(!channel.getName().equals("Support | Warteraum")) {
                     properties.put(ChannelProperty.CHANNEL_MAXCLIENTS, "1");
                     properties.put(ChannelProperty.CHANNEL_FLAG_MAXCLIENTS_UNLIMITED, "1");
                     properties.put(ChannelProperty.CHANNEL_NAME, "Support | Warteraum");
+                    properties.put(ChannelProperty.CHANNEL_TOPIC, "supportende Teammitglieder: "+canSupport.get()+"/"+hasGroup.get());
                     properties.put(ChannelProperty.CHANNEL_DESCRIPTION, channel.getDescription().replace(noSupportMessage, ""));
                     this.getApi().editChannel(this.supportWaitChannelId, properties);
                 }
@@ -192,6 +196,7 @@ public class TeamspeakBot {
                     properties.put(ChannelProperty.CHANNEL_MAXCLIENTS, "0");
                     properties.put(ChannelProperty.CHANNEL_FLAG_MAXCLIENTS_UNLIMITED, "0");
                     properties.put(ChannelProperty.CHANNEL_NAME, "Support | Warteraum [Geschlossen]");
+                    properties.put(ChannelProperty.CHANNEL_TOPIC, "supportende Teammitglieder: "+canSupport.get()+"/"+hasGroup.get());
                     properties.put(ChannelProperty.CHANNEL_DESCRIPTION, noSupportMessage+channel.getDescription());
                     this.getApi().editChannel(this.supportWaitChannelId, properties);
                 }
