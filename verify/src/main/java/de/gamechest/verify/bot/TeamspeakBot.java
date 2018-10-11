@@ -172,7 +172,7 @@ public class TeamspeakBot {
                     properties.put(ChannelProperty.CHANNEL_MAXCLIENTS, "1");
                     properties.put(ChannelProperty.CHANNEL_FLAG_MAXCLIENTS_UNLIMITED, "1");
                     properties.put(ChannelProperty.CHANNEL_NAME, "Support | Warteraum");
-                    properties.put(ChannelProperty.CHANNEL_DESCRIPTION, channel.getDescription().replaceFirst(noSupportMessage, ""));
+                    properties.put(ChannelProperty.CHANNEL_DESCRIPTION, channel.getDescription().replace(noSupportMessage, ""));
                     this.getApi().editChannel(this.supportWaitChannelId, properties);
                 }
             } else {
