@@ -177,7 +177,6 @@ public class TeamspeakBot {
                 }
             } else {
                 if(!channel.getName().equals("Support | Warteraum [Geschlossen]")) {
-                    this.getApi().editChannel(this.supportWaitChannelId, properties);
                     clientInChannel.forEach(client -> {
                         this.getApiAsync().kickClientFromChannel(client);
                         this.getApiAsync().sendPrivateMessage(client.getId(), "Der Support wurde geschlossen, da kein Teammitglied zum Support zur Verfügung steht.");
@@ -186,6 +185,7 @@ public class TeamspeakBot {
                     properties.put(ChannelProperty.CHANNEL_FLAG_MAXCLIENTS_UNLIMITED, "0");
                     properties.put(ChannelProperty.CHANNEL_NAME, "Support | Warteraum [Geschlossen]");
                     properties.put(ChannelProperty.CHANNEL_DESCRIPTION, noSupportMessage+channel.getDescription());
+                    this.getApi().editChannel(this.supportWaitChannelId, properties);
                 }
             }
         });
