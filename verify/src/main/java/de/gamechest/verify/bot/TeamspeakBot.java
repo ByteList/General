@@ -156,11 +156,9 @@ public class TeamspeakBot {
 
             this.getApi().getClients().forEach(client -> {
                 if(this.hasSupportNotifyGroup(client)) {
-                    i.decrementAndGet();
+                    i.addAndGet(1);
                 }
             });
-
-            System.out.println("Clients: "+this.getApi().getClients().size() + " i: "+i.get());
 
             if(i.get() > 0) {
                 if(!channel.getName().equals("Support | Warteraum")) {
