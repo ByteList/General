@@ -162,8 +162,8 @@ public class TeamspeakBot {
 
             if(i.get() > 0) {
                 if(!channel.getName().equals("Support | Warteraum")) {
-                    properties.put(ChannelProperty.CHANNEL_FLAG_MAXCLIENTS_UNLIMITED, "1");
                     properties.put(ChannelProperty.CHANNEL_MAXCLIENTS, "0");
+                    properties.put(ChannelProperty.CHANNEL_FLAG_MAXCLIENTS_UNLIMITED, "1");
                     properties.put(ChannelProperty.CHANNEL_NAME, "Support | Warteraum");
                     this.getApi().editChannel(this.supportWaitChannelId, properties);
                 }
