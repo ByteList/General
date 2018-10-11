@@ -41,8 +41,7 @@ public class TeamspeakBot {
     private final int[] specialIds = { 11, 12, 13, 14, 29, 16, 55 },
             supportNotifyIds = { 13, 14, notifyServerGroupId }, noSupportChannelIds = { 112, 204, 97, 98, 726, 727, 93 };
 
-    private final String noSupportMessage = "[size=14][b][color=RED]Der Support ist geschlossen, da kein Teammitglied zum Support " +
-            "zur Verfügung steht.[/color][/b][/size]\n\n\n";
+    private final String noSupportMessage = "[size=14][b][color=RED]Der Support ist geschlossen, da kein supportendes Teammitglied zur Verfügung steht.[/color][/b][/size]\n\n\n";
 
     private int queryId;
 
@@ -191,7 +190,7 @@ public class TeamspeakBot {
                 if(!channel.getName().equals("Support | Warteraum [Geschlossen]")) {
                     clientInChannel.forEach(client -> {
                         this.getApiAsync().kickClientFromChannel(client);
-                        this.getApiAsync().sendPrivateMessage(client.getId(), "Der Support wurde geschlossen, da kein Teammitglied zum Support zur Verfügung steht.");
+                        this.getApiAsync().sendPrivateMessage(client.getId(), "Der Support wurde geschlossen, da kein supportendes Teammitglied zur Verfügung steht.");
                     });
                     properties.put(ChannelProperty.CHANNEL_MAXCLIENTS, "0");
                     properties.put(ChannelProperty.CHANNEL_FLAG_MAXCLIENTS_UNLIMITED, "0");
