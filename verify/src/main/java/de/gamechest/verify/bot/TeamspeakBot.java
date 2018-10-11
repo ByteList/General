@@ -141,10 +141,10 @@ public class TeamspeakBot {
 
         for (int noSupportChannelId : noSupportChannelIds) {
             if (client.getChannelId() == noSupportChannelId) {
-                return true;
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     public void checkChannelPassword(int channelId, int invokerId, String name, String password) {
