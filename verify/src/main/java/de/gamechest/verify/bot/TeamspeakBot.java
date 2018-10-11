@@ -160,7 +160,7 @@ public class TeamspeakBot {
                 }
             });
 
-            System.out.println("Clients: "+this.getApi().getClients().size());
+            System.out.println("Clients: "+this.getApi().getClients().size() + " i: "+i.get());
 
             if(i.get() > 0) {
                 if(!channel.getName().equals("Support | Warteraum")) {
