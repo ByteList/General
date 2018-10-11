@@ -152,16 +152,20 @@ public class TeamspeakBot {
         AtomicInteger i = new AtomicInteger(0);
 
         AsyncTasks.getInstance().runTaskAsync(()-> {
+            ChannelInfo channel = this.getApi().getChannelInfo(this.supportWaitChannelId);
+
             this.getApi().getClients().forEach(client -> {
                 if(this.hasSupportNotifyGroup(client)) {
                     i.decrementAndGet();
                 }
             });
 
-            if(i.get() > 0) {
+            if(i.get() > 0 && !channel.hasUnlimitedClients()) {
+                properties.put(ChannelProperty.CHANNEL_MAXCLIENTS, "0");
                 properties.put(ChannelProperty.CHANNEL_FLAG_MAXCLIENTS_UNLIMITED, "true");
                 properties.put(ChannelProperty.CHANNEL_NAME, "Support | Warteraum");
             } else {
+                properties.put(ChannelProperty.CHANNEL_MAXCLIENTS, "0");
                 properties.put(ChannelProperty.CHANNEL_FLAG_MAXCLIENTS_UNLIMITED, "false");
                 properties.put(ChannelProperty.CHANNEL_NAME, "Support | Warteraum [Geschlossen]");
             }
