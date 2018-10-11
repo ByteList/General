@@ -136,8 +136,6 @@ public class TeamspeakBot {
     }
 
     public boolean isInNoSupportChannel(Client client) {
-        if(!hasSupportNotifyGroup(client)) return false;
-
         for (int noSupportChannelId : noSupportChannelIds) {
             if (client.getChannelId() == noSupportChannelId) {
                 return false;
