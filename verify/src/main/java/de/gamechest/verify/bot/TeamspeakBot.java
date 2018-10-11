@@ -170,6 +170,7 @@ public class TeamspeakBot {
             } else {
                 if(!channel.getName().equals("Support | Warteraum [Geschlossen]")) {
                     properties.put(ChannelProperty.CHANNEL_MAXCLIENTS, "0");
+                    properties.put(ChannelProperty.CHANNEL_FLAG_MAXCLIENTS_UNLIMITED, "0");
                     properties.put(ChannelProperty.CHANNEL_NAME, "Support | Warteraum [Geschlossen]");
                     this.getApi().editChannel(this.supportWaitChannelId, properties);
                 }
