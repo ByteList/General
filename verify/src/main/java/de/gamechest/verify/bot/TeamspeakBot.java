@@ -148,10 +148,10 @@ public class TeamspeakBot {
     }
 
     public void checkSupport() {
+        HashMap<ChannelProperty, String> properties = new HashMap<>();
         AtomicInteger i = new AtomicInteger(0);
-        AsyncTasks.getInstance().runTaskAsync(()-> {
-            ChannelInfo channel = this.getApi().getChannelInfo(this.supportWaitChannelId);
 
+        AsyncTasks.getInstance().runTaskAsync(()-> {
             this.getApi().getClients().forEach(client -> {
                 if(this.hasSupportNotifyGroup(client)) {
                     i.decrementAndGet();
@@ -159,12 +159,13 @@ public class TeamspeakBot {
             });
 
             if(i.get() > 0) {
-                channel.getMap().put(ChannelProperty.CHANNEL_FLAG_MAXCLIENTS_UNLIMITED.getName(), "true");
-                channel.getMap().put(ChannelProperty.CHANNEL_NAME.getName(), "Support | Warteraum");
+                properties.put(ChannelProperty.CHANNEL_FLAG_MAXCLIENTS_UNLIMITED, "true");
+                properties.put(ChannelProperty.CHANNEL_NAME, "Support | Warteraum");
             } else {
-                channel.getMap().put(ChannelProperty.CHANNEL_FLAG_MAXCLIENTS_UNLIMITED.getName(), "false");
-                channel.getMap().put(ChannelProperty.CHANNEL_NAME.getName(), "Support | Warteraum [Geschlossen]");
+                properties.put(ChannelProperty.CHANNEL_FLAG_MAXCLIENTS_UNLIMITED, "false");
+                properties.put(ChannelProperty.CHANNEL_NAME, "Support | Warteraum [Geschlossen]");
             }
+            this.getApi().editChannel(this.supportWaitChannelId, properties);
         });
     }
 
