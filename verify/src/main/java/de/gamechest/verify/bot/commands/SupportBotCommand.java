@@ -17,7 +17,7 @@ public class SupportBotCommand extends BotCommand {
     private final TeamspeakBot teamspeakBot = Verify.getInstance().getTeamspeakBot();
 
     public SupportBotCommand(TS3ApiAsync apiAsync) {
-        super(apiAsync, "verify", "Verbinde dich mit deinem Minecraft-Account");
+        super(apiAsync, "support", "Teambefehl / Manuell als supportendes Teammitglied registrieren");
     }
 
     @Override
