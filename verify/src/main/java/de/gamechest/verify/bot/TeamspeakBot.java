@@ -7,7 +7,6 @@ import com.github.theholywaffle.teamspeak3.TS3Query;
 import com.github.theholywaffle.teamspeak3.api.ChannelProperty;
 import com.github.theholywaffle.teamspeak3.api.event.TS3EventType;
 import com.github.theholywaffle.teamspeak3.api.exception.TS3Exception;
-import com.github.theholywaffle.teamspeak3.api.wrapper.Channel;
 import com.github.theholywaffle.teamspeak3.api.wrapper.ChannelInfo;
 import com.github.theholywaffle.teamspeak3.api.wrapper.Client;
 import com.github.theholywaffle.teamspeak3.api.wrapper.ClientInfo;
@@ -16,9 +15,9 @@ import de.gamechest.verify.Verify;
 import de.gamechest.verify.bot.commands.*;
 import de.gamechest.verify.bot.listener.ClientJoinListener;
 import de.gamechest.verify.bot.listener.ClientLeaveListener;
+import de.gamechest.verify.bot.listener.ClientMoveListener;
 import de.gamechest.verify.bot.listener.TextMessageListener;
 import lombok.Getter;
-import lombok.Setter;
 import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
@@ -44,6 +43,8 @@ public class TeamspeakBot {
     private final String noSupportMessage = "[size=14][b][color=RED]Der Support ist geschlossen, da kein supportendes Teammitglied zur Verfügung steht.[/color][/b][/size]\n\n\n";
 
     private int queryId;
+    @Getter
+    private final ArrayList<Integer> supportMemberIds = new ArrayList<>();
 
     @Getter
     private TS3Query query;
@@ -91,11 +92,23 @@ public class TeamspeakBot {
            api.registerEvents(TS3EventType.SERVER, TS3EventType.TEXT_PRIVATE/*, TS3EventType.CHANNEL*/);
 
 
-           api.addTS3Listeners(new ClientJoinListener(apiAsync), new ClientLeaveListener(apiAsync), new TextMessageListener(apiAsync, queryId));
+           api.addTS3Listeners(
+                   new ClientJoinListener(apiAsync),
+                   new ClientLeaveListener(apiAsync),
+                   new TextMessageListener(apiAsync, queryId),
+                   new ClientMoveListener(apiAsync)
+           );
 
            commandManager = new CommandManager();
-           commandManager.registerCommands(new HelpBotCommand(apiAsync), new NoMessageBotCommand(apiAsync), new NoPokeBotCommand(apiAsync),
-                   new VerifyBotCommand(apiAsync), new GamesBotCommand(apiAsync), new UnverifyBotCommand(apiAsync));
+           commandManager.registerCommands(
+                   new HelpBotCommand(apiAsync),
+                   new NoMessageBotCommand(apiAsync),
+                   new NoPokeBotCommand(apiAsync),
+                   new VerifyBotCommand(apiAsync),
+                   new GamesBotCommand(apiAsync),
+                   new UnverifyBotCommand(apiAsync),
+                   new SupportBotCommand(apiAsync)
+           );
 
            this.specialUsersOnline = new AtomicInteger(0);
            api.setNickname("ChestBot");
@@ -166,7 +179,7 @@ public class TeamspeakBot {
 
             this.getApi().getClients().forEach(client -> {
                 if(this.hasSupportNotifyGroup(client)) {
-                    if(!this.isInNoSupportChannel(client)) {
+                    if(!this.isInNoSupportChannel(client) || supportMemberIds.contains(client.getId())) {
                         canSupport.addAndGet(1);
                     }
                     hasGroup.addAndGet(1);
