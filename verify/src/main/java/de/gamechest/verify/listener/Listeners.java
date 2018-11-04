@@ -40,13 +40,13 @@ public class Listeners implements Listener {
             p.hidePlayer(player);
             player.hidePlayer(p);
         }
-
+/*
         if (gameChest.isCloudEnabled()) {
             if(gameChest.getNick().isNicked(player.getUniqueId()))
                 ByteCloudCore.getInstance().getCloudAPI().addPlayer(player.getCustomName());
             else
                 ByteCloudCore.getInstance().getCloudAPI().addPlayer(player.getName());
-        }
+        }*/
         player.sendMessage(Verify.getInstance().prefix+"§c/unverify §7- §eEntferne deinen Teamspeak-Account.");
         player.sendMessage(Verify.getInstance().prefix+"§c/lobby §7- §eVerbinde dich wieder zur Lobby.");
         BountifulAPI.sendTitle(player, 5, 100000, 10, "§6Ts³ Verify-Server", "§fSchreibe den ChestBot mit §e!verify§f an.");
@@ -58,13 +58,13 @@ public class Listeners implements Listener {
 
         e.setQuitMessage(null);
         BountifulAPI.sendTitle(e.getPlayer(), 1, 1, 1, "§r", "§r");
-
+/*
         if(gameChest.isCloudEnabled()) {
             if(gameChest.getNick().isNicked(player.getUniqueId()))
                 ByteCloudCore.getInstance().getCloudAPI().removePlayer(player.getCustomName());
             else
                 ByteCloudCore.getInstance().getCloudAPI().removePlayer(player.getName());
-        }
+        }*/
     }
 
     @EventHandler
