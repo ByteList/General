@@ -5,6 +5,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -30,6 +31,11 @@ public class ItemBuilder {
 
     public ItemBuilder lore(String... lore) {
         this.itemMeta.setLore(Arrays.asList(lore));
+        return this;
+    }
+
+    public ItemBuilder lore(ArrayList<String> lore) {
+        this.itemMeta.setLore(lore);
         return this;
     }
 
@@ -62,8 +68,12 @@ public class ItemBuilder {
         return new ItemBuilder(itemStack);
     }
 
+    public static ItemBuilder newBuilder(Material material, int amount, byte data) {
+        return newBuilder(new ItemStack(material, amount, data));
+    }
+
     public static ItemBuilder newBuilder(Material material, byte data) {
-        return new ItemBuilder(new ItemStack(material, 1, data));
+        return newBuilder(material, 1, data);
     }
 
     public static ItemBuilder newBuilder(Material material) {
