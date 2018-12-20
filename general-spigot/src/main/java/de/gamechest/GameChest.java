@@ -188,6 +188,41 @@ public class GameChest extends JavaPlugin {
         return getServer().getPluginManager().isPluginEnabled("ByteCloudAPI");
     }
 
+    public void addPlayerToCloudServer(Player player) {
+        if (isCloudEnabled()) {
+            if(this.nick.isNicked(player.getUniqueId()))
+                ByteCloudCore.getInstance().getCloudAPI().addPlayer(player.getCustomName());
+            else
+                ByteCloudCore.getInstance().getCloudAPI().addPlayer(player.getName());
+        }
+    }
+
+    public void removePlayerFromCloudServer(Player player) {
+        if (isCloudEnabled()) {
+            if(this.nick.isNicked(player.getUniqueId()))
+                ByteCloudCore.getInstance().getCloudAPI().removePlayer(player.getCustomName());
+            else
+                ByteCloudCore.getInstance().getCloudAPI().removePlayer(player.getName());
+        }
+    }
+
+    public void addSpectatorToCloudServer(Player player) {
+        if (isCloudEnabled()) {
+            if(this.nick.isNicked(player.getUniqueId()))
+                ByteCloudCore.getInstance().getCloudAPI().addSpectator(player.getCustomName());
+            else
+                ByteCloudCore.getInstance().getCloudAPI().addSpectator(player.getName());
+        }
+    }
+
+    public void removeSpectatorFromCloudServer(Player player) {
+        if (isCloudEnabled()) {
+            if(this.nick.isNicked(player.getUniqueId()))
+                ByteCloudCore.getInstance().getCloudAPI().removeSpectator(player.getCustomName());
+            else
+                ByteCloudCore.getInstance().getCloudAPI().removeSpectator(player.getName());
+        }
+    }
 
     public String getDisplayname(Player player) {
         Rank rank = getRank(player.getUniqueId());
