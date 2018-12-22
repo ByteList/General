@@ -80,4 +80,8 @@ public class ItemBuilder {
         return newBuilder(material, (byte)0);
     }
 
+    public static ItemStack getPlaceholder() {
+        return newBuilder(Material.STAINED_GLASS_PANE, (byte)15).displayname("§r").get();
+    }
+
 }
