@@ -47,6 +47,7 @@ public class FakePlayerManager {
         for (int id : entityIds) {
             for (FakePlayer fakePlayer : clone) {
                 if(fakePlayer.getEntityId() == id) {
+                    fakePlayer.destroy();
                     fakePlayers.remove(fakePlayer);
                 }
             }
