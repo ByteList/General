@@ -39,14 +39,22 @@ public class ItemBuilder {
         return this;
     }
 
-    public ItemBuilder enchantments(HashMap<Enchantment, Integer> map) {
-        this.itemStack.addEnchantments(map);
+    public ItemBuilder enchantments(HashMap<Enchantment, Integer> map, boolean unsave) {
+        if(unsave) this.itemStack.addUnsafeEnchantments(map);
+        else this.itemStack.addEnchantments(map);
         return this;
     }
 
+    public ItemBuilder enchantments(HashMap<Enchantment, Integer> map) {
+        return this.enchantments(map, false);
+    }
+
+    public ItemBuilder enchantments(EnchantmentBuilder enchantmentBuilder, boolean unsave) {
+        return this.enchantments(enchantmentBuilder.get(), unsave);
+    }
+
     public ItemBuilder enchantments(EnchantmentBuilder enchantmentBuilder) {
-        this.enchantments(enchantmentBuilder.get());
-        return this;
+        return this.enchantments(enchantmentBuilder, false);
     }
 
     public ItemBuilder amount(int amount) {
