@@ -40,8 +40,9 @@ public class ItemBuilder {
     }
 
     public ItemBuilder enchantments(HashMap<Enchantment, Integer> map, boolean unsave) {
-        if(unsave) this.itemStack.addUnsafeEnchantments(map);
+        if(unsave) map.forEach((enchantment, integer) -> this.itemMeta.addEnchant(enchantment, integer, true));
         else this.itemStack.addEnchantments(map);
+
         return this;
     }
 
