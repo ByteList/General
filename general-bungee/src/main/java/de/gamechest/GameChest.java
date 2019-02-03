@@ -3,13 +3,15 @@ package de.gamechest;
 import com.voxelboxstudios.resilent.GCPacketServer;
 import de.gamechest.coins.Coins;
 import de.gamechest.commands.base.CommandHandler;
+import de.gamechest.common.Rank;
+import de.gamechest.common.bungee.BungeeChest;
+import de.gamechest.common.bungee.BungeeChestPlugin;
 import de.gamechest.database.DatabaseManager;
 import de.gamechest.database.DatabasePlayer;
 import de.gamechest.database.DatabasePlayerObject;
 import de.gamechest.database.ban.DatabaseBan;
 import de.gamechest.database.ban.DatabaseBanObject;
 import de.gamechest.database.ban.Reason;
-import de.gamechest.database.rank.Rank;
 import de.gamechest.listener.*;
 import de.gamechest.nick.Nick;
 import de.gamechest.packet.PacketHandlerGC;
@@ -28,7 +30,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * <p>
  * Copyright by ByteList - https://bytelist.de/
  */
-public class GameChest extends Plugin {
+public class GameChest extends Plugin implements BungeeChestPlugin {
 
     @Getter
     private static GameChest instance;
@@ -75,7 +77,7 @@ public class GameChest extends Plugin {
 
     @Override
     public void onEnable() {
-        instance = this;
+        BungeeChest.setInstance(instance = this);
         // 2.0.23:00342580cc947e7bf8d1eeb7fb8650ab456dc3e2
         String[] v = this.getClass().getPackage().getImplementationVersion().split(":");
         // 2.0.23:0034258

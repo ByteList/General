@@ -38,6 +38,7 @@
         <module>general-bungee</module>
         <module>verify</module>
         <module>updater</module>
+        <module>common</module>
     </modules>
 
     <dependencies>

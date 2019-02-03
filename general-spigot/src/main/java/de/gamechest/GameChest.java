@@ -6,10 +6,12 @@ import de.bytelist.bytecloud.core.ByteCloudCore;
 import de.gamechest.chatlog.ChatLog;
 import de.gamechest.coins.Coins;
 import de.gamechest.commands.*;
+import de.gamechest.common.Rank;
+import de.gamechest.common.spigot.SpigotChest;
+import de.gamechest.common.spigot.SpigotChestPlugin;
 import de.gamechest.database.DatabaseManager;
 import de.gamechest.database.DatabasePlayer;
 import de.gamechest.database.DatabasePlayerObject;
-import de.gamechest.database.rank.Rank;
 import de.gamechest.fakeplayer.FakePlayerManager;
 import de.gamechest.listener.CommandListener;
 import de.gamechest.listener.JoinListener;
@@ -34,7 +36,7 @@ import java.util.concurrent.ThreadLocalRandom;
  *
  * Copyright by ByteList - https://bytelist.de/
  */
-public class GameChest extends JavaPlugin {
+public class GameChest extends JavaPlugin implements SpigotChestPlugin {
 
     private static final char[] POOL = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
     public HashMap<UUID, Rank> rankCache = new HashMap<>();
@@ -64,7 +66,7 @@ public class GameChest extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        instance = this;
+        SpigotChest.setInstance(instance = this);
 
         // 2.0.23:00342580cc947e7bf8d1eeb7fb8650ab456dc3e2
         String[] v = this.getClass().getPackage().getImplementationVersion().split(":");
@@ -131,13 +133,8 @@ public class GameChest extends JavaPlugin {
         return POOL[ThreadLocalRandom.current().nextInt(POOL.length)];
     }
 
-    /**
-     * Use the non-static random() method.
-     * @param length of the key
-     * @return random char key
-     */
-    @Deprecated
-    public static String randomKey(int length) {
+    @Override
+    public String randomKey(int length) {
         StringBuilder kb = new StringBuilder();
         for (int i = 0; i < length; i++) {
             kb.append(randomChar());

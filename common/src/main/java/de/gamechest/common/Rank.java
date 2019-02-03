@@ -1,4 +1,4 @@
-package de.gamechest.database.rank;
+package de.gamechest.common;
 
 import lombok.Getter;
 
