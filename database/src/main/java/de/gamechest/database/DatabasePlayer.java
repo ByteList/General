@@ -5,7 +5,7 @@ import com.mongodb.CursorType;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
-import de.gamechest.database.rank.Rank;
+import de.gamechest.common.Rank;
 import org.bson.Document;
 
 import java.text.SimpleDateFormat;

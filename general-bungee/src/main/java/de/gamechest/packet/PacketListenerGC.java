@@ -5,7 +5,7 @@ import com.voxelboxstudios.resilent.GCJsonServerListener;
 import com.voxelboxstudios.resilent.GCPatron;
 import de.gamechest.GameChest;
 import de.gamechest.database.ban.DatabaseBan;
-import de.gamechest.database.rank.Rank;
+import de.gamechest.common.Rank;
 
 /**
  * Created by ByteList on 14.02.2017.

@@ -8,7 +8,7 @@ import de.bytelist.bytecloud.network.bungee.PacketInStopServer;
 import de.gamechest.GameChest;
 import de.gamechest.UUIDFetcher;
 import de.gamechest.commands.base.GCCommand;
-import de.gamechest.database.rank.Rank;
+import de.gamechest.common.Rank;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;

@@ -8,7 +8,7 @@ import de.gamechest.database.activate.DatabaseActivate;
 import de.gamechest.database.activate.DatabaseActivateObject;
 import de.gamechest.database.premiumplayer.DatabasePremiumPlayer;
 import de.gamechest.database.premiumplayer.DatabasePremiumPlayerObject;
-import de.gamechest.database.rank.Rank;
+import de.gamechest.common.Rank;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;

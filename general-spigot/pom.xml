@@ -29,7 +29,7 @@
 
         <dependency>
             <groupId>de.gamechest</groupId>
-            <artifactId>common</artifactId>
+            <artifactId>common-spigot</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>

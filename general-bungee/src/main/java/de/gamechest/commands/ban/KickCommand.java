@@ -6,7 +6,7 @@ import de.gamechest.UUIDFetcher;
 import de.gamechest.commands.base.GCCommand;
 import de.gamechest.database.onlineplayer.DatabaseOnlinePlayer;
 import de.gamechest.database.onlineplayer.DatabaseOnlinePlayerObject;
-import de.gamechest.database.rank.Rank;
+import de.gamechest.common.Rank;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;

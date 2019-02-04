@@ -2,7 +2,7 @@ package de.gamechest.listener;
 
 import de.gamechest.GameChest;
 import de.gamechest.database.DatabaseManager;
-import de.gamechest.database.rank.Rank;
+import de.gamechest.common.Rank;
 import de.gamechest.database.terms.DatabaseTermsObject;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PostLoginEvent;

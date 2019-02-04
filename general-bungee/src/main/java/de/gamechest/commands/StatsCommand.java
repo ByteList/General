@@ -4,7 +4,7 @@ import de.gamechest.GameChest;
 import de.gamechest.UUIDFetcher;
 import de.gamechest.commands.base.GCCommand;
 import de.gamechest.database.DatabaseManager;
-import de.gamechest.database.rank.Rank;
+import de.gamechest.common.Rank;
 import de.gamechest.database.stats.clickattack.DatabaseClickAttack;
 import de.gamechest.database.stats.clickattack.DatabaseClickAttackObject;
 import de.gamechest.database.stats.deathrun.DatabaseDeathRun;

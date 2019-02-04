@@ -6,7 +6,7 @@ import de.gamechest.database.DatabaseManager;
 import de.gamechest.database.bug.BugReason;
 import de.gamechest.database.bug.BugState;
 import de.gamechest.database.bug.DatabaseBugreportObject;
-import de.gamechest.database.rank.Rank;
+import de.gamechest.common.Rank;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 

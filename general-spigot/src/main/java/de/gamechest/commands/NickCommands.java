@@ -1,7 +1,7 @@
 package de.gamechest.commands;
 
 import de.gamechest.GameChest;
-import de.gamechest.database.rank.Rank;
+import de.gamechest.common.Rank;
 import de.gamechest.nick.Nick;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

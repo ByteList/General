@@ -1,6 +1,6 @@
 package de.gamechest;
 
-import de.gamechest.database.rank.Rank;
+import de.gamechest.common.Rank;
 import de.gamechest.nick.Nick;
 import lombok.Getter;
 import org.bukkit.Bukkit;

@@ -8,7 +8,7 @@ import de.gamechest.database.DatabasePlayerObject;
 import de.gamechest.database.ban.DatabaseBanObject;
 import de.gamechest.database.nick.DatabaseNickObject;
 import de.gamechest.database.onlineplayer.DatabaseOnlinePlayer;
-import de.gamechest.database.rank.Rank;
+import de.gamechest.common.Rank;
 import de.gamechest.database.uuidbuffer.DatabaseUuidBuffer;
 import net.md_5.bungee.api.connection.PendingConnection;
 import net.md_5.bungee.api.event.LoginEvent;

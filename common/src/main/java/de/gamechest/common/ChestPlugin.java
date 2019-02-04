@@ -21,5 +21,7 @@ public interface ChestPlugin {
 
     public Rank getRank(UUID uuid);
 
+    public boolean isRankToggled(UUID uuid);
+
     public boolean isCloudEnabled();
 }
