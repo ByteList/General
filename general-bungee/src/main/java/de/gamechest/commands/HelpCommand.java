@@ -31,7 +31,7 @@ public class HelpCommand extends GCCommand {
     private void sendHelp(CommandSender sender, int page) {
         switch (page) {
             case 2 :
-                sender.sendMessage(gameChest.prefix + "§6Befehle des Game-Chest.de Netzwerkes: §7(2/2)");
+                sender.sendMessage(gameChest.prefix + "§6Befehle des Game-ChestPrefix.de Netzwerkes: §7(2/2)");
                 sender.sendMessage("§8\u00BB §e/speed §7- Ändere deine Fluggeschwindigkeit");
                 sender.sendMessage("§8\u00BB §e//wand §7- WorldEdit-Wand Tool");
                 sender.sendMessage("§8\u00BB §e/claim §7- Plot bekommen");
@@ -41,7 +41,7 @@ public class HelpCommand extends GCCommand {
                 sender.sendMessage("§8\u00BB §e/barrier §7- Erhalte eine Barriere");
                 break;
             default :
-                sender.sendMessage(gameChest.prefix + "§6Befehle des Game-Chest.de Netzwerkes: §7(1/2)");
+                sender.sendMessage(gameChest.prefix + "§6Befehle des Game-ChestPrefix.de Netzwerkes: §7(1/2)");
 //              sender.sendMessage("§8\u00BB §e/lobby §7- Kehre zur Lobby zurück");
 //              sender.sendMessage("§8\u00BB §e/stats §7- Erfahre deine aktuellen Statistiken");
                 sender.sendMessage("§8\u00BB §e/msg §7- Schreibe mit anderen Spielern");

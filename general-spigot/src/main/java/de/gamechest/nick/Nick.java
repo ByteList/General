@@ -4,6 +4,9 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mongodb.client.FindIterable;
 import de.gamechest.GameChest;
+import de.gamechest.common.ChestPrefix;
+import de.gamechest.common.spigot.SpigotChest;
+import de.gamechest.common.spigot.SpigotChestNick;
 import de.gamechest.database.DatabaseCollection;
 import de.gamechest.database.DatabaseManager;
 import de.gamechest.database.DatabasePlayer;
@@ -33,14 +36,12 @@ import java.util.UUID;
 /**
  * Created by ByteList on 11.04.2017.
  */
-public class Nick {
+public class Nick implements SpigotChestNick {
 
     private final NickPackets packets;
     private final DatabaseManager databaseManager = GameChest.getInstance().getDatabaseManager();
 
     private HashMap<UUID, String> nickCache = new HashMap<>();
-
-    public final String prefix = "§5Nick §8\u00BB";
 
     public Nick() {
         packets = new NickPackets(this);
@@ -68,7 +69,7 @@ public class Nick {
             e.printStackTrace();
         }
         this.nickCache.put(player.getUniqueId(), nick);
-        player.sendMessage(GameChest.getInstance().getNick().prefix + "§bDein Nickname ist nun: §9"+nick);
+        player.sendMessage(ChestPrefix.PREFIX_NICK + "§bDein Nickname ist nun: §9"+nick);
         Bukkit.getPluginManager().callEvent(new UserNickEvent(player, player.getCustomName(), player.getName()));
     }
 
@@ -86,7 +87,7 @@ public class Nick {
         }
         this.nickCache.put(player.getUniqueId(), null);
         player.setCustomName(null);
-        player.sendMessage(GameChest.getInstance().getNick().prefix + "§bDein Nickname wurde zurückgesetzt.");
+        player.sendMessage(ChestPrefix.PREFIX_NICK + "§bDein Nickname wurde zurückgesetzt.");
         Bukkit.getPluginManager().callEvent(new UserUnnickEvent(player));
     }
 
@@ -151,7 +152,7 @@ public class Nick {
         return databaseManager.getDatabaseNick().getRandomNickname();
     }
 
-    void updateSkin(Player player) {
+    public void updateSkin(Player player) {
         EntityPlayer entityPlayer = ((CraftPlayer)player).getHandle();
 
         final boolean flying = player.isFlying();

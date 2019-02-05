@@ -32,7 +32,7 @@ public class ClientJoinListener extends BotListener {
         final int clientId = e.getClientId();
 
         apiAsync.sendPrivateMessage(clientId, "[B][/B]\n[B][/B]\n" +
-                "  Willkommen auf dem Game-Chest.de Teamspeak.\n" +
+                "  Willkommen auf dem Game-ChestPrefix.de Teamspeak.\n" +
                 "  Nutze [COLOR=red]!help[/COLOR], um alle Befehle zu sehen.\n" +
                 "[B][/B]");
 

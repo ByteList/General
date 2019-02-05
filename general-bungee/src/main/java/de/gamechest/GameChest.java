@@ -3,6 +3,7 @@ package de.gamechest;
 import com.voxelboxstudios.resilent.GCPacketServer;
 import de.gamechest.coins.Coins;
 import de.gamechest.commands.base.CommandHandler;
+import de.gamechest.common.ChestPrefix;
 import de.gamechest.common.Rank;
 import de.gamechest.common.bungee.BungeeChest;
 import de.gamechest.common.bungee.BungeeChestPlugin;
@@ -54,21 +55,6 @@ public class GameChest extends Plugin implements BungeeChestPlugin {
     @Getter
     private ArrayList<UUID> preLogin = new ArrayList<>();
 
-    public final String prefix = "§2GameChest §8\u00BB ";
-    public final String pr_nick = "§5Nick §8\u00BB ";
-    public final String pr_stats = "§6Stats §8\u00BB ";
-    public final String pr_kick = "§cKick §8\u00BB ";
-    public final String pr_ban = "§cBan §8\u00BB ";
-    public final String pr_report = "§9Report §8\u00BB ";
-    public final String pr_bug = "§9BugReport §8\u00BB ";
-    public final String pr_activate = "§6Activate §8\u00BB ";
-    public final String pr_party = "§dParty §8\u00BB ";
-    public final String pr_verify = "§6Verify §8\u00BB ";
-
-    public final String pr_msg_private = "§f§o[§c§oPrivat§f§o] ";
-    public final String pr_msg_team = "§f§o[§c§oTeam§f§o] ";
-    public final String pr_msg_party = "§f§o[§d§oParty§f§o] ";
-
     private final char[] POOL = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
 
     public List<ProxiedPlayer> onlineTeam = new ArrayList<>();
@@ -108,21 +94,21 @@ public class GameChest extends Plugin implements BungeeChestPlugin {
         for (Listener listener : listeners)
             getProxy().getPluginManager().registerListener(this, listener);
 
-        getProxy().getConsole().sendMessage(prefix + "§aEnabled!");
+        getProxy().getConsole().sendMessage(ChestPrefix.PREFIX + "§aEnabled!");
     }
 
     @Override
     public void onDisable() {
         partyManager.onStop();
 //        teamspeakBot.stop();
-        getProxy().getConsole().sendMessage(prefix + "§cDisabled!");
+        getProxy().getConsole().sendMessage(ChestPrefix.PREFIX + "§cDisabled!");
     }
 
     private void initDatabase() {
         try {
             this.databaseManager = new DatabaseManager("game-chest.de", 27017, "server-gc", "Passwort007", "server");
             this.databaseManager.init();
-            getProxy().getConsole().sendMessage(prefix + "§eDatabase - §aConnected!");
+            getProxy().getConsole().sendMessage(ChestPrefix.PREFIX + "§eDatabase - §aConnected!");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -132,6 +118,7 @@ public class GameChest extends Plugin implements BungeeChestPlugin {
         return POOL[ThreadLocalRandom.current().nextInt(POOL.length)];
     }
 
+    @Override
     public String randomKey(int length) {
         StringBuilder kb = new StringBuilder();
         for (int i = 0; i < length; i++) {
@@ -140,6 +127,7 @@ public class GameChest extends Plugin implements BungeeChestPlugin {
         return kb.toString();
     }
 
+    @Override
     public String randomNumber(int length) {
         StringBuilder kb = new StringBuilder();
         for (int i = 0; i < length; i++) {
@@ -148,39 +136,17 @@ public class GameChest extends Plugin implements BungeeChestPlugin {
         return kb.toString();
     }
 
+    @Override
     public boolean hasRank(UUID uuid, Rank rank) {
-        Rank playerRank;
-        if (!rankCache.containsKey(uuid)) {
-            DatabasePlayer dbPlayer = new DatabasePlayer(this.databaseManager, uuid);
-            if (dbPlayer.existsPlayer()) {
-                playerRank = Rank.getRankById(dbPlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt());
-                rankCache.put(uuid, playerRank);
-            } else {
-                return false;
-            }
-        } else {
-            playerRank = rankCache.get(uuid);
-        }
-
-        return playerRank.getId() <= rank.getId();
+        return getRank(uuid).getId() <= rank.getId();
     }
 
+    @Override
     public boolean equalsRank(UUID uuid, Rank rank) {
-        Rank playerRank;
-        if (!rankCache.containsKey(uuid)) {
-            DatabasePlayer dbPlayer = new DatabasePlayer(this.databaseManager, uuid);
-            if (dbPlayer.existsPlayer()) {
-                playerRank = Rank.getRankById(dbPlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt());
-                rankCache.put(uuid, playerRank);
-            } else {
-                return false;
-            }
-        } else {
-            playerRank = rankCache.get(uuid);
-        }
-        return Objects.equals(playerRank.getId(), rank.getId());
+        return Objects.equals(getRank(uuid).getId(), rank.getId());
     }
 
+    @Override
     public Rank getRank(UUID uuid) {
         if (!rankCache.containsKey(uuid)) {
             DatabasePlayer dbPlayer = new DatabasePlayer(this.databaseManager, uuid);
@@ -192,10 +158,12 @@ public class GameChest extends Plugin implements BungeeChestPlugin {
         }
     }
 
+    @Override
     public boolean isRankToggled(UUID uuid) {
         return false;
     }
 
+    @Override
     public String getBanMessage(UUID uuid) {
         DatabaseBan databaseBan = databaseManager.getDatabaseBan();
         String endDate = databaseBan.getDatabaseElement(uuid, DatabaseBanObject.END_DATE).getAsString();
@@ -203,7 +171,7 @@ public class GameChest extends Plugin implements BungeeChestPlugin {
         if (databaseBan.getDatabaseElement(uuid, DatabaseBanObject.EXTRA_MESSAGE).getObject() != null)
             extra = databaseBan.getDatabaseElement(uuid, DatabaseBanObject.EXTRA_MESSAGE).getAsString();
         return
-                "§cDu wurdest bis zum §a" + (endDate.equals("-1") ? "§4permanent" : endDate) + "§c vom §6Game-Chest.de Netzwerk§c gebannt."
+                "§cDu wurdest bis zum §a" + (endDate.equals("-1") ? "§4permanent" : endDate) + "§c vom §6Game-ChestPrefix.de Netzwerk§c gebannt."
                         + "\n" + "\n" +
                         "§cGrund: §e" + Reason.getReason(databaseBan.getDatabaseElement(uuid, DatabaseBanObject.REASON).getAsString()).getReason()
                         + (extra != null ? " (" + extra + ")" : "")
@@ -213,10 +181,12 @@ public class GameChest extends Plugin implements BungeeChestPlugin {
                         "§6Unser Regelwerk findest du unter: §agame-chest.de/regelwerk";
     }
 
+    @Override
     public boolean isCloudEnabled() {
         return getProxy().getPluginManager().getPlugin("ByteCloudAPI") != null;
     }
 
+    @Override
     public void sendNoPermissionMessage(CommandSender sender) {
         sender.sendMessage("§cDu hast keine Berechtigung für diesen Befehl!");
     }

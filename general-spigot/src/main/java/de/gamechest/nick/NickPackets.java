@@ -60,7 +60,7 @@ class NickPackets {
             p.showPlayer(player);
         });
 
-        System.out.println("[GCG/Nick] Player " + p.getCustomName() + " is now nicked as " + nickname);
+        System.out.println("[GCG/ChestNick] Player " + p.getCustomName() + " is now nicked as " + nickname);
     }
 
 
@@ -102,7 +102,7 @@ class NickPackets {
             p.showPlayer(player);
         });
 
-        System.out.println("[GCG/Nick] Player " + p.getName() + " is now unnicked");
+        System.out.println("[GCG/ChestNick] Player " + p.getName() + " is now unnicked");
     }
 
     private Field getNameField(Class<?> clazz) {

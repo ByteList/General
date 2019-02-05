@@ -45,7 +45,7 @@ public class VerifyBotCommand extends BotCommand {
             Player player = Verify.getInstance().getServer().getPlayer(uuid);
 
             if(player == null) {
-                apiAsync.sendPrivateMessage(invokerId, "Du musst auf dem Verify-Server online sein! Verbinde dich dazu auf [B]Game-Chest.de[/B] und führe den [B]/verify[/B] Befehl aus.");
+                apiAsync.sendPrivateMessage(invokerId, "Du musst auf dem Verify-Server online sein! Verbinde dich dazu auf [B]Game-ChestPrefix.de[/B] und führe den [B]/verify[/B] Befehl aus.");
                 return;
             }
 

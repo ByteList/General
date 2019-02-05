@@ -62,7 +62,7 @@ public class KickCommand extends GCCommand implements TabExecutor {
 
             reason = new StringBuilder(reason.toString().replace(" #", ""));
 
-            tp.disconnect("§cDu wurdest vom §6Game-Chest.de Netzwerk§c gekickt."
+            tp.disconnect("§cDu wurdest vom §6Game-ChestPrefix.de Netzwerk§c gekickt."
                     + "\n" + "\n" +
                     "§cGrund: §e"+reason/*
                     + "\n" + "\n" +

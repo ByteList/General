@@ -2,6 +2,7 @@ package de.gamechest.nick;
 
 import com.mongodb.client.FindIterable;
 import de.gamechest.GameChest;
+import de.gamechest.common.bungee.BungeeChestNick;
 import de.gamechest.database.DatabaseCollection;
 import de.gamechest.database.DatabasePlayer;
 import de.gamechest.database.DatabasePlayerObject;
@@ -18,7 +19,7 @@ import java.util.UUID;
 /**
  * Created by ByteList on 11.04.2017.
  */
-public class Nick {
+public class Nick implements BungeeChestNick {
 
 
     private final GameChest gameChest;
@@ -30,6 +31,7 @@ public class Nick {
     }
 
 
+    @Override
     public void unnickOnDisconnect(ProxiedPlayer p) {
         if(isNicked(p.getUniqueId())) {
             gameChest.getDatabaseManager().getAsync().getOnlinePlayer(p.getUniqueId(), dbOPLayer->
@@ -39,13 +41,19 @@ public class Nick {
         }
     }
 
+    @Override
+    public void removeFromCache(UUID uuid) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
     public boolean isNicked(UUID uuid) {
         return new DatabaseOnlinePlayer(gameChest.getDatabaseManager(), uuid.toString(),
             new DatabasePlayer(gameChest.getDatabaseManager(), uuid).getDatabaseElement(DatabasePlayerObject.LAST_NAME).getAsString())
             .getDatabaseElement(DatabaseOnlinePlayerObject.NICKNAME).getObject() != null;
     }
 
-    public List<String> getNickedNames() {
+    private List<String> getNickedNames() {
         FindIterable<Document> find = gameChest.getDatabaseManager().getCollection(DatabaseCollection.ONLINE_PLAYER).find();
         List<String> list = new ArrayList<>();
         for(Document document : find) {
@@ -60,12 +68,14 @@ public class Nick {
         return getNickedNames().contains(name);
     }
 
+    @Override
     public String getNick(UUID uuid) {
         return new DatabaseOnlinePlayer(gameChest.getDatabaseManager(), uuid.toString(),
                 new DatabasePlayer(gameChest.getDatabaseManager(), uuid).getDatabaseElement(DatabasePlayerObject.LAST_NAME).getAsString())
                 .getDatabaseElement(DatabaseOnlinePlayerObject.NICKNAME).getAsString();
     }
 
+    @Override
     public String getPlayernameFromNick(String nick) {
         return gameChest.getDatabaseManager().getDatabaseNick().getDatabaseElement(DatabaseNickObject.NICK, nick, DatabaseNickObject.USED).getAsString();
     }
@@ -79,5 +89,10 @@ public class Nick {
                 list.add(document.getString(DatabaseOnlinePlayerObject.NAME.getName()));
         }
         return list;
+    }
+
+    @Override
+    public String getRandomNickName() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

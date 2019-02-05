@@ -1,6 +1,7 @@
 package de.gamechest.commands;
 
 import de.gamechest.GameChest;
+import de.gamechest.common.ChestPrefix;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -29,21 +30,21 @@ public class WebsiteCommand implements CommandExecutor {
             gameChest.getDatabaseManager().getAsync().getWebRegister(database -> {
                 if(!database.existsUser(player.getUniqueId())) {
                     if(!address.contains("@") || !address.contains(".")) {
-                        sender.sendMessage(gameChest.prefix+"§cUngültige Email-Adresse!");
+                        sender.sendMessage(ChestPrefix.PREFIX +"§cUngültige Email-Adresse!");
                         return;
                     }
 
-                    String verifyCode = gameChest.random(50);
+                    String verifyCode = gameChest.randomKey(50);
                     database.register(player.getUniqueId(), address, verifyCode);
-                    sender.sendMessage(gameChest.prefix+"§aÜberprüfe nun dein Email-Postfach (auch den Spam-Ordner) und fahre mit der Registrierung fort.");
+                    sender.sendMessage(ChestPrefix.PREFIX+"§aÜberprüfe nun dein Email-Postfach (auch den Spam-Ordner) und fahre mit der Registrierung fort.");
                 } else {
-                    sender.sendMessage(gameChest.prefix+"§7Du hast bereits ein Account.");
+                    sender.sendMessage(ChestPrefix.PREFIX+"§7Du hast bereits ein Account.");
                 }
             });
             return true;
         }
 
-        sender.sendMessage(gameChest.prefix+"§c/website <Email-Adresse>");
+        sender.sendMessage(ChestPrefix.PREFIX+"§c/website <Email-Adresse>");
         return true;
     }
 }

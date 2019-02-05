@@ -6,8 +6,10 @@ import de.bytelist.bytecloud.core.ByteCloudCore;
 import de.gamechest.chatlog.ChatLog;
 import de.gamechest.coins.Coins;
 import de.gamechest.commands.*;
+import de.gamechest.common.ChestPrefix;
 import de.gamechest.common.Rank;
 import de.gamechest.common.spigot.SpigotChest;
+import de.gamechest.common.spigot.SpigotChestNick;
 import de.gamechest.common.spigot.SpigotChestPlugin;
 import de.gamechest.database.DatabaseManager;
 import de.gamechest.database.DatabasePlayer;
@@ -51,15 +53,13 @@ public class GameChest extends JavaPlugin implements SpigotChestPlugin {
     @Getter
     private ChatLog chatLog;
     @Getter
-    private Nick nick;
+    private SpigotChestNick nick;
     @Getter
     private Coins coins;
     @Getter
     private PacketInjector packetInjector;
     @Getter
     private FakePlayerManager fakePlayerManager;
-
-    public final String prefix = "§2GameChest §8\u00BB ";
 
     @Getter
     private String version = "unknown";
@@ -110,26 +110,26 @@ public class GameChest extends JavaPlugin implements SpigotChestPlugin {
             getServer().getPluginManager().registerEvents(listener, this);
         }
 
-        getServer().getConsoleSender().sendMessage(prefix+"§aEnabled!");
+        getServer().getConsoleSender().sendMessage(ChestPrefix.PREFIX +"§aEnabled!");
     }
 
     @Override
     public void onDisable() {
 
-        getServer().getConsoleSender().sendMessage(prefix+"§cDisabled!");
+        getServer().getConsoleSender().sendMessage(ChestPrefix.PREFIX +"§cDisabled!");
     }
 
     private void initDatabase() {
         try {
             this.databaseManager = new DatabaseManager("game-chest.de", 27017, "server-gc", "Passwort007", "server");
             this.databaseManager.init();
-            getServer().getConsoleSender().sendMessage(prefix+"§eDatabase - §aConnected!");
+            getServer().getConsoleSender().sendMessage(ChestPrefix.PREFIX +"§eDatabase - §aConnected!");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
-    private static char randomChar() {
+    private char randomChar() {
         return POOL[ThreadLocalRandom.current().nextInt(POOL.length)];
     }
 
@@ -142,14 +142,7 @@ public class GameChest extends JavaPlugin implements SpigotChestPlugin {
         return kb.toString();
     }
 
-    public String random(int length) {
-        StringBuilder kb = new StringBuilder();
-        for (int i = 0; i < length; i++) {
-            kb.append(randomChar());
-        }
-        return kb.toString();
-    }
-
+    @Override
     public String randomNumber(int length) {
         StringBuilder kb = new StringBuilder();
         for (int i = 0; i < length; i++) {
@@ -158,14 +151,17 @@ public class GameChest extends JavaPlugin implements SpigotChestPlugin {
         return kb.toString();
     }
 
+    @Override
     public boolean hasRank(UUID uuid, Rank rank) {
         return getRank(uuid).getId() <= rank.getId();
     }
 
+    @Override
     public boolean equalsRank(UUID uuid, Rank rank) {
         return Objects.equals(getRank(uuid).getId(), rank.getId());
     }
 
+    @Override
     public Rank getRank(UUID uuid) {
         if(!rankCache.containsKey(uuid)) {
             DatabasePlayer dbPlayer = new DatabasePlayer(this.databaseManager, uuid);
@@ -177,10 +173,12 @@ public class GameChest extends JavaPlugin implements SpigotChestPlugin {
         }
     }
 
+    @Override
     public boolean isRankToggled(UUID uuid) {
         return false;
     }
 
+    @Override
     public boolean isCloudEnabled() {
         return getServer().getPluginManager().isPluginEnabled("ByteCloudAPI");
     }
@@ -221,6 +219,7 @@ public class GameChest extends JavaPlugin implements SpigotChestPlugin {
 //        }
 //    }
 
+    @Override
     public String getDisplayname(Player player) {
         Rank rank = getRank(player.getUniqueId());
         if(this.nick.isNicked(player.getUniqueId()))
@@ -229,6 +228,7 @@ public class GameChest extends JavaPlugin implements SpigotChestPlugin {
         return rank.getColor() + player.getName();
     }
 
+    @Override
     public void sendNoPermissionMessage(CommandSender sender) {
         sender.sendMessage("§cDu hast keine Berechtigung für diesen Befehl!");
     }
