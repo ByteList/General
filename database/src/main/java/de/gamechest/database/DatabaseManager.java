@@ -6,6 +6,7 @@ import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import de.gamechest.common.database.ChestDatabaseManager;
 import de.gamechest.database.activate.DatabaseActivate;
 import de.gamechest.database.ban.DatabaseBan;
 import de.gamechest.database.bug.DatabaseBugreport;
@@ -37,7 +38,7 @@ import java.util.logging.Logger;
  *
  * Copyright by ByteList - https://bytelist.de/
  */
-public class DatabaseManager {
+public class DatabaseManager implements ChestDatabaseManager {
 
     private HashMap<DatabaseCollection, MongoCollection<Document>> collections = new HashMap<>();
 

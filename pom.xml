@@ -37,12 +37,12 @@
     </properties>
 
     <modules>
+        <module>common</module>
         <module>database</module>
         <module>general-spigot</module>
         <module>general-bungee</module>
         <module>verify</module>
         <module>updater</module>
-        <module>common</module>
     </modules>
 
     <dependencies>
