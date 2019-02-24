@@ -18,6 +18,7 @@ import de.gamechest.database.premiumplayer.DatabasePremiumPlayer;
 import de.gamechest.database.stats.clickattack.DatabaseClickAttack;
 import de.gamechest.database.stats.deathrun.DatabaseDeathRun;
 import de.gamechest.database.stats.jumpduell.DatabaseJumpDuell;
+import de.gamechest.database.stats.network.DatabaseNetworkStats;
 import de.gamechest.database.stats.shulkerdefence.DatabaseShulkerDefence;
 import de.gamechest.database.terms.DatabaseTerms;
 import de.gamechest.database.uuidbuffer.DatabaseUuidBuffer;
@@ -77,6 +78,8 @@ public class DatabaseManager implements ChestDatabaseManager {
     private DatabaseWebRegister databaseWebRegister;
     @Getter
     private DatabaseTerms databaseTerms;
+    @Getter
+    private DatabaseNetworkStats databaseNetworkStats;
 
     @Getter
     private AsyncDatabaseManager async;
@@ -122,6 +125,7 @@ public class DatabaseManager implements ChestDatabaseManager {
         this.databasePoll = new DatabasePoll(this);
         this.databaseWebRegister = new DatabaseWebRegister(this);
         this.databaseTerms = new DatabaseTerms(this);
+        this.databaseNetworkStats = new DatabaseNetworkStats(this);
 
         this.async = new AsyncDatabaseManager(this);
     }

@@ -5,13 +5,13 @@ import de.bytelist.bytecloud.database.DatabaseServerObject;
 import de.gamechest.BountifulAPI;
 import de.gamechest.GameChest;
 import de.gamechest.Skin;
+import de.gamechest.common.spigot.SpigotChestNick;
 import de.gamechest.database.DatabaseManager;
 import de.gamechest.database.DatabasePlayerObject;
 import de.gamechest.database.nick.DatabaseNickObject;
 import de.gamechest.database.onlineplayer.DatabaseOnlinePlayer;
 import de.gamechest.database.terms.DatabaseTermsObject;
 import de.gamechest.database.uuidbuffer.DatabaseUuidBuffer;
-import de.gamechest.nick.Nick;
 import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -68,12 +68,13 @@ public class JoinListener implements Listener {
                 gameChest.getDatabaseManager().getDatabaseTerms().getDatabaseElement(player.getUniqueId(), DatabaseTermsObject.STATE).getAsInt() == 0) {
             return;
         }
-        Nick nick = gameChest.getNick();
+        SpigotChestNick nick = gameChest.getNick();
 
         if(nick.isNicked(player.getUniqueId())) {
             nick.nickOnConnect(player, nick.getNick(player.getUniqueId()));
         }
     }
+
 
     @Deprecated
     public static void callFirstOnJoin(PlayerJoinEvent e) {}

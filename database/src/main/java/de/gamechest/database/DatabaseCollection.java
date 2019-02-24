@@ -5,7 +5,7 @@ import lombok.Getter;
 /**
  * Created by ByteList on 09.04.2017.
  */
-public enum DatabaseCollection {
+public enum DatabaseCollection {    // Last: NETWORK_STATISTICS
 
     PLAYERS(0, "players"),
     ONLINE_PLAYER(1, "online-player"),
@@ -22,6 +22,7 @@ public enum DatabaseCollection {
     SD_STATISTICS(9, "sd-statistics"),
     DR_STATISTICS(10, "dr-statistics"),
     JD_STATISTICS(11, "jd-statistics"),
+    NETWORK_STATISTICS(18, "network-statistics"),
 
     BANS(12, "bans"),
     BAN_HISTORY(13, "ban-history"),
