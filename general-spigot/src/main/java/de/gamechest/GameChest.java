@@ -17,6 +17,7 @@ import de.gamechest.database.DatabasePlayerObject;
 import de.gamechest.fakeplayer.FakePlayerManager;
 import de.gamechest.listener.CommandListener;
 import de.gamechest.listener.JoinListener;
+import de.gamechest.listener.PlayerStatisticIncrementListener;
 import de.gamechest.listener.QuitListener;
 import de.gamechest.nick.Nick;
 import de.gamechest.reflector.PacketInjector;
@@ -35,7 +36,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created by ByteList on 09.04.2017.
- *
+ * <p>
  * Copyright by ByteList - https://bytelist.de/
  */
 public class GameChest extends JavaPlugin implements SpigotChestPlugin {
@@ -71,7 +72,7 @@ public class GameChest extends JavaPlugin implements SpigotChestPlugin {
         // 2.0.23:00342580cc947e7bf8d1eeb7fb8650ab456dc3e2
         String[] v = this.getClass().getPackage().getImplementationVersion().split(":");
         // 2.0.23:0034258
-       this.version = v[0]+":"+v[1].substring(0, 7);
+        this.version = v[0] + ":" + v[1].substring(0, 7);
 
         this.initDatabase();
 
@@ -82,11 +83,11 @@ public class GameChest extends JavaPlugin implements SpigotChestPlugin {
         this.coins = new Coins();
         this.fakePlayerManager = new FakePlayerManager();
 
-        if(!Bukkit.getServerName().contains("nonBungee")) {
+        if (!Bukkit.getServerName().contains("nonBungee")) {
             GCPacketClient.start();
             JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty("packet", "RegisterNewClient");
-            if(isCloudEnabled())
+            if (isCloudEnabled())
                 jsonObject.addProperty("serverId", ByteCloudCore.getInstance().getCloudHandler().getServerId());
             else
                 jsonObject.addProperty("serverId", getServer().getServerName());
@@ -101,29 +102,30 @@ public class GameChest extends JavaPlugin implements SpigotChestPlugin {
         getCommand("website").setExecutor(new WebsiteCommand());
 
         Listener[] listeners = {
-            new JoinListener(),
-            new QuitListener(),
-            new CommandListener()
+                new JoinListener(),
+                new QuitListener(),
+                new CommandListener(),
+                new PlayerStatisticIncrementListener()
         };
 
         for (Listener listener : listeners) {
             getServer().getPluginManager().registerEvents(listener, this);
         }
 
-        getServer().getConsoleSender().sendMessage(ChestPrefix.PREFIX +"§aEnabled!");
+        getServer().getConsoleSender().sendMessage(ChestPrefix.PREFIX + "§aEnabled!");
     }
 
     @Override
     public void onDisable() {
 
-        getServer().getConsoleSender().sendMessage(ChestPrefix.PREFIX +"§cDisabled!");
+        getServer().getConsoleSender().sendMessage(ChestPrefix.PREFIX + "§cDisabled!");
     }
 
     private void initDatabase() {
         try {
             this.databaseManager = new DatabaseManager("game-chest.de", 27017, "server-gc", "Passwort007", "server");
             this.databaseManager.init();
-            getServer().getConsoleSender().sendMessage(ChestPrefix.PREFIX +"§eDatabase - §aConnected!");
+            getServer().getConsoleSender().sendMessage(ChestPrefix.PREFIX + "§eDatabase - §aConnected!");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -163,7 +165,7 @@ public class GameChest extends JavaPlugin implements SpigotChestPlugin {
 
     @Override
     public Rank getRank(UUID uuid) {
-        if(!rankCache.containsKey(uuid)) {
+        if (!rankCache.containsKey(uuid)) {
             DatabasePlayer dbPlayer = new DatabasePlayer(this.databaseManager, uuid);
             Rank rank = Rank.getRankById(dbPlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt());
             rankCache.put(uuid, rank);
@@ -222,7 +224,7 @@ public class GameChest extends JavaPlugin implements SpigotChestPlugin {
     @Override
     public String getDisplayname(Player player) {
         Rank rank = getRank(player.getUniqueId());
-        if(this.nick.isNicked(player.getUniqueId()))
+        if (this.nick.isNicked(player.getUniqueId()))
             rank = Rank.SPIELER;
 
         return rank.getColor() + player.getName();

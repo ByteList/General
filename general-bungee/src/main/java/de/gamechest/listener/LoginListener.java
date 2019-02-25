@@ -3,12 +3,14 @@ package de.gamechest.listener;
 import de.gamechest.ConnectManager;
 import de.gamechest.GameChest;
 import de.gamechest.Skin;
+import de.gamechest.common.AsyncTasks;
 import de.gamechest.database.DatabaseManager;
 import de.gamechest.database.DatabasePlayerObject;
 import de.gamechest.database.ban.DatabaseBanObject;
 import de.gamechest.database.nick.DatabaseNickObject;
 import de.gamechest.database.onlineplayer.DatabaseOnlinePlayer;
 import de.gamechest.common.Rank;
+import de.gamechest.database.stats.network.DatabaseNetworkStatsObject;
 import de.gamechest.database.uuidbuffer.DatabaseUuidBuffer;
 import net.md_5.bungee.api.connection.PendingConnection;
 import net.md_5.bungee.api.event.LoginEvent;
@@ -32,7 +34,7 @@ public class LoginListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onLogin(LoginEvent e) {
-        PendingConnection pc = e.getConnection();
+        PendingConnection connection = e.getConnection();
         ConnectManager.ConnectState currentConnectState = gameChest.getConnectManager().getConnectState();
 
         switch (currentConnectState) {
@@ -40,7 +42,7 @@ public class LoginListener implements Listener {
             case OPEN:
                 String eventServer = gameChest.getConnectManager().getEventServer();
                 if(!eventServer.equals("---")) {
-                    if (!gameChest.getProxy().getServers().containsKey(eventServer) && !gameChest.hasRank(pc.getUniqueId(), Rank.BUILDER)) {
+                    if (!gameChest.getProxy().getServers().containsKey(eventServer) && !gameChest.hasRank(connection.getUniqueId(), Rank.BUILDER)) {
                         e.setCancelled(true);
                         e.setCancelReason("§cDer Event-Server konnte nicht erreicht werden!");
                         return;
@@ -48,21 +50,21 @@ public class LoginListener implements Listener {
                 }
                 break;
             case WHITELIST:
-                if(!gameChest.getConnectManager().getWhiteList().contains(pc.getUniqueId())) {
+                if(!gameChest.getConnectManager().getWhiteList().contains(connection.getUniqueId())) {
                     e.setCancelled(true);
                     e.setCancelReason("§cWir befinden uns momentan im §6geschlossenen Modus§c!");
                     return;
                 }
                 break;
             case MAINTENANCE:
-                if (!gameChest.hasRank(pc.getUniqueId(), Rank.BUILDER)) {
+                if (!gameChest.hasRank(connection.getUniqueId(), Rank.BUILDER)) {
                     e.setCancelled(true);
                     e.setCancelReason("§cWir befinden uns momentan im §aWartungsmodus§c!");
                     return;
                 }
                 break;
             case DEVELOPMENT:
-                if (!gameChest.hasRank(pc.getUniqueId(), Rank.DEVELOPER)) {
+                if (!gameChest.hasRank(connection.getUniqueId(), Rank.DEVELOPER)) {
                     e.setCancelled(true);
                     e.setCancelReason("§cWir befinden uns momentan im §4Development-Modus§c!");
                     return;
@@ -71,7 +73,7 @@ public class LoginListener implements Listener {
         }
 
         if(gameChest.getProxy().getPlayers().size() >= gameChest.getConnectManager().getPlayerLimit()) {
-            if (!gameChest.hasRank(pc.getUniqueId(), Rank.PREMIUM)) {
+            if (!gameChest.hasRank(connection.getUniqueId(), Rank.PREMIUM)) {
                 e.setCancelled(true);
                 e.setCancelReason("§cWir haben unser Spielerlimit erreicht!\n\n" +
                         "Um trotzdem joinen zu können, musst du einen Premium-Rang besitzen.");
@@ -79,28 +81,28 @@ public class LoginListener implements Listener {
             }
         }
 
-        if(gameChest.getProxy().getPlayer(pc.getUniqueId()) != null) {
+        if(gameChest.getProxy().getPlayer(connection.getUniqueId()) != null) {
             e.setCancelled(true);
             e.setCancelReason("§cDer Account ist schon auf dem Netzwerk online!");
             return;
         }
 
-        if(databaseManager.getDatabaseBan().isBanned(pc.getUniqueId())) {
-            if(isBanned(pc.getUniqueId())) {
+        if(databaseManager.getDatabaseBan().isBanned(connection.getUniqueId())) {
+            if(isBanned(connection.getUniqueId())) {
                 e.setCancelled(true);
-                e.setCancelReason(gameChest.getBanMessage(pc.getUniqueId()));
+                e.setCancelReason(gameChest.getBanMessage(connection.getUniqueId()));
                 return;
             }
         }
 
-        if(!databaseManager.getDatabaseTerms().existsPlayer(pc.getUniqueId())) {
-            databaseManager.getDatabaseTerms().createPlayer(pc.getUniqueId());
-            gameChest.getPreLogin().add(pc.getUniqueId());
+        if(!databaseManager.getDatabaseTerms().existsPlayer(connection.getUniqueId())) {
+            databaseManager.getDatabaseTerms().createPlayer(connection.getUniqueId());
+            gameChest.getPreLogin().add(connection.getUniqueId());
             return;
         }
 
         // database player
-        databaseManager.getAsync().getPlayer(pc.getUniqueId(), dbPlayer -> {
+        databaseManager.getAsync().getPlayer(connection.getUniqueId(), dbPlayer -> {
             dbPlayer.createPlayer();
             dbPlayer.updatePlayer();
 
@@ -110,20 +112,20 @@ public class LoginListener implements Listener {
                 lastName = dbPlayer.getDatabaseElement(DatabasePlayerObject.LAST_NAME).getAsString();
 
             if(lastName == null) {
-                databaseUuidBuffer.createPlayer(pc.getName(), pc.getUniqueId());
-            } else if(!lastName.equals(pc.getName())) {
+                databaseUuidBuffer.createPlayer(connection.getName(), connection.getUniqueId());
+            } else if(!lastName.equals(connection.getName())) {
                 databaseUuidBuffer.removePlayer(lastName);
-                databaseUuidBuffer.createPlayer(pc.getName(), pc.getUniqueId());
+                databaseUuidBuffer.createPlayer(connection.getName(), connection.getUniqueId());
             }
 
             SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm");
             String onlineDate = formatter.format(Calendar.getInstance().getTime());
 
             dbPlayer.setDatabaseObject(DatabasePlayerObject.LAST_LOGIN, onlineDate);
-            dbPlayer.setDatabaseObject(DatabasePlayerObject.LAST_NAME, pc.getName());
-            dbPlayer.setDatabaseObject(DatabasePlayerObject.LAST_IP, pc.getAddress().getHostString());
+            dbPlayer.setDatabaseObject(DatabasePlayerObject.LAST_NAME, connection.getName());
+            dbPlayer.setDatabaseObject(DatabasePlayerObject.LAST_IP, connection.getAddress().getHostString());
 
-            Skin skin = new Skin(pc.getUniqueId());
+            Skin skin = new Skin(connection.getUniqueId());
             String value = skin.getSkinValue();
             String signature = skin.getSkinSignature();
 
@@ -136,7 +138,20 @@ public class LoginListener implements Listener {
         });
 
         // online database player
-        databaseManager.getAsync().getOnlinePlayer(pc.getUniqueId(), pc.getName(), DatabaseOnlinePlayer::createOnlinePlayer);
+        databaseManager.getAsync().getOnlinePlayer(connection.getUniqueId(), connection.getName(), DatabaseOnlinePlayer::createOnlinePlayer);
+
+        AsyncTasks.getInstance().runTaskAsync(()-> {
+            databaseManager.getDatabaseNetworkStats().createPlayer(connection.getUniqueId());
+
+            Document document = gameChest.getDatabaseManager().getDatabaseNetworkStats().
+                    getDatabaseElement(connection.getUniqueId(), DatabaseNetworkStatsObject.NETWORK).getAsDocument();
+
+            String statistic = "net.connect";
+            int value = document.getInteger(statistic);
+            document.append(statistic, value+1);
+
+            gameChest.getDatabaseManager().getDatabaseNetworkStats().setDatabaseObject(connection.getUniqueId(), DatabaseNetworkStatsObject.NETWORK, document);
+        });
     }
 
     private boolean isBanned(UUID uuid) {

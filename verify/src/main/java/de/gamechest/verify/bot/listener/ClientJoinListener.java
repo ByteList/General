@@ -1,18 +1,9 @@
 package de.gamechest.verify.bot.listener;
 
 import com.github.theholywaffle.teamspeak3.TS3ApiAsync;
-import com.github.theholywaffle.teamspeak3.api.ChannelProperty;
 import com.github.theholywaffle.teamspeak3.api.event.ClientJoinEvent;
-import com.github.theholywaffle.teamspeak3.api.event.ClientLeaveEvent;
-import com.github.theholywaffle.teamspeak3.api.wrapper.Channel;
-import com.github.theholywaffle.teamspeak3.api.wrapper.ChannelInfo;
-import com.github.theholywaffle.teamspeak3.api.wrapper.ClientInfo;
-import de.gamechest.AsyncTasks;
 import de.gamechest.verify.Verify;
 import de.gamechest.verify.bot.BotListener;
-import de.gamechest.verify.bot.TeamspeakBot;
-
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by ByteList on 24.02.2018.

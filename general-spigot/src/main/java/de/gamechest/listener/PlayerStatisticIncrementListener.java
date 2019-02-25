@@ -1,7 +1,7 @@
 package de.gamechest.listener;
 
 import com.google.common.base.CaseFormat;
-import de.gamechest.AsyncTasks;
+import de.gamechest.common.AsyncTasks;
 import de.gamechest.GameChest;
 import de.gamechest.database.stats.network.DatabaseNetworkStatsObject;
 import org.bson.Document;
@@ -23,18 +23,30 @@ public class PlayerStatisticIncrementListener implements Listener {
     @EventHandler
     public void onStatisticIncrement(PlayerStatisticIncrementEvent e) {
         Player player = e.getPlayer();
-        String statistic = "";
+        String statistic = "stat."+CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, e.getStatistic().name());
         int add = e.getNewValue()-e.getPreviousValue();
 
-        if(!e.getStatistic().isSubstatistic()) {
-            statistic = "stat."+CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, e.getStatistic().name());
-        } else {
-            String subStatistic = e.getStatistic().getType().name();
-                    /* like this:
-                    "stat.useItem.minecraft.stonebrick": 11,
-                     */
+        if(e.getStatistic().isSubstatistic()) {
+            String subStatistic = "";
+            /* like this:
+            "stat.useItem.minecraft.stonebrick": 11,
+             */
 
-            statistic = "stat."+CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, e.getStatistic().name());
+            switch (e.getStatistic().getType()) {
+                case UNTYPED:
+                    break;
+                case ITEM:
+                    subStatistic = CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, e.getMaterial().name());
+                    break;
+                case BLOCK:
+                    subStatistic = CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, e.getMaterial().name());
+                    break;
+                case ENTITY:
+                    subStatistic = CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, e.getEntityType().name());
+                    break;
+            }
+
+            statistic = statistic + "." + subStatistic;
         }
 
         String finalStatistic = statistic;

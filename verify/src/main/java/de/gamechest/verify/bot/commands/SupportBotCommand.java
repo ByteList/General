@@ -2,7 +2,7 @@ package de.gamechest.verify.bot.commands;
 
 import com.github.theholywaffle.teamspeak3.TS3ApiAsync;
 import com.github.theholywaffle.teamspeak3.api.wrapper.ClientInfo;
-import de.gamechest.AsyncTasks;
+import de.gamechest.common.AsyncTasks;
 import de.gamechest.verify.Verify;
 import de.gamechest.verify.bot.BotCommand;
 import de.gamechest.verify.bot.TeamspeakBot;

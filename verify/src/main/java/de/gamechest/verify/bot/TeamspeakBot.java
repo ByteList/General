@@ -10,7 +10,7 @@ import com.github.theholywaffle.teamspeak3.api.exception.TS3Exception;
 import com.github.theholywaffle.teamspeak3.api.wrapper.ChannelInfo;
 import com.github.theholywaffle.teamspeak3.api.wrapper.Client;
 import com.github.theholywaffle.teamspeak3.api.wrapper.ClientInfo;
-import de.gamechest.AsyncTasks;
+import de.gamechest.common.AsyncTasks;
 import de.gamechest.verify.Verify;
 import de.gamechest.verify.bot.commands.*;
 import de.gamechest.verify.bot.listener.ClientJoinListener;
