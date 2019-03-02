@@ -1,5 +1,6 @@
 package de.gamechest.listener;
 
+import com.mongodb.BasicDBObject;
 import de.gamechest.ConnectManager;
 import de.gamechest.GameChest;
 import de.gamechest.Skin;
@@ -17,6 +18,7 @@ import net.md_5.bungee.api.event.LoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.event.EventPriority;
+import org.bson.BsonInt64;
 import org.bson.Document;
 
 import java.text.SimpleDateFormat;
@@ -140,15 +142,20 @@ public class LoginListener implements Listener {
         // online database player
         databaseManager.getAsync().getOnlinePlayer(connection.getUniqueId(), connection.getName(), DatabaseOnlinePlayer::createOnlinePlayer);
 
+
+        final String finalStatistic = "net.connection";
         AsyncTasks.getInstance().runTaskAsync(()-> {
             databaseManager.getDatabaseNetworkStats().createPlayer(connection.getUniqueId());
 
-            Document document = gameChest.getDatabaseManager().getDatabaseNetworkStats().
-                    getDatabaseElement(connection.getUniqueId(), DatabaseNetworkStatsObject.NETWORK).getAsDocument();
+            BasicDBObject document = gameChest.getDatabaseManager().getDatabaseNetworkStats().
+                    getDatabaseElement(connection.getUniqueId(), DatabaseNetworkStatsObject.NETWORK).getAsBasicDBObject();
 
-            String statistic = "net.connect";
-            int value = document.getInteger(statistic);
-            document.append(statistic, value+1);
+            int value = 0;
+            if(document.containsKey(finalStatistic)) {
+                value = document.getInt(finalStatistic);
+            }
+
+            document.append(finalStatistic, new BsonInt64(value+1));
 
             gameChest.getDatabaseManager().getDatabaseNetworkStats().setDatabaseObject(connection.getUniqueId(), DatabaseNetworkStatsObject.NETWORK, document);
         });
