@@ -1,6 +1,7 @@
 package de.gamechest.database;
 
 import com.mongodb.BasicDBObject;
+import com.mongodb.MongoClient;
 import lombok.Getter;
 import org.bson.Document;
 
@@ -68,9 +69,6 @@ public class DatabaseElement {
     }
 
     public BasicDBObject getAsBasicDBObject() {
-        if(object.getClass().equals(BasicDBObject.class)) {
-            return (BasicDBObject)object;
-        }
-        throw new IllegalArgumentException(object.toString()+" can not be a BasicDBObject!");
+        return new BasicDBObject(getAsDocument().toBsonDocument(BasicDBObject.class, MongoClient.getDefaultCodecRegistry()));
     }
 }
