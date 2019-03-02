@@ -32,11 +32,11 @@ public class ServerListener implements Listener {
 
         if(gameChest.isCloudEnabled()) {
             try {
-                if(byteCloudMaster.getForcedJoinServerId().equals(e.getKickedFrom().getName())) {
-                    e.setCancelled(false);
-                    e.setKickReason("§7Du wurdest vom Server gekickt:§r "+e.getKickReason());
-                    return;
-                }
+//                if(byteCloudMaster.getForcedJoinServerId().equals(e.getKickedFrom().getName())) {
+//                    e.setCancelled(false);
+//                    e.setKickReason("§7Du wurdest vom Server gekickt:§r "+e.getKickReason());
+//                    return;
+//                }
                 e.setCancelled(true);
                 String randomLobbyId = byteCloudMaster.getCloudHandler().getRandomLobbyId(e.getKickedFrom().getName());
                 ServerInfo serverInfo = gameChest.getProxy().getServerInfo(randomLobbyId);

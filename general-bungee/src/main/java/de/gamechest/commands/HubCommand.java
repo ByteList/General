@@ -29,12 +29,12 @@ public class HubCommand extends GCCommand {
 
         String serverId, display;
 
-        if(!ByteCloudMaster.getInstance().getForcedJoinServerId().equals("-1")) {
-            serverId = display = ByteCloudMaster.getInstance().getForcedJoinServerId();
-        } else {
+//        if(!ByteCloudMaster.getInstance().getForcedJoinServerId().equals("-1")) {
+//            serverId = display = ByteCloudMaster.getInstance().getForcedJoinServerId();
+//        } else {
             serverId = ByteCloudMaster.getInstance().getCloudHandler().getRandomLobbyId();
             display = "Lobby";
-        }
+//        }
 
         int i = ByteCloudMaster.getInstance().getCloudHandler().connect(serverId, pp);
 
