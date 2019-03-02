@@ -1,5 +1,6 @@
 package de.gamechest.database;
 
+import com.mongodb.BasicDBObject;
 import lombok.Getter;
 import org.bson.Document;
 
@@ -53,7 +54,7 @@ public class DatabaseElement {
         if (object.getClass().equals(Document.class)) {
             return ((Document)object);
         }
-        throw new IllegalArgumentException(object.toString()+" can not be a document!");
+        throw new IllegalArgumentException(object.toString()+" can not be a Document!");
     }
 
     public long getAsLong() {
@@ -64,5 +65,12 @@ public class DatabaseElement {
             ex.printStackTrace();
         }
         return l;
+    }
+
+    public BasicDBObject getAsBasicDBObject() {
+        if(object.getClass().equals(BasicDBObject.class)) {
+            return (BasicDBObject)object;
+        }
+        throw new IllegalArgumentException(object.toString()+" can not be a BasicDBObject!");
     }
 }

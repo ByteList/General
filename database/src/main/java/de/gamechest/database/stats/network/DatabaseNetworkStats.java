@@ -42,14 +42,14 @@ public class DatabaseNetworkStats {
                 if(databaseNetworkStatsObject == DatabaseNetworkStatsObject.UUID)
                     document.put(DatabaseNetworkStatsObject.UUID.getName(), uuid.toString());
                 else
-                    document.put(databaseNetworkStatsObject.getName(), new Document());
+                    document.put(databaseNetworkStatsObject.getName(), new BasicDBObject());
             }
 
             databaseManager.getCollection(databaseCollection).insertOne(document);
         });
     }
 
-    public void setDatabaseObject(UUID uuid, DatabaseNetworkStatsObject databaseNetworkStatsObject, Object value) {
+    public void setDatabaseObject(UUID uuid, DatabaseNetworkStatsObject databaseNetworkStatsObject, BasicDBObject value) {
         this.databaseManager.getAsync().getExecutor().execute(()-> {
             String uid = uuid.toString();
             BasicDBObject doc = new BasicDBObject();

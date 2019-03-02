@@ -1,11 +1,10 @@
 package de.gamechest.listener;
 
 import com.google.common.base.CaseFormat;
-import com.mongodb.MongoClient;
+import com.mongodb.BasicDBObject;
 import de.gamechest.GameChest;
 import de.gamechest.common.AsyncTasks;
 import de.gamechest.database.stats.network.DatabaseNetworkStatsObject;
-import org.bson.BsonDocument;
 import org.bson.BsonInt64;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -55,13 +54,12 @@ public class PlayerStatisticIncrementListener implements Listener {
         AsyncTasks.getInstance().runTaskAsync(()-> {
             gameChest.getDatabaseManager().getDatabaseNetworkStats().createPlayer(player.getUniqueId());
 
-            BsonDocument document = gameChest.getDatabaseManager().getDatabaseNetworkStats().
-                    getDatabaseElement(player.getUniqueId(), DatabaseNetworkStatsObject.MINECRAFT).getAsDocument()
-                    .toBsonDocument(BsonDocument.class, MongoClient.getDefaultCodecRegistry());
+            BasicDBObject document = gameChest.getDatabaseManager().getDatabaseNetworkStats().
+                    getDatabaseElement(player.getUniqueId(), DatabaseNetworkStatsObject.MINECRAFT).getAsBasicDBObject();
 
             int value = 0;
             if(document.containsKey(finalStatistic)) {
-                value = document.getInt64(finalStatistic).intValue();
+                value = document.getInt(finalStatistic);
             }
 
             document.append(finalStatistic, new BsonInt64(value+add));
