@@ -3,7 +3,7 @@ package de.gamechest.verify.bot.commands;
 import com.github.theholywaffle.teamspeak3.TS3ApiAsync;
 import com.github.theholywaffle.teamspeak3.api.ClientProperty;
 import de.gamechest.GameChest;
-import de.gamechest.UUIDFetcher;
+import de.gamechest.common.UUIDFetcher;
 import de.gamechest.database.DatabasePlayerObject;
 import de.gamechest.verify.Verify;
 import de.gamechest.verify.bot.BotCommand;
