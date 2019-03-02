@@ -1,7 +1,6 @@
 package de.gamechest.commands.cloud;
 
 import de.bytelist.bytecloud.bungee.ByteCloudMaster;
-import de.bytelist.bytecloud.network.bungee.PacketInStopServer;
 import de.gamechest.GameChest;
 import de.gamechest.commands.base.GCCommand;
 import de.gamechest.common.Rank;
@@ -46,8 +45,8 @@ public class StopCommand extends GCCommand {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    PacketInStopServer packetInStopServer = new PacketInStopServer(currentServer.getName(), sender.getName());
-                    byteCloudMaster.getBungeeClient().sendPacket(packetInStopServer);
+//                    PacketInStopServer packetInStopServer = new PacketInStopServer(currentServer.getName(), sender.getName());
+//                    byteCloudMaster.getBungeeClient().sendPacket(packetInStopServer);
                 }
             }.start();
         }
