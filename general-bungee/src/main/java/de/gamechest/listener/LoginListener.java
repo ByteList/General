@@ -17,7 +17,6 @@ import net.md_5.bungee.api.event.LoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.event.EventPriority;
-import org.bson.BsonInt64;
 import org.bson.Document;
 
 import java.text.SimpleDateFormat;
@@ -154,7 +153,7 @@ public class LoginListener implements Listener {
                 value = document.getInteger(finalStatistic);
             }
 
-            document.append(finalStatistic, new BsonInt64(value+1));
+            document.append(finalStatistic, value+1);
 
             gameChest.getDatabaseManager().getDatabaseNetworkStats().setDatabaseObject(connection.getUniqueId(), DatabaseNetworkStatsObject.NETWORK, document);
         });

@@ -4,7 +4,6 @@ import com.google.common.base.CaseFormat;
 import de.gamechest.GameChest;
 import de.gamechest.common.AsyncTasks;
 import de.gamechest.database.stats.network.DatabaseNetworkStatsObject;
-import org.bson.BsonInt64;
 import org.bson.Document;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -62,7 +61,7 @@ public class PlayerStatisticIncrementListener implements Listener {
                 value = document.getInteger(finalStatistic);
             }
 
-            document.append(finalStatistic, new BsonInt64(value+add));
+            document.append(finalStatistic, value+add);
 
             gameChest.getDatabaseManager().getDatabaseNetworkStats().setDatabaseObject(player.getUniqueId(), DatabaseNetworkStatsObject.MINECRAFT, document);
         });
