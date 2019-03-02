@@ -1,11 +1,11 @@
 package de.gamechest.listener;
 
 import com.google.common.base.CaseFormat;
-import com.mongodb.BasicDBObject;
 import de.gamechest.GameChest;
 import de.gamechest.common.AsyncTasks;
 import de.gamechest.database.stats.network.DatabaseNetworkStatsObject;
 import org.bson.BsonInt64;
+import org.bson.Document;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -24,7 +24,7 @@ public class PlayerStatisticIncrementListener implements Listener {
     @EventHandler
     public void onStatisticIncrement(PlayerStatisticIncrementEvent e) {
         Player player = e.getPlayer();
-        String statistic = "stat."+CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, e.getStatistic().name());
+        String statistic = CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, e.getStatistic().name());
         int add = e.getNewValue()-e.getPreviousValue();
 
         if(e.getStatistic().isSubstatistic()) {
@@ -47,19 +47,19 @@ public class PlayerStatisticIncrementListener implements Listener {
                     break;
             }
 
-            statistic = statistic + "." + subStatistic;
+            statistic = statistic + ":" + subStatistic;
         }
 
         String finalStatistic = statistic;
         AsyncTasks.getInstance().runTaskAsync(()-> {
             gameChest.getDatabaseManager().getDatabaseNetworkStats().createPlayer(player.getUniqueId());
 
-            BasicDBObject document = gameChest.getDatabaseManager().getDatabaseNetworkStats().
-                    getDatabaseElement(player.getUniqueId(), DatabaseNetworkStatsObject.MINECRAFT).getAsBasicDBObject();
+            Document document = gameChest.getDatabaseManager().getDatabaseNetworkStats().
+                    getDatabaseElement(player.getUniqueId(), DatabaseNetworkStatsObject.MINECRAFT).getAsDocument();
 
             int value = 0;
             if(document.containsKey(finalStatistic)) {
-                value = document.getInt(finalStatistic);
+                value = document.getInteger(finalStatistic);
             }
 
             document.append(finalStatistic, new BsonInt64(value+add));

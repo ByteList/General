@@ -42,7 +42,7 @@ public class DatabaseNetworkStats {
                 if(databaseNetworkStatsObject == DatabaseNetworkStatsObject.UUID)
                     document.put(DatabaseNetworkStatsObject.UUID.getName(), uuid.toString());
                 else
-                    document.put(databaseNetworkStatsObject.getName(), new BasicDBObject().append("created", System.currentTimeMillis()));
+                    document.put(databaseNetworkStatsObject.getName(), new Document());
             }
 
             databaseManager.getCollection(databaseCollection).insertOne(document);

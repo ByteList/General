@@ -1,16 +1,15 @@
 package de.gamechest.listener;
 
-import com.mongodb.BasicDBObject;
 import de.gamechest.ConnectManager;
 import de.gamechest.GameChest;
 import de.gamechest.Skin;
 import de.gamechest.common.AsyncTasks;
+import de.gamechest.common.Rank;
 import de.gamechest.database.DatabaseManager;
 import de.gamechest.database.DatabasePlayerObject;
 import de.gamechest.database.ban.DatabaseBanObject;
 import de.gamechest.database.nick.DatabaseNickObject;
 import de.gamechest.database.onlineplayer.DatabaseOnlinePlayer;
-import de.gamechest.common.Rank;
 import de.gamechest.database.stats.network.DatabaseNetworkStatsObject;
 import de.gamechest.database.uuidbuffer.DatabaseUuidBuffer;
 import net.md_5.bungee.api.connection.PendingConnection;
@@ -143,16 +142,16 @@ public class LoginListener implements Listener {
         databaseManager.getAsync().getOnlinePlayer(connection.getUniqueId(), connection.getName(), DatabaseOnlinePlayer::createOnlinePlayer);
 
 
-        final String finalStatistic = "net.connection";
+        final String finalStatistic = "net:connection";
         AsyncTasks.getInstance().runTaskAsync(()-> {
             databaseManager.getDatabaseNetworkStats().createPlayer(connection.getUniqueId());
 
-            BasicDBObject document = gameChest.getDatabaseManager().getDatabaseNetworkStats().
-                    getDatabaseElement(connection.getUniqueId(), DatabaseNetworkStatsObject.NETWORK).getAsBasicDBObject();
+            Document document = gameChest.getDatabaseManager().getDatabaseNetworkStats().
+                    getDatabaseElement(connection.getUniqueId(), DatabaseNetworkStatsObject.NETWORK).getAsDocument();
 
             int value = 0;
             if(document.containsKey(finalStatistic)) {
-                value = document.getInt(finalStatistic);
+                value = document.getInteger(finalStatistic);
             }
 
             document.append(finalStatistic, new BsonInt64(value+1));

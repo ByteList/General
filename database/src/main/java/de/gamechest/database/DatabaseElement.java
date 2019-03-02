@@ -1,7 +1,5 @@
 package de.gamechest.database;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.MongoClient;
 import lombok.Getter;
 import org.bson.Document;
 
@@ -66,9 +64,5 @@ public class DatabaseElement {
             ex.printStackTrace();
         }
         return l;
-    }
-
-    public BasicDBObject getAsBasicDBObject() {
-        return new BasicDBObject(getAsDocument().toBsonDocument(BasicDBObject.class, MongoClient.getDefaultCodecRegistry()));
     }
 }
