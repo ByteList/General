@@ -1,5 +1,6 @@
 package de.gamechest;
 
+import de.gamechest.common.UUIDFetcher;
 import net.md_5.bungee.api.ProxyServer;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;

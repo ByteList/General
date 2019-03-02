@@ -1,6 +1,7 @@
 package de.gamechest.listener;
 
 import de.gamechest.GameChest;
+import de.gamechest.common.ChestPrefix;
 import de.gamechest.database.DatabaseManager;
 import de.gamechest.common.Rank;
 import de.gamechest.database.terms.DatabaseTermsObject;
@@ -30,7 +31,7 @@ public class PostLoginListener implements Listener {
         if(gameChest.equalsRank(player.getUniqueId(), Rank.DEVELOPER)) {
             int waiting = databaseManager.getDatabaseBugreport().getWaitingReports().size();
             if(waiting > 0) {
-                player.sendMessage(gameChest.pr_bug+"§bEs existieren §e"+waiting+"§b offene Bug-Reports!");
+                player.sendMessage(ChestPrefix.PREFIX_BUG_REPORT +"§bEs existieren §e"+waiting+"§b offene Bug-Reports!");
             }
         }
         if(gameChest.hasRank(player.getUniqueId(), Rank.BUILDER)) {

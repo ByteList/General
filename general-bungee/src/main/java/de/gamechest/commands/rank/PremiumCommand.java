@@ -1,13 +1,14 @@
 package de.gamechest.commands.rank;
 
 import de.gamechest.GameChest;
-import de.gamechest.UUIDFetcher;
 import de.gamechest.commands.base.GCCommand;
-import de.gamechest.database.DatabasePlayerObject;
+import de.gamechest.common.ChestPrefix;
+import de.gamechest.common.Rank;
+import de.gamechest.common.UUIDFetcher;
 import de.gamechest.database.DatabasePlayer;
+import de.gamechest.database.DatabasePlayerObject;
 import de.gamechest.database.premiumplayer.DatabasePremiumPlayer;
 import de.gamechest.database.premiumplayer.DatabasePremiumPlayerObject;
-import de.gamechest.common.Rank;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
@@ -41,14 +42,14 @@ public class PremiumCommand extends GCCommand {
         DatabasePremiumPlayer databasePremiumPlayer = gameChest.getDatabaseManager().getDatabasePremiumPlayer();
         if (!gameChest.hasRank(pp.getUniqueId(), Rank.DEVELOPER)) {
             if (!databasePremiumPlayer.existsPlayer(pp.getUniqueId())) {
-                pp.sendMessage(gameChest.prefix + "§cDu besitzt keinen Premium-Rang!");
+                pp.sendMessage(ChestPrefix.PREFIX + "§cDu besitzt keinen Premium-Rang!");
             } else {
                 String dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm").format(
                         new Date(databasePremiumPlayer.getDatabaseElement(pp.getUniqueId(), DatabasePremiumPlayerObject.ENDING_DATE).getAsLong()));
                 if (dateFormat.equals("-2")) {
-                    pp.sendMessage(gameChest.prefix + "§6Du besitzt Lifetime-Premium!!!!11elf11! <3");
+                    pp.sendMessage(ChestPrefix.PREFIX + "§6Du besitzt Lifetime-Premium!!!!11elf11! <3");
                 } else {
-                    pp.sendMessage(gameChest.prefix + "§6Dein Premium-Rang läuft noch bis zum §c" + dateFormat + "§6!");
+                    pp.sendMessage(ChestPrefix.PREFIX + "§6Dein Premium-Rang läuft noch bis zum §c" + dateFormat + "§6!");
                 }
             }
         } else {
@@ -59,21 +60,21 @@ public class PremiumCommand extends GCCommand {
                     DatabasePlayer databasePlayer = new DatabasePlayer(gameChest.getDatabaseManager(), uuid);
 
                     if (!databasePlayer.existsPlayer()) {
-                        sender.sendMessage(gameChest.prefix + "§cKonnte den User nicht in der Datenbank finden!");
+                        sender.sendMessage(ChestPrefix.PREFIX + "§cKonnte den User nicht in der Datenbank finden!");
                         return;
                     }
 
                     if (!databasePremiumPlayer.existsPlayer(uuid)) {
-                        sender.sendMessage(gameChest.prefix + "§cDer User besitzt keinen Premium-Rang!");
+                        sender.sendMessage(ChestPrefix.PREFIX + "§cDer User besitzt keinen Premium-Rang!");
                         return;
                     }
                     String dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm").format(
                             new Date(databasePremiumPlayer.getDatabaseElement(pp.getUniqueId(), DatabasePremiumPlayerObject.ENDING_DATE).getAsLong()));
 
                     if (dateFormat.equals("-2"))
-                        sender.sendMessage(gameChest.prefix + "§eDer Premium-Rang von §6" + name + "§e läuft lebenslang!");
+                        sender.sendMessage(ChestPrefix.PREFIX + "§eDer Premium-Rang von §6" + name + "§e läuft lebenslang!");
                     else
-                        sender.sendMessage(gameChest.prefix + "§eDer Premium-Rang von §6" + name + "§e läuft bis zum: §c" + dateFormat);
+                        sender.sendMessage(ChestPrefix.PREFIX + "§eDer Premium-Rang von §6" + name + "§e läuft bis zum: §c" + dateFormat);
                     return;
                 }
 
@@ -87,13 +88,13 @@ public class PremiumCommand extends GCCommand {
                     try {
                         value = Integer.valueOf(args[2]);
                     } catch (NumberFormatException ex) {
-                        sender.sendMessage(gameChest.prefix + "§c(Monate) = Zahl");
+                        sender.sendMessage(ChestPrefix.PREFIX + "§c(Monate) = Zahl");
                         return;
                     }
                     UUID uuid = UUIDFetcher.getUUID(name);
                     DatabasePlayer databasePlayer = new DatabasePlayer(gameChest.getDatabaseManager(), uuid);
                     if (!databasePlayer.existsPlayer()) {
-                        sender.sendMessage(gameChest.prefix + "§cKonnte den User nicht in der Datenbank finden!");
+                        sender.sendMessage(ChestPrefix.PREFIX + "§cKonnte den User nicht in der Datenbank finden!");
                         return;
                     }
 
@@ -112,12 +113,12 @@ public class PremiumCommand extends GCCommand {
 
                     gameChest.getDatabaseManager().getAsync().getPlayer(uuid, dbPlayer-> dbPlayer.setDatabaseObject(DatabasePlayerObject.RANK_ID, 7), DatabasePlayerObject.RANK_ID);
 
-                    sender.sendMessage(gameChest.prefix + "§aPremium hinzugefügt!");
+                    sender.sendMessage(ChestPrefix.PREFIX + "§aPremium hinzugefügt!");
                     if (end == -2) {
                         sender.sendMessage("§8\u00BB §eDer Premium-Rang von §6" + name + "§e läuft nun lebenslang!");
                         if (gameChest.getProxy().getPlayer(uuid) != null) {
                             gameChest.getProxy().getPlayer(name).sendMessage(
-                                    gameChest.prefix + "§aDu hast soeben deinen Premium-Rang erhalten!");
+                                    ChestPrefix.PREFIX + "§aDu hast soeben deinen Premium-Rang erhalten!");
                             gameChest.getProxy().getPlayer(name).sendMessage(
                                     "§8\u00BB §bBitte verbinde dich neu, damit du alle Features nutzen kannst!");
                             gameChest.getProxy().getPlayer(name).sendMessage(
@@ -128,7 +129,7 @@ public class PremiumCommand extends GCCommand {
                         sender.sendMessage("§8\u00BB §eDer Premium-Rang von §6" + name + "§e läuft nun bis zum: §c" + dateFormat);
                         if (gameChest.getProxy().getPlayer(uuid) != null) {
                             gameChest.getProxy().getPlayer(name).sendMessage(
-                                    gameChest.prefix + "§aDu hast soeben den Premium-Rang erhalten!");
+                                    ChestPrefix.PREFIX + "§aDu hast soeben den Premium-Rang erhalten!");
                             gameChest.getProxy().getPlayer(name).sendMessage(
                                     "§8\u00BB §bBitte verbinde dich neu, damit du alle Features nutzen kannst!");
                             gameChest.getProxy().getPlayer(name).sendMessage(
@@ -138,7 +139,7 @@ public class PremiumCommand extends GCCommand {
                     return;
                 }
             }
-            sender.sendMessage(gameChest.prefix + "§c/premium <info/set> [Spielername] [Monate|-2 = Lifetime]");
+            sender.sendMessage(ChestPrefix.PREFIX + "§c/premium <info/set> [Spielername] [Monate|-2 = Lifetime]");
         }
     }
 }

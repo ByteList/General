@@ -2,16 +2,17 @@ package de.gamechest.commands.ban;
 
 import com.google.common.collect.ImmutableSet;
 import de.gamechest.GameChest;
-import de.gamechest.UUIDFetcher;
 import de.gamechest.commands.base.GCCommand;
-import de.gamechest.database.DatabasePlayerObject;
+import de.gamechest.common.ChestPrefix;
+import de.gamechest.common.Rank;
+import de.gamechest.common.UUIDFetcher;
 import de.gamechest.database.DatabasePlayer;
+import de.gamechest.database.DatabasePlayerObject;
 import de.gamechest.database.ban.DatabaseBan;
 import de.gamechest.database.ban.DatabaseBanObject;
 import de.gamechest.database.ban.Reason;
 import de.gamechest.database.onlineplayer.DatabaseOnlinePlayer;
 import de.gamechest.database.onlineplayer.DatabaseOnlinePlayerObject;
-import de.gamechest.common.Rank;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -43,7 +44,7 @@ public class BanCommand extends GCCommand implements TabExecutor {
 
         if (args.length == 1) {
             if (args[0].equalsIgnoreCase("reasons")) {
-                sender.sendMessage(gameChest.prefix + "§7Bangründe: (Grund - Zeit)");
+                sender.sendMessage(ChestPrefix.PREFIX + "§7Bangründe: (Grund - Zeit)");
                 for (String reasons : Reason.getReasonsAsString()) {
                     Reason reason = Reason.getReason(reasons);
                     sender.sendMessage("§8\u00BB §e" + reasons + " §7- §f" + reason.getTime() + " " + reason.getValue().getName());
@@ -52,10 +53,10 @@ public class BanCommand extends GCCommand implements TabExecutor {
             }
             if (args[0].equalsIgnoreCase("list")) {
                 if (databaseBan.getBannedUuids().isEmpty()) {
-                    sender.sendMessage(gameChest.prefix + "§aEs ist momentan niemand gebannt!");
+                    sender.sendMessage(ChestPrefix.PREFIX + "§aEs ist momentan niemand gebannt!");
                     return;
                 }
-                sender.sendMessage(gameChest.prefix + "§7Gebannte User:");
+                sender.sendMessage(ChestPrefix.PREFIX + "§7Gebannte User:");
                 List<UUID> uuids = databaseBan.getBannedUuids();
 
                 StringBuilder players = new StringBuilder();
@@ -77,11 +78,11 @@ public class BanCommand extends GCCommand implements TabExecutor {
                 DatabasePlayer databasePlayer = new DatabasePlayer(gameChest.getDatabaseManager(), uuid);
 
                 if (!databasePlayer.existsPlayer()) {
-                    sender.sendMessage(gameChest.prefix + "§cKonnte den User nicht in der Datenbank finden!");
+                    sender.sendMessage(ChestPrefix.PREFIX + "§cKonnte den User nicht in der Datenbank finden!");
                     return;
                 }
 
-                sender.sendMessage(gameChest.prefix + "§7Ban-Infos:");
+                sender.sendMessage(ChestPrefix.PREFIX + "§7Ban-Infos:");
                 sender.sendMessage("§8\u00BB §7Spieler: " +
                         Rank.getRankById(databasePlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt()).getColor() + playername);
                 sender.sendMessage("§8\u00BB §fGrund: §e" + Reason.valueOf(databaseBan.getDatabaseElement(uuid, DatabaseBanObject.REASON).getAsString()).getReason());
@@ -104,7 +105,7 @@ public class BanCommand extends GCCommand implements TabExecutor {
             DatabasePlayer databasePlayer = new DatabasePlayer(gameChest.getDatabaseManager(), uuid);
 
             if (!databasePlayer.existsPlayer()) {
-                sender.sendMessage(gameChest.prefix + "§cKonnte den User nicht in der Datenbank finden!");
+                sender.sendMessage(ChestPrefix.PREFIX + "§cKonnte den User nicht in der Datenbank finden!");
                 return;
             }
 
@@ -112,7 +113,7 @@ public class BanCommand extends GCCommand implements TabExecutor {
 
             if (Reason.getReasonsAsString().contains(reason.toUpperCase())) {
                 if (databaseBan.isBanned(uuid)) {
-                    sender.sendMessage(gameChest.pr_ban + "§7Der Ban wurde geändert.");
+                    sender.sendMessage(ChestPrefix.PREFIX_BAN + "§7Der Ban wurde geändert.");
                     onlyStaff = "§7 - §eBan edited";
                 }
                 String finalPlayername = playername;
@@ -123,14 +124,14 @@ public class BanCommand extends GCCommand implements TabExecutor {
                         pp.disconnect(gameChest.getBanMessage(pp.getUniqueId()));
                     for (ProxiedPlayer player : gameChest.onlineTeam) {
                         if (gameChest.hasRank(player.getUniqueId(), Rank.SUPPORTER)) {
-                            player.sendMessage(gameChest.pr_ban + "§a" + sender + "§7 hat §c" + finalPlayername + "§7 gebannt");
-                            player.sendMessage(gameChest.pr_ban + "§7Grund: §e" + Reason.getReason(reason.toUpperCase()).getReason() + finalOnlyStaff);
+                            player.sendMessage(ChestPrefix.PREFIX_BAN + "§a" + sender + "§7 hat §c" + finalPlayername + "§7 gebannt");
+                            player.sendMessage(ChestPrefix.PREFIX_BAN + "§7Grund: §e" + Reason.getReason(reason.toUpperCase()).getReason() + finalOnlyStaff);
                         }
                     }
                 });
                 return;
             } else {
-                sender.sendMessage(gameChest.prefix + "§cDieser Grund existiert nicht! - /ban reasons");
+                sender.sendMessage(ChestPrefix.PREFIX + "§cDieser Grund existiert nicht! - /ban reasons");
                 return;
             }
         }
@@ -147,7 +148,7 @@ public class BanCommand extends GCCommand implements TabExecutor {
             DatabasePlayer databasePlayer = new DatabasePlayer(gameChest.getDatabaseManager(), uuid);
 
             if (!databasePlayer.existsPlayer()) {
-                sender.sendMessage(gameChest.prefix + "§cKonnte den User nicht in der Datenbank finden!");
+                sender.sendMessage(ChestPrefix.PREFIX + "§cKonnte den User nicht in der Datenbank finden!");
                 return;
             }
 
@@ -163,7 +164,7 @@ public class BanCommand extends GCCommand implements TabExecutor {
 
             if (Reason.getReasonsAsString().contains(reason.toUpperCase())) {
                 if (databaseBan.isBanned(uuid)) {
-                    sender.sendMessage(gameChest.pr_ban + "§7Der Ban wurde geändert.");
+                    sender.sendMessage(ChestPrefix.PREFIX_BAN + "§7Der Ban wurde geändert.");
                     onlyStaff = "§7 - §eBan edited";
                 }
                 String finalPlayername = playername;
@@ -175,22 +176,22 @@ public class BanCommand extends GCCommand implements TabExecutor {
                         pp.disconnect(gameChest.getBanMessage(pp.getUniqueId()));
                     for (ProxiedPlayer player : gameChest.onlineTeam) {
                         if (gameChest.hasRank(player.getUniqueId(), Rank.SUPPORTER)) {
-                            player.sendMessage(gameChest.pr_ban + "§a" + sender + "§7 hat §c" + finalPlayername + "§7 gebannt");
-                            player.sendMessage(gameChest.pr_ban + "§7Grund: §e" + Reason.getReason(reason.toUpperCase()).getReason() + " (" + finalExtra + ")" + finalOnlyStaff);
+                            player.sendMessage(ChestPrefix.PREFIX_BAN + "§a" + sender + "§7 hat §c" + finalPlayername + "§7 gebannt");
+                            player.sendMessage(ChestPrefix.PREFIX_BAN + "§7Grund: §e" + Reason.getReason(reason.toUpperCase()).getReason() + " (" + finalExtra + ")" + finalOnlyStaff);
                         }
                     }
                 });
                 return;
             } else {
-                sender.sendMessage(gameChest.prefix + "§cDieser Grund existiert nicht! - /ban reasons");
+                sender.sendMessage(ChestPrefix.PREFIX + "§cDieser Grund existiert nicht! - /ban reasons");
                 return;
             }
         }
 
-        sender.sendMessage(gameChest.prefix + "§c/ban <Spieler> [Grund] (Extra Nachricht)");
-        sender.sendMessage(gameChest.prefix + "§c/ban info <Spieler>");
-        sender.sendMessage(gameChest.prefix + "§c/ban list");
-        sender.sendMessage(gameChest.prefix + "§c/ban reasons");
+        sender.sendMessage(ChestPrefix.PREFIX + "§c/ban <Spieler> [Grund] (Extra Nachricht)");
+        sender.sendMessage(ChestPrefix.PREFIX + "§c/ban info <Spieler>");
+        sender.sendMessage(ChestPrefix.PREFIX + "§c/ban list");
+        sender.sendMessage(ChestPrefix.PREFIX + "§c/ban reasons");
     }
 
 
@@ -199,7 +200,7 @@ public class BanCommand extends GCCommand implements TabExecutor {
         if (sender instanceof ProxiedPlayer) {
             ProxiedPlayer pp = (ProxiedPlayer) sender;
             if (!gameChest.hasRank(pp.getUniqueId(), Rank.SUPPORTER)) {
-                sender.sendMessage(gameChest.prefix + "§cDu hast keine Berechtigung für diesen Befehl!");
+                gameChest.sendNoPermissionMessage(sender);
                 return new ArrayList<>();
             }
         }

@@ -2,6 +2,7 @@ package de.gamechest.commands.cloud;
 
 import de.bytelist.bytecloud.ServerIdResolver;
 import de.bytelist.bytecloud.bungee.ByteCloudMaster;
+import de.bytelist.bytecloud.common.Cloud;
 import de.gamechest.GameChest;
 import de.gamechest.commands.base.GCCommand;
 import de.gamechest.database.DatabasePlayer;
@@ -28,7 +29,7 @@ public class JoinCommand extends GCCommand {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if(!(sender instanceof ProxiedPlayer))
-            sender.sendMessage(ByteCloudMaster.getInstance().prefix+"§cDu bist die Konsole und kannst diesen Befehl nicht ausführen!");
+            sender.sendMessage(Cloud.PREFIX+"§cDu bist die Konsole und kannst diesen Befehl nicht ausführen!");
         else {
             if(!gameChest.isCloudEnabled()) return;
             ProxiedPlayer pp = (ProxiedPlayer) sender;
@@ -51,18 +52,18 @@ public class JoinCommand extends GCCommand {
                 int con = ByteCloudMaster.getInstance().getCloudHandler().connect(srvid, pp);
 
                 if(con == 0) {
-                    pp.sendMessage(ByteCloudMaster.getInstance().prefix+"§7Verbinde zum Server "+srvid+"...");
+                    pp.sendMessage(Cloud.PREFIX+"§7Verbinde zum Server "+srvid+"...");
                     return;
                 }
                 if(con == 1) {
-                    pp.sendMessage(ByteCloudMaster.getInstance().prefix+"§cDu befindest dich schon auf diesem Server!");
+                    pp.sendMessage(Cloud.PREFIX+"§cDu befindest dich schon auf diesem Server!");
                     return;
                 }
                 if(con == 2) {
-                    pp.sendMessage(ByteCloudMaster.getInstance().prefix+"§cDer Server existiert nicht!");
+                    pp.sendMessage(Cloud.PREFIX+"§cDer Server existiert nicht!");
                     return;
                 }
-                pp.sendMessage(ByteCloudMaster.getInstance().prefix+"§cError: ("+con+") Konnte keine richtige ID finden.");
+                pp.sendMessage(Cloud.PREFIX+"§cError: ("+con+") Konnte keine richtige ID finden.");
                 return;
             }
             if(args.length == 2) {
@@ -77,43 +78,43 @@ public class JoinCommand extends GCCommand {
                     ServerInfo serverInfo = ProxyServer.getInstance().getServerInfo(srvid);
                     ProxyServer.getInstance().getPlayers().forEach(proxiedPlayer -> proxiedPlayer.connect(serverInfo));
 
-                    ProxyServer.getInstance().broadcast(ByteCloudMaster.getInstance().prefix+"§7Alle Spieler wurden auf §e"+srvid+"§7 verschoben!");
+                    ProxyServer.getInstance().broadcast(Cloud.PREFIX+"§7Alle Spieler wurden auf §e"+srvid+"§7 verschoben!");
                     return;
                 }
 
                 ProxiedPlayer target = GameChest.getInstance().getProxy().getPlayer(args[1]);
 
                 if(target == null) {
-                    pp.sendMessage(ByteCloudMaster.getInstance().prefix+"§cDer Spieler ist nicht online!");
+                    pp.sendMessage(Cloud.PREFIX+"§cDer Spieler ist nicht online!");
                     return;
                 }
                 int rankId = new DatabasePlayer(gameChest.getDatabaseManager(), pp.getUniqueId()).getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt();
                 if(rankId > Rank.DEVELOPER.getId() &&
                         new DatabasePlayer(gameChest.getDatabaseManager(), target.getUniqueId()).getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt()
                         < rankId) {
-                    pp.sendMessage(ByteCloudMaster.getInstance().prefix+"§cDu hast keine Berechtigung diesen Spieler zu verschieben!");
+                    pp.sendMessage(Cloud.PREFIX+"§cDu hast keine Berechtigung diesen Spieler zu verschieben!");
                     return;
                 }
 
                 int con = ByteCloudMaster.getInstance().getCloudHandler().connect(srvid, target);
 
                 if(con == 0) {
-                    target.sendMessage(ByteCloudMaster.getInstance().prefix+"§7Verbinde zum Server "+srvid+"...");
-                    pp.sendMessage(ByteCloudMaster.getInstance().prefix+"§7Verschiebe "+target.getName()+" zum Server "+srvid+"...");
+                    target.sendMessage(Cloud.PREFIX+"§7Verbinde zum Server "+srvid+"...");
+                    pp.sendMessage(Cloud.PREFIX+"§7Verschiebe "+target.getName()+" zum Server "+srvid+"...");
                     return;
                 }
                 if(con == 1) {
-                    pp.sendMessage(ByteCloudMaster.getInstance().prefix+"§c"+target.getName()+" befindest dich schon auf diesem Server!");
+                    pp.sendMessage(Cloud.PREFIX+"§c"+target.getName()+" befindest dich schon auf diesem Server!");
                     return;
                 }
                 if(con == 2) {
-                    pp.sendMessage(ByteCloudMaster.getInstance().prefix+"§cDer Server existiert nicht!");
+                    pp.sendMessage(Cloud.PREFIX+"§cDer Server existiert nicht!");
                     return;
                 }
-                pp.sendMessage(ByteCloudMaster.getInstance().prefix+"§cError: ("+con+") Konnte keine richtige ID finden.");
+                pp.sendMessage(Cloud.PREFIX+"§cError: ("+con+") Konnte keine richtige ID finden.");
                 return;
             }
-            pp.sendMessage(ByteCloudMaster.getInstance().prefix+"§c/join <Server> (Spieler)");
+            pp.sendMessage(Cloud.PREFIX+"§c/join <Server> (Spieler)");
         }
     }
 }

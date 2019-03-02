@@ -3,6 +3,7 @@ package de.gamechest.party;
 import com.google.gson.JsonObject;
 import de.bytelist.bytecloud.bungee.ByteCloudMaster;
 import de.gamechest.GameChest;
+import de.gamechest.common.ChestPrefix;
 import de.gamechest.database.onlineplayer.DatabaseOnlinePlayerObject;
 import lombok.Getter;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -55,9 +56,9 @@ public class Party {
             this.requests.put(player.getName(), System.currentTimeMillis()/1000);
 
             for(ProxiedPlayer p : member) {
-                p.sendMessage(gameChest.pr_party+"§6"+player.getName()+"§a wurde in die Party eingeladen!");
+                p.sendMessage(ChestPrefix.PREFIX_PARTY+"§6"+player.getName()+"§a wurde in die Party eingeladen!");
             }
-            leader.sendMessage(gameChest.pr_party+"§6"+player.getName()+"§a wurde in die Party eingeladen!");
+            leader.sendMessage(ChestPrefix.PREFIX_PARTY+"§6"+player.getName()+"§a wurde in die Party eingeladen!");
 
 
             TextComponent start = new TextComponent("§8\u00BB ");
@@ -72,7 +73,7 @@ public class Party {
             deny.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/party deny "+leader.getName()));
             deny.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§cKlicke, um die Party Anfrage abzulehnen.").create()));
 
-            player.sendMessage(gameChest.pr_party+"§6"+leader.getName()+"§a hat dich in seine Party eingeladen!");
+            player.sendMessage(ChestPrefix.PREFIX_PARTY+"§6"+leader.getName()+"§a hat dich in seine Party eingeladen!");
             player.sendMessage(start, accept, middle, deny);
         }
     }
@@ -98,9 +99,9 @@ public class Party {
         gameChest.getPacketHandler().sendPacket(player.getServer().getInfo().getName(), jsonObject);
 
         for(ProxiedPlayer p : member) {
-            p.sendMessage(gameChest.pr_party+"§6"+player.getName()+"§a ist der Party beigetreten.");
+            p.sendMessage(ChestPrefix.PREFIX_PARTY+"§6"+player.getName()+"§a ist der Party beigetreten.");
         }
-        leader.sendMessage(gameChest.pr_party+"§6"+player.getName()+"§a ist der Party beigetreten.");
+        leader.sendMessage(ChestPrefix.PREFIX_PARTY+"§6"+player.getName()+"§a ist der Party beigetreten.");
     }
 
     public boolean promoteLeader(ProxiedPlayer player) {
@@ -112,9 +113,9 @@ public class Party {
         this.member.remove(player);
         gameChest.getDatabaseManager().getDatabaseParty().removeMember(partyId, player.getName());
         for(ProxiedPlayer p : this.member) {
-            p.sendMessage(gameChest.pr_party+"§6"+this.leader+"§a wurde zum Party Leader ernannt.");
+            p.sendMessage(ChestPrefix.PREFIX_PARTY+"§6"+this.leader+"§a wurde zum Party Leader ernannt.");
         }
-        this.leader.sendMessage(gameChest.pr_party+"§6"+this.leader+"§a wurde zum Party Leader ernannt.");
+        this.leader.sendMessage(ChestPrefix.PREFIX_PARTY+"§6"+this.leader+"§a wurde zum Party Leader ernannt.");
         return true;
     }
 
@@ -122,9 +123,9 @@ public class Party {
         if(this.member.contains(player)) {
             this.member.remove(player);
             for(ProxiedPlayer p : this.member) {
-                p.sendMessage(gameChest.pr_party+"§6"+player.getName()+"§a hat die Party verlassen.");
+                p.sendMessage(ChestPrefix.PREFIX_PARTY+"§6"+player.getName()+"§a hat die Party verlassen.");
             }
-            this.leader.sendMessage(gameChest.pr_party+"§6"+player.getName()+"§a hat die Party verlassen.");
+            this.leader.sendMessage(ChestPrefix.PREFIX_PARTY+"§6"+player.getName()+"§a hat die Party verlassen.");
             gameChest.getDatabaseManager().getDatabaseParty().removeMember(partyId, player.getName());
             gameChest.getDatabaseManager().getAsync().getOnlinePlayer(player.getUniqueId(), dbPlayer ->
                     dbPlayer.setDatabaseObject(DatabaseOnlinePlayerObject.PARTY_ID, null), DatabaseOnlinePlayerObject.PARTY_ID);

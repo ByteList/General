@@ -1,11 +1,12 @@
 package de.gamechest.commands.rank;
 
 import de.gamechest.GameChest;
-import de.gamechest.UUIDFetcher;
 import de.gamechest.commands.base.GCCommand;
-import de.gamechest.database.DatabasePlayerObject;
-import de.gamechest.database.DatabasePlayer;
+import de.gamechest.common.ChestPrefix;
 import de.gamechest.common.Rank;
+import de.gamechest.common.UUIDFetcher;
+import de.gamechest.database.DatabasePlayer;
+import de.gamechest.database.DatabasePlayerObject;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
@@ -34,7 +35,7 @@ public class RankCommand extends GCCommand {
 
         if(args.length == 1) {
             if(args[0].equalsIgnoreCase("list")) {
-                sender.sendMessage(gameChest.prefix+"§7Rang-Liste:");
+                sender.sendMessage(ChestPrefix.PREFIX+"§7Rang-Liste:");
                 for(Rank rank : Rank.values()) {
                     sender.sendMessage("§8\u00BB " + rank.getPrefix() + sender.getName());
                 }
@@ -48,11 +49,11 @@ public class RankCommand extends GCCommand {
                 DatabasePlayer databasePlayer = new DatabasePlayer(gameChest.getDatabaseManager(), uuid);
 
                 if(!databasePlayer.existsPlayer()) {
-                    sender.sendMessage(gameChest.prefix+"§cKonnte den User nicht in der Datenbank finden!");
+                    sender.sendMessage(ChestPrefix.PREFIX+"§cKonnte den User nicht in der Datenbank finden!");
                     return;
                 }
 
-                sender.sendMessage(gameChest.prefix+"§eRang von §7"+name+"§e: "+
+                sender.sendMessage(ChestPrefix.PREFIX+"§eRang von §7"+name+"§e: "+
                         Rank.getRankById(databasePlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt()).getColor()+
                         Rank.getRankById(databasePlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt()).getName());
                 return;
@@ -67,35 +68,35 @@ public class RankCommand extends GCCommand {
                 String rankStr = args[2];
 
                 if(!Rank.existsRank(rankStr)) {
-                    sender.sendMessage(gameChest.prefix+"§cDieser Rang existiert nicht! - /rank list");
+                    sender.sendMessage(ChestPrefix.PREFIX+"§cDieser Rang existiert nicht! - /rank list");
                     return;
                 }
                 Rank rank = Rank.valueOf(rankStr.toUpperCase());
                 if(!databasePlayer.existsPlayer()) {
-                    sender.sendMessage(gameChest.prefix+"§cKonnte den User nicht in der Datenbank finden!");
+                    sender.sendMessage(ChestPrefix.PREFIX+"§cKonnte den User nicht in der Datenbank finden!");
                     return;
                 }
                 if(rank == Rank.PREMIUM) {
-                    sender.sendMessage(gameChest.prefix+"§cPremium-Rang -> /premium [Spielername] (Monate)");
+                    sender.sendMessage(ChestPrefix.PREFIX+"§cPremium-Rang -> /premium [Spielername] (Monate)");
                     return;
                 }
 
                 int rid = rank.getId();
                 databasePlayer.setDatabaseObject(DatabasePlayerObject.RANK_ID, rid);
 
-                sender.sendMessage(gameChest.prefix+"§aRang geändert!");
+                sender.sendMessage(ChestPrefix.PREFIX+"§aRang geändert!");
                 sender.sendMessage("§8\u00BB §eRang von §7"+name+"§e: "+
                         Rank.getRankById(databasePlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt()).getColor()+
                         Rank.getRankById(databasePlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt()).getName());
                 if(gameChest.getProxy().getPlayer(name) != null) {
                     gameChest.getProxy().getPlayer(name).sendMessage(
-                            gameChest.prefix+"§aDein Rang wurde geändert!");
+                            ChestPrefix.PREFIX+"§aDein Rang wurde geändert!");
                     gameChest.getProxy().getPlayer(name).sendMessage(
                             "§8\u00BB §eDein neuer Rang ist nun: "+rank.getColor()+rank.getName());
                 }
                 return;
             }
         }
-        sender.sendMessage(gameChest.prefix+"§c/rank <list/info/set> [Spielername] (Rang)");
+        sender.sendMessage(ChestPrefix.PREFIX+"§c/rank <list/info/set> [Spielername] (Rang)");
     }
 }

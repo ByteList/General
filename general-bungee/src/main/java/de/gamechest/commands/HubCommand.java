@@ -3,6 +3,7 @@ package de.gamechest.commands;
 import de.bytelist.bytecloud.bungee.ByteCloudMaster;
 import de.gamechest.GameChest;
 import de.gamechest.commands.base.GCCommand;
+import de.gamechest.common.ChestPrefix;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
@@ -28,8 +29,8 @@ public class HubCommand extends GCCommand {
 
         String serverId, display;
 
-        if(!ByteCloudMaster.getInstance().getServerIdOnConnect().equals("-1")) {
-            serverId = display = ByteCloudMaster.getInstance().getServerIdOnConnect();
+        if(!ByteCloudMaster.getInstance().getForcedJoinServerId().equals("-1")) {
+            serverId = display = ByteCloudMaster.getInstance().getForcedJoinServerId();
         } else {
             serverId = ByteCloudMaster.getInstance().getCloudHandler().getRandomLobbyId();
             display = "Lobby";
@@ -38,17 +39,17 @@ public class HubCommand extends GCCommand {
         int i = ByteCloudMaster.getInstance().getCloudHandler().connect(serverId, pp);
 
         if(i == 0) {
-            pp.sendMessage(gameChest.prefix+"§eVerbinde zum "+display+"-Server...");
+            pp.sendMessage(ChestPrefix.PREFIX+"§eVerbinde zum "+display+"-Server...");
             return;
         }
         if(i == 1) {
-            pp.sendMessage(gameChest.prefix+"§6Du befindest dich bereits auf dem "+display+"-Server!");
+            pp.sendMessage(ChestPrefix.PREFIX+"§6Du befindest dich bereits auf dem "+display+"-Server!");
             return;
         }
         if(i == 2) {
-            pp.sendMessage(gameChest.prefix+"§cKonnte keinen "+display+"-Server finden! Bitte melde dies dem Support!");
+            pp.sendMessage(ChestPrefix.PREFIX+"§cKonnte keinen "+display+"-Server finden! Bitte melde dies dem Support!");
             return;
         }
-        pp.sendMessage(gameChest.prefix+"§cError: Konnte keine passende Aktion ausführen!");
+        pp.sendMessage(ChestPrefix.PREFIX+"§cError: Konnte keine passende Aktion ausführen!");
     }
 }

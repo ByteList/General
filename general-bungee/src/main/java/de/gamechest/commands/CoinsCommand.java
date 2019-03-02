@@ -1,11 +1,12 @@
 package de.gamechest.commands;
 
 import de.gamechest.GameChest;
-import de.gamechest.UUIDFetcher;
 import de.gamechest.commands.base.GCCommand;
-import de.gamechest.database.DatabasePlayerObject;
-import de.gamechest.database.DatabasePlayer;
+import de.gamechest.common.ChestPrefix;
 import de.gamechest.common.Rank;
+import de.gamechest.common.UUIDFetcher;
+import de.gamechest.database.DatabasePlayer;
+import de.gamechest.database.DatabasePlayerObject;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
@@ -32,7 +33,7 @@ public class CoinsCommand extends GCCommand {
 
         ProxiedPlayer pp = (ProxiedPlayer) sender;
         if(!gameChest.hasRank(pp.getUniqueId(), Rank.DEVELOPER)) {
-            pp.sendMessage(gameChest.prefix+"§eDeine Coins: §7"+new DatabasePlayer(gameChest.getDatabaseManager(), pp.getUniqueId()).getDatabaseElement(DatabasePlayerObject.COINS).getAsInt());
+            pp.sendMessage(ChestPrefix.PREFIX+"§eDeine Coins: §7"+new DatabasePlayer(gameChest.getDatabaseManager(), pp.getUniqueId()).getDatabaseElement(DatabasePlayerObject.COINS).getAsInt());
         } else {
             if(args.length == 2) {
                 if(args[0].equalsIgnoreCase("get")) {
@@ -41,11 +42,11 @@ public class CoinsCommand extends GCCommand {
 
                     gameChest.getDatabaseManager().getAsync().getPlayer(uuid, dbPlayer-> {
                         if(!dbPlayer.existsPlayer()) {
-                            sender.sendMessage(gameChest.prefix+"§cKonnte den User nicht in der Datenbank finden!");
+                            sender.sendMessage(ChestPrefix.PREFIX+"§cKonnte den User nicht in der Datenbank finden!");
                             return;
                         }
 
-                        sender.sendMessage(gameChest.prefix+"§eCoins von "+
+                        sender.sendMessage(ChestPrefix.PREFIX+"§eCoins von "+
                                 Rank.getRankById(dbPlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt()).getColor()+name+"§e: §7"
                                 + dbPlayer.getDatabaseElement(DatabasePlayerObject.COINS).getAsInt());
                     }, DatabasePlayerObject.RANK_ID, DatabasePlayerObject.COINS);
@@ -58,12 +59,12 @@ public class CoinsCommand extends GCCommand {
                     UUID uuid = UUIDFetcher.getUUID(name);
                     gameChest.getDatabaseManager().getAsync().getPlayer(uuid, dbPlayer-> {
                         if(!dbPlayer.existsPlayer()) {
-                            sender.sendMessage(gameChest.prefix+"§cKonnte den User nicht in der Datenbank finden!");
+                            sender.sendMessage(ChestPrefix.PREFIX+"§cKonnte den User nicht in der Datenbank finden!");
                             return;
                         }
 
                         dbPlayer.setDatabaseObject(DatabasePlayerObject.COINS, 100);
-                        sender.sendMessage(gameChest.prefix+"§aCoins wurden resetet!");
+                        sender.sendMessage(ChestPrefix.PREFIX+"§aCoins wurden resetet!");
                         sender.sendMessage("§8\u00BB §eCoins von "+
                                 Rank.getRankById(dbPlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt()).getColor()+name+"§e: §7"
                                 + dbPlayer.getDatabaseElement(DatabasePlayerObject.COINS).getAsInt());
@@ -81,19 +82,19 @@ public class CoinsCommand extends GCCommand {
                     try {
                         value = Integer.valueOf(args[2]);
                     } catch (NumberFormatException ex) {
-                        sender.sendMessage(gameChest.prefix+"§c(Anzahl) = Zahlen");
+                        sender.sendMessage(ChestPrefix.PREFIX+"§c(Anzahl) = Zahlen");
                         return;
                     }
 
                     UUID uuid = UUIDFetcher.getUUID(name);
                     gameChest.getDatabaseManager().getAsync().getPlayer(uuid, dbPlayer-> {
                         if(!dbPlayer.existsPlayer()) {
-                            sender.sendMessage(gameChest.prefix+"§cKonnte den User nicht in der Datenbank finden!");
+                            sender.sendMessage(ChestPrefix.PREFIX+"§cKonnte den User nicht in der Datenbank finden!");
                             return;
                         }
 
                         dbPlayer.setDatabaseObject(DatabasePlayerObject.COINS, value);
-                        sender.sendMessage(gameChest.prefix+"§aCoins wurden geändert!");
+                        sender.sendMessage(ChestPrefix.PREFIX+"§aCoins wurden geändert!");
                         sender.sendMessage("§8\u00BB §eCoins von "+
                                 Rank.getRankById(dbPlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt()).getColor()+name+"§e: §7"
                                 + dbPlayer.getDatabaseElement(DatabasePlayerObject.COINS).getAsInt());
@@ -107,7 +108,7 @@ public class CoinsCommand extends GCCommand {
                     try {
                         value[0] = Integer.valueOf(args[2]);
                     } catch (NumberFormatException ex) {
-                        sender.sendMessage(gameChest.prefix+"§c(Anzahl) = Zahlen");
+                        sender.sendMessage(ChestPrefix.PREFIX+"§c(Anzahl) = Zahlen");
                         return;
                     }
 
@@ -115,14 +116,14 @@ public class CoinsCommand extends GCCommand {
                     gameChest.getDatabaseManager().getAsync().getPlayer(uuid, dbPlayer-> {
 
                         if(!dbPlayer.existsPlayer()) {
-                            sender.sendMessage(gameChest.prefix+"§cKonnte den User nicht in der Datenbank finden!");
+                            sender.sendMessage(ChestPrefix.PREFIX+"§cKonnte den User nicht in der Datenbank finden!");
                             return;
                         }
 
                         value[0] = value[0] +dbPlayer.getDatabaseElement(DatabasePlayerObject.COINS).getAsInt();
 
                         dbPlayer.setDatabaseObject(DatabasePlayerObject.COINS, value[0]);
-                        sender.sendMessage(gameChest.prefix+"§aCoins wurden hinzugefügt!");
+                        sender.sendMessage(ChestPrefix.PREFIX+"§aCoins wurden hinzugefügt!");
                         sender.sendMessage("§8\u00BB §eCoins von "+
                                 Rank.getRankById(dbPlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt()).getColor()+name+"§e: §7"
                                 + dbPlayer.getDatabaseElement(DatabasePlayerObject.COINS).getAsInt());
@@ -136,21 +137,21 @@ public class CoinsCommand extends GCCommand {
                     try {
                         value[0] = Integer.valueOf(args[2]);
                     } catch (NumberFormatException ex) {
-                        sender.sendMessage(gameChest.prefix+"§c(Anzahl) = Zahlen");
+                        sender.sendMessage(ChestPrefix.PREFIX+"§c(Anzahl) = Zahlen");
                         return;
                     }
 
                     UUID uuid = UUIDFetcher.getUUID(name);
                     gameChest.getDatabaseManager().getAsync().getPlayer(uuid, dbPlayer-> {
                         if(!dbPlayer.existsPlayer()) {
-                            sender.sendMessage(gameChest.prefix+"§cKonnte den User nicht in der Datenbank finden!");
+                            sender.sendMessage(ChestPrefix.PREFIX+"§cKonnte den User nicht in der Datenbank finden!");
                             return;
                         }
 
                         value[0] = value[0] -dbPlayer.getDatabaseElement(DatabasePlayerObject.COINS).getAsInt();
 
                         dbPlayer.setDatabaseObject(DatabasePlayerObject.COINS, value[0]);
-                        sender.sendMessage(gameChest.prefix+"§aCoins wurden entfernt!");
+                        sender.sendMessage(ChestPrefix.PREFIX+"§aCoins wurden entfernt!");
                         sender.sendMessage("§8\u00BB §eCoins von "+
                                 Rank.getRankById(dbPlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt()).getColor()+name+"§e: §7"
                                 + dbPlayer.getDatabaseElement(DatabasePlayerObject.COINS).getAsInt());
@@ -159,7 +160,7 @@ public class CoinsCommand extends GCCommand {
                     return;
                 }
             }
-            sender.sendMessage(gameChest.prefix+"§c/coins <get/set/add/rmv/reset> [Spielername] (Anzahl)");
+            sender.sendMessage(ChestPrefix.PREFIX+"§c/coins <get/set/add/rmv/reset> [Spielername] (Anzahl)");
         }
     }
 }

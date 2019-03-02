@@ -1,6 +1,7 @@
 package de.gamechest.commands.cloud;
 
 import de.bytelist.bytecloud.bungee.ByteCloudMaster;
+import de.bytelist.bytecloud.common.Cloud;
 import de.gamechest.GameChest;
 import de.gamechest.commands.base.GCCommand;
 import de.gamechest.common.Rank;
@@ -21,7 +22,7 @@ public class GotoCommand extends GCCommand {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if (!(sender instanceof ProxiedPlayer))
-            sender.sendMessage(ByteCloudMaster.getInstance().prefix + "§cDu bist die Konsole und kannst diesen Befehl nicht ausführen!");
+            sender.sendMessage(Cloud.PREFIX + "§cDu bist die Konsole und kannst diesen Befehl nicht ausführen!");
         else {
             if (!gameChest.isCloudEnabled()) return;
             ProxiedPlayer pp = (ProxiedPlayer) sender;
@@ -36,21 +37,21 @@ public class GotoCommand extends GCCommand {
                 int con = ByteCloudMaster.getInstance().getCloudHandler().move(pp, target);
 
                 if (con == 0) {
-                    pp.sendMessage(ByteCloudMaster.getInstance().prefix + "§7Verbinde zum Server " + target.getServer().getInfo().getName() + "...");
+                    pp.sendMessage(Cloud.PREFIX + "§7Verbinde zum Server " + target.getServer().getInfo().getName() + "...");
                     return;
                 }
                 if (con == 1) {
-                    pp.sendMessage(ByteCloudMaster.getInstance().prefix + "§cDu befindest dich schon auf diesem Server!");
+                    pp.sendMessage(Cloud.PREFIX + "§cDu befindest dich schon auf diesem Server!");
                     return;
                 }
                 if (con == 2) {
-                    pp.sendMessage(ByteCloudMaster.getInstance().prefix + "§c" + playername + " ist nicht online!");
+                    pp.sendMessage(Cloud.PREFIX + "§c" + playername + " ist nicht online!");
                     return;
                 }
-                pp.sendMessage(ByteCloudMaster.getInstance().prefix + "§cError: Konnte keine richtige ID finden: " + con);
+                pp.sendMessage(Cloud.PREFIX + "§cError: Konnte keine richtige ID finden: " + con);
                 return;
             }
-            pp.sendMessage(ByteCloudMaster.getInstance().prefix + "§c/goto <Spieler>");
+            pp.sendMessage(Cloud.PREFIX + "§c/goto <Spieler>");
         }
     }
 }

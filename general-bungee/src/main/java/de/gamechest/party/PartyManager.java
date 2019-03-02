@@ -1,6 +1,6 @@
 package de.gamechest.party;
 
-import de.gamechest.GameChest;
+import de.gamechest.common.ChestPrefix;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.HashMap;
@@ -36,9 +36,9 @@ public class PartyManager {
     }
 
     public void deleteParty(Party party, boolean sendPacket) {
-        party.getLeader().sendMessage(GameChest.getInstance().pr_party+"§7Die Party wurde aufgelöst.");
+        party.getLeader().sendMessage(ChestPrefix.PREFIX_PARTY+"§7Die Party wurde aufgelöst.");
         for(ProxiedPlayer player : party.getMember()) {
-            player.sendMessage(GameChest.getInstance().pr_party+"§7Die Party wurde aufgelöst.");
+            player.sendMessage(ChestPrefix.PREFIX_PARTY+"§7Die Party wurde aufgelöst.");
             if(this.partyIds.containsKey(player.getUniqueId()))
                 this.partyIds.remove(player.getUniqueId());
         }

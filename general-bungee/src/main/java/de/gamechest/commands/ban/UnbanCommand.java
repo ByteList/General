@@ -2,12 +2,13 @@ package de.gamechest.commands.ban;
 
 import com.google.common.collect.ImmutableSet;
 import de.gamechest.GameChest;
-import de.gamechest.UUIDFetcher;
 import de.gamechest.commands.base.GCCommand;
-import de.gamechest.database.DatabasePlayerObject;
-import de.gamechest.database.DatabasePlayer;
-import de.gamechest.database.ban.DatabaseBan;
+import de.gamechest.common.ChestPrefix;
 import de.gamechest.common.Rank;
+import de.gamechest.common.UUIDFetcher;
+import de.gamechest.database.DatabasePlayer;
+import de.gamechest.database.DatabasePlayerObject;
+import de.gamechest.database.ban.DatabaseBan;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.TabExecutor;
@@ -45,27 +46,27 @@ public class UnbanCommand extends GCCommand implements TabExecutor {
             DatabasePlayer databasePlayer = new DatabasePlayer(gameChest.getDatabaseManager(), uuid);
 
             if (!databasePlayer.existsPlayer()) {
-                sender.sendMessage(gameChest.prefix + "§cKonnte den User nicht in der Datenbank finden!");
+                sender.sendMessage(ChestPrefix.PREFIX + "§cKonnte den User nicht in der Datenbank finden!");
                 return;
             }
 
             playername = databasePlayer.getDatabaseElement(DatabasePlayerObject.LAST_NAME).getAsString();
 
             if(!databaseBan.isBanned(uuid)) {
-                sender.sendMessage(gameChest.prefix+"§cDieser User ist nicht gebannt!");
+                sender.sendMessage(ChestPrefix.PREFIX+"§cDieser User ist nicht gebannt!");
                 return;
             }
 
             databaseBan.unBan(uuid);
             for(ProxiedPlayer player : gameChest.onlineTeam) {
                 if (gameChest.hasRank(player.getUniqueId(), Rank.MODERATOR)) {
-                    player.sendMessage(gameChest.pr_ban + "§a" + sender + "§7 hat §c" + playername + "§7 entbannt");
+                    player.sendMessage(ChestPrefix.PREFIX_BAN + "§a" + sender + "§7 hat §c" + playername + "§7 entbannt");
                 }
             }
             return;
         }
 
-        sender.sendMessage(gameChest.prefix+"§c/unban <Spieler>");
+        sender.sendMessage(ChestPrefix.PREFIX+"§c/unban <Spieler>");
     }
 
     @Override
@@ -73,7 +74,7 @@ public class UnbanCommand extends GCCommand implements TabExecutor {
         if (sender instanceof ProxiedPlayer) {
             ProxiedPlayer pp = (ProxiedPlayer) sender;
             if (!gameChest.hasRank(pp.getUniqueId(), Rank.SUPPORTER)) {
-                sender.sendMessage(gameChest.prefix + "§cDu hast keine Berechtigung für diesen Befehl!");
+                gameChest.sendNoPermissionMessage(sender);
                 return new ArrayList<>();
             }
         }

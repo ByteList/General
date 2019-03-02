@@ -32,7 +32,7 @@ public class ServerListener implements Listener {
 
         if(gameChest.isCloudEnabled()) {
             try {
-                if(byteCloudMaster.getServerIdOnConnect().equals(e.getKickedFrom().getName())) {
+                if(byteCloudMaster.getForcedJoinServerId().equals(e.getKickedFrom().getName())) {
                     e.setCancelled(false);
                     e.setKickReason("§7Du wurdest vom Server gekickt:§r "+e.getKickReason());
                     return;

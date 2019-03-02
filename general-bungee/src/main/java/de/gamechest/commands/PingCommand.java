@@ -2,6 +2,7 @@ package de.gamechest.commands;
 
 import de.gamechest.GameChest;
 import de.gamechest.commands.base.GCCommand;
+import de.gamechest.common.ChestPrefix;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
@@ -20,7 +21,7 @@ public class PingCommand extends GCCommand {
     public void execute(CommandSender sender, String[] args) {
 
         if(!(sender instanceof ProxiedPlayer))
-            sender.sendMessage(gameChest.prefix+"§7Dein aktueller Ping: §21");
+            sender.sendMessage(ChestPrefix.PREFIX+"§7Dein aktueller Ping: §21");
         else {
             ProxiedPlayer pp = (ProxiedPlayer) sender;
             String color;
@@ -33,7 +34,7 @@ public class PingCommand extends GCCommand {
             else color = "§4";
 
 
-            pp.sendMessage(gameChest.prefix+"§7Dein aktueller Ping: "+color+ping);
+            pp.sendMessage(ChestPrefix.PREFIX+"§7Dein aktueller Ping: "+color+ping);
         }
     }
 }

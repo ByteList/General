@@ -2,6 +2,7 @@ package de.gamechest.commands.report.bug;
 
 import de.gamechest.GameChest;
 import de.gamechest.commands.base.GCCommand;
+import de.gamechest.common.ChestPrefix;
 import de.gamechest.database.DatabaseManager;
 import de.gamechest.database.bug.BugReason;
 import de.gamechest.database.bug.BugState;
@@ -32,7 +33,7 @@ public class BugInfoCommand extends GCCommand {
                 String bugId = args[0];
 
                 if(!databaseManager.getDatabaseBugreport().existsBugreport(bugId)) {
-                    sender.sendMessage(gameChest.prefix+"§cDieser Bug-Report existiert nicht!");
+                    sender.sendMessage(ChestPrefix.PREFIX+"§cDieser Bug-Report existiert nicht!");
                     return;
                 }
 
@@ -41,12 +42,12 @@ public class BugInfoCommand extends GCCommand {
                 if(!gameChest.hasRank(pp.getUniqueId(), Rank.DEVELOPER)) {
                     hasRank = false;
                     if(!pp.getUniqueId().toString().equals(databaseManager.getDatabaseBugreport().getDatabaseElement(bugId, DatabaseBugreportObject.CREATED_BY).getAsString())) {
-                        sender.sendMessage(gameChest.prefix+"§cDieser Bug-Report wurde nicht von dir erstellt!");
+                        sender.sendMessage(ChestPrefix.PREFIX+"§cDieser Bug-Report wurde nicht von dir erstellt!");
                         return;
                     }
                 }
 
-                pp.sendMessage(gameChest.pr_bug+"§bInfo über den Bug-Report §e"+bugId+"§b:");
+                pp.sendMessage(ChestPrefix.PREFIX_BUG_REPORT +"§bInfo über den Bug-Report §e"+bugId+"§b:");
                 pp.sendMessage("§8\u00BB §7Grund: §a"+ BugReason.valueOf(databaseManager.getDatabaseBugreport().getDatabaseElement(bugId, DatabaseBugreportObject.REASON).getAsString()).getBetterReason());
                 pp.sendMessage("§8\u00BB §7Server-Id: §a"+databaseManager.getDatabaseBugreport().getDatabaseElement(bugId, DatabaseBugreportObject.SERVER_ID).getAsString());
                 if(databaseManager.getDatabaseBugreport().getDatabaseElement(bugId, DatabaseBugreportObject.PREVIOUS_SERVER_ID).getObject() != null)
@@ -59,7 +60,7 @@ public class BugInfoCommand extends GCCommand {
                 }
                 return;
             }
-            sender.sendMessage(gameChest.prefix+"§c/buginfo <Bug-ID>");
+            sender.sendMessage(ChestPrefix.PREFIX+"§c/buginfo <Bug-ID>");
         } else
             sender.sendMessage("§cNur für Player!");
     }

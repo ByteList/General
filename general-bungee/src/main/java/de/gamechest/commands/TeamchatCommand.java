@@ -2,6 +2,7 @@ package de.gamechest.commands;
 
 import de.gamechest.GameChest;
 import de.gamechest.commands.base.GCCommand;
+import de.gamechest.common.ChestPrefix;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
@@ -35,7 +36,7 @@ public class TeamchatCommand extends GCCommand {
         }
 
         if(args.length == 0) {
-            sender.sendMessage(gameChest.prefix+"§c/teamchat <Nachricht>");
+            sender.sendMessage(ChestPrefix.PREFIX+"§c/teamchat <Nachricht>");
             return;
         }
 
@@ -48,7 +49,7 @@ public class TeamchatCommand extends GCCommand {
         msg = new StringBuilder(msg.toString());
 
         for(ProxiedPlayer pp : gameChest.onlineTeam) {
-            pp.sendMessage(gameChest.pr_msg_team +prefix+" §8\u00BB§e "+msg);
+            pp.sendMessage(ChestPrefix.PREFIX_MSG_TEAM +prefix+" §8\u00BB§e "+msg);
         }
     }
 }

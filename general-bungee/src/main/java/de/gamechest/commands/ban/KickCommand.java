@@ -2,11 +2,12 @@ package de.gamechest.commands.ban;
 
 import com.google.common.collect.ImmutableSet;
 import de.gamechest.GameChest;
-import de.gamechest.UUIDFetcher;
 import de.gamechest.commands.base.GCCommand;
+import de.gamechest.common.ChestPrefix;
+import de.gamechest.common.Rank;
+import de.gamechest.common.UUIDFetcher;
 import de.gamechest.database.onlineplayer.DatabaseOnlinePlayer;
 import de.gamechest.database.onlineplayer.DatabaseOnlinePlayerObject;
-import de.gamechest.common.Rank;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -50,7 +51,7 @@ public class KickCommand extends GCCommand implements TabExecutor {
             ProxiedPlayer tp = gameChest.getProxy().getPlayer(uuid);
 
             if(tp == null) {
-                sender.sendMessage(gameChest.prefix+"§cDer User ist nicht online!");
+                sender.sendMessage(ChestPrefix.PREFIX+"§cDer User ist nicht online!");
                 return;
             }
             StringBuilder reason = new StringBuilder();
@@ -69,14 +70,14 @@ public class KickCommand extends GCCommand implements TabExecutor {
                     "§6Unser Regelwerk findest du unter: §agame-chest.de/regelwerk"*/);
             for (ProxiedPlayer player : gameChest.onlineTeam) {
                 if (gameChest.hasRank(player.getUniqueId(), Rank.SUPPORTER)) {
-                    player.sendMessage(gameChest.pr_kick + "§a" + sender + "§7 hat §c" + playername + "§7 gekickt");
-                    player.sendMessage(gameChest.pr_kick + "§7Grund: §e" + reason + onlyStaff);
+                    player.sendMessage(ChestPrefix.PREFIX_KICK + "§a" + sender + "§7 hat §c" + playername + "§7 gekickt");
+                    player.sendMessage(ChestPrefix.PREFIX_KICK + "§7Grund: §e" + reason + onlyStaff);
                 }
             }
             return;
         }
 
-        sender.sendMessage(gameChest.prefix+"§c/kick <Spieler> [Grund]");
+        sender.sendMessage(ChestPrefix.PREFIX+"§c/kick <Spieler> [Grund]");
     }
 
 
@@ -86,7 +87,7 @@ public class KickCommand extends GCCommand implements TabExecutor {
         if (sender instanceof ProxiedPlayer) {
             ProxiedPlayer pp = (ProxiedPlayer) sender;
             if (!gameChest.hasRank(pp.getUniqueId(), Rank.SUPPORTER)) {
-                sender.sendMessage(gameChest.prefix + "§cDu hast keine Berechtigung für diesen Befehl!");
+                gameChest.sendNoPermissionMessage(sender);
                 return new ArrayList<>();
             }
         }

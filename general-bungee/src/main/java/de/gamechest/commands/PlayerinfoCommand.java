@@ -1,12 +1,13 @@
 package de.gamechest.commands;
 
 import de.gamechest.GameChest;
-import de.gamechest.UUIDFetcher;
 import de.gamechest.commands.base.GCCommand;
+import de.gamechest.common.ChestPrefix;
+import de.gamechest.common.Rank;
+import de.gamechest.common.UUIDFetcher;
 import de.gamechest.database.DatabasePlayerObject;
 import de.gamechest.database.onlineplayer.DatabaseOnlinePlayer;
 import de.gamechest.database.onlineplayer.DatabaseOnlinePlayerObject;
-import de.gamechest.common.Rank;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
@@ -37,7 +38,7 @@ public class PlayerinfoCommand extends GCCommand {
             if(args.length == 1) {
                 UUID uuid = UUIDFetcher.getUUID(args[0]);
                 if(uuid == null) {
-                    sender.sendMessage(gameChest.prefix+"§cKonnte den User nicht in der Datenbank finden!");
+                    sender.sendMessage(ChestPrefix.PREFIX+"§cKonnte den User nicht in der Datenbank finden!");
                     return;
                 }
                 gameChest.getDatabaseManager().getAsync().getPlayer(uuid, dbPlayer -> {
@@ -47,7 +48,7 @@ public class PlayerinfoCommand extends GCCommand {
                     playername = dbPlayer.getDatabaseElement(DatabasePlayerObject.LAST_NAME).getAsString();
                     Rank rank = Rank.getRankById(dbPlayer.getDatabaseElement(DatabasePlayerObject.RANK_ID).getAsInt());
 
-                    pp.sendMessage(gameChest.prefix+"§6Informationen über §c"+ playername +"§6:");
+                    pp.sendMessage(ChestPrefix.PREFIX+"§6Informationen über §c"+ playername +"§6:");
                     pp.sendMessage("§8\u00BB §7Id: §a"+dbPlayer.getDatabaseElement(DatabasePlayerObject.UUID).getAsString());
                     pp.sendMessage("§8\u00BB §7First-Login: §2"+dbPlayer.getDatabaseElement(DatabasePlayerObject.FIRST_LOGIN).getAsString());
                     pp.sendMessage("§8\u00BB §7Last-Login: §a"+dbPlayer.getDatabaseElement(DatabasePlayerObject.LAST_LOGIN).getAsString());
@@ -67,7 +68,7 @@ public class PlayerinfoCommand extends GCCommand {
                 });
                 return;
             }
-            pp.sendMessage(gameChest.prefix+"§c/playerinfo <Spieler>");
+            pp.sendMessage(ChestPrefix.PREFIX+"§c/playerinfo <Spieler>");
         }
     }
 }

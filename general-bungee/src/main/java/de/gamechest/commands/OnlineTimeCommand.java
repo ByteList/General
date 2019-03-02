@@ -2,6 +2,7 @@ package de.gamechest.commands;
 
 import de.gamechest.GameChest;
 import de.gamechest.commands.base.GCCommand;
+import de.gamechest.common.ChestPrefix;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.plugin.TabExecutor;
 
@@ -20,7 +21,7 @@ public class OnlineTimeCommand extends GCCommand implements TabExecutor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        sender.sendMessage(gameChest.prefix+"§7~ Coming soon ~");
+        sender.sendMessage(ChestPrefix.PREFIX +"§7~ Coming soon ~");
 //        if(args.length == 1) {
 //            final String[] name = {args[0]};
 //            UUID uuid = UUIDFetcher.getUUID(name[0]);

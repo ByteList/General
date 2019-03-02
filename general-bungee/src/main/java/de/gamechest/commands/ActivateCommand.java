@@ -2,13 +2,14 @@ package de.gamechest.commands;
 
 import de.gamechest.GameChest;
 import de.gamechest.commands.base.GCCommand;
+import de.gamechest.common.ChestPrefix;
+import de.gamechest.common.Rank;
 import de.gamechest.database.DatabasePlayer;
 import de.gamechest.database.DatabasePlayerObject;
 import de.gamechest.database.activate.DatabaseActivate;
 import de.gamechest.database.activate.DatabaseActivateObject;
 import de.gamechest.database.premiumplayer.DatabasePremiumPlayer;
 import de.gamechest.database.premiumplayer.DatabasePremiumPlayerObject;
-import de.gamechest.common.Rank;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -45,12 +46,12 @@ public class ActivateCommand extends GCCommand {
                     String code = args[0];
 
                     if(!databaseActivate.existsCode(code)) {
-                        pp.sendMessage(gameChest.pr_activate+"§cDieser Code existiert nicht!");
+                        pp.sendMessage(ChestPrefix.PREFIX_ACTIVATE+"§cDieser Code existiert nicht!");
                         return;
                     }
 
                     if(databaseActivate.getDatabaseElement(code, DatabaseActivateObject.REDEEMER).getObject() != null) {
-                        pp.sendMessage(gameChest.pr_activate+"§cDieser Code ist nicht mehr gültig!");
+                        pp.sendMessage(ChestPrefix.PREFIX_ACTIVATE+"§cDieser Code ist nicht mehr gültig!");
                         return;
                     }
 
@@ -87,11 +88,11 @@ public class ActivateCommand extends GCCommand {
 
 
                             if (end == -2) {
-                                pp.sendMessage(gameChest.prefix + "§aDu hast soeben deinen Premium-Rang erhalten!");
+                                pp.sendMessage(ChestPrefix.PREFIX + "§aDu hast soeben deinen Premium-Rang erhalten!");
                                 pp.sendMessage("§8\u00BB §bBitte verbinde dich neu, damit du alle Features nutzen kannst!");
                                 pp.sendMessage("§8\u00BB §eDein Premium-Rang läuft nun lebenslang!");
                             } else {
-                                pp.sendMessage(gameChest.prefix + "§aDu hast soeben den Premium-Rang erhalten!");
+                                pp.sendMessage(ChestPrefix.PREFIX + "§aDu hast soeben den Premium-Rang erhalten!");
                                 pp.sendMessage("§8\u00BB §bBitte verbinde dich neu, damit du alle Features nutzen kannst!");
                                 pp.sendMessage("§8\u00BB §eDein Premium-Rang läuft nun bis zum: §c" + new SimpleDateFormat("dd.MM.yyyy HH:mm").format(new Date(end)));
                             }
@@ -99,13 +100,13 @@ public class ActivateCommand extends GCCommand {
                         case COINS:
                             long coins = databaseActivate.getDatabaseElement(code, DatabaseActivateObject.VALUE).getAsLong();
                             gameChest.getCoins().addCoins(pp.getUniqueId(), coins);
-                            pp.sendMessage(gameChest.prefix + "§aDir wurden §e"+coins+" Coins §agutgeschrieben.");
+                            pp.sendMessage(ChestPrefix.PREFIX + "§aDir wurden §e"+coins+" Coins §agutgeschrieben.");
                             break;
                     }
 
                     return;
                 }
-                pp.sendMessage(gameChest.pr_activate+"§c/activate <Code>");
+                pp.sendMessage(ChestPrefix.PREFIX_ACTIVATE+"§c/activate <Code>");
                 return;
             }
         }
@@ -115,11 +116,11 @@ public class ActivateCommand extends GCCommand {
                 String code = args[1];
 
                 if(!gameChest.getDatabaseManager().getDatabaseActivate().existsCode(code)) {
-                    sender.sendMessage(gameChest.pr_activate+"§cDieser Code existiert nicht!");
+                    sender.sendMessage(ChestPrefix.PREFIX_ACTIVATE+"§cDieser Code existiert nicht!");
                     return;
                 }
 
-                sender.sendMessage(gameChest.pr_activate+"§6Infos über den Code: §c"+code);
+                sender.sendMessage(ChestPrefix.PREFIX_ACTIVATE+"§6Infos über den Code: §c"+code);
                 sender.sendMessage("§8\u00BB §7Typ: §a"+gameChest.getDatabaseManager().getDatabaseActivate().getDatabaseElement(code, DatabaseActivateObject.PURPOSE).getAsString());
                 sender.sendMessage("§8\u00BB §7Wert (Premium->Monate / Coins): §6"+
                         gameChest.getDatabaseManager().getDatabaseActivate().getDatabaseElement(code, DatabaseActivateObject.VALUE).getAsString());
@@ -140,17 +141,17 @@ public class ActivateCommand extends GCCommand {
                 String code = args[1];
 
                 if(!gameChest.getDatabaseManager().getDatabaseActivate().existsCode(code)) {
-                    sender.sendMessage(gameChest.pr_activate+"§cDieser Code existiert nicht!");
+                    sender.sendMessage(ChestPrefix.PREFIX_ACTIVATE+"§cDieser Code existiert nicht!");
                     return;
                 }
 
                 if(gameChest.getDatabaseManager().getDatabaseActivate().getDatabaseElement(code, DatabaseActivateObject.REDEEMER).getObject() != null) {
-                    sender.sendMessage(gameChest.pr_activate+"§cDieser Code ist nicht mehr gültig!");
+                    sender.sendMessage(ChestPrefix.PREFIX_ACTIVATE+"§cDieser Code ist nicht mehr gültig!");
                     return;
                 }
 
                 gameChest.getDatabaseManager().getDatabaseActivate().setDatabaseObject(code, DatabaseActivateObject.REDEEMER, "#UNUSABLE:"+sender.getName());
-                sender.sendMessage(gameChest.pr_activate+"§aDieser Code ist nun ungültig.");
+                sender.sendMessage(ChestPrefix.PREFIX_ACTIVATE+"§aDieser Code ist nun ungültig.");
                 return;
             }
         }
@@ -162,14 +163,14 @@ public class ActivateCommand extends GCCommand {
                     try {
                         months = Integer.parseInt(args[2]);
                     } catch (NumberFormatException ex) {
-                        sender.sendMessage(gameChest.pr_activate+"§c<months> = Zahl");
+                        sender.sendMessage(ChestPrefix.PREFIX_ACTIVATE+"§c<months> = Zahl");
                         return;
                     }
 
                     String code = "/"+UUID.randomUUID().toString().replace("-", "cP")+"=";
 
                     if(gameChest.getDatabaseManager().getDatabaseActivate().existsCode(code)) {
-                        sender.sendMessage(gameChest.pr_activate+"§cTry again! Error - Code already exists: §7"+code);
+                        sender.sendMessage(ChestPrefix.PREFIX_ACTIVATE+"§cTry again! Error - Code already exists: §7"+code);
                         return;
                     }
 
@@ -178,7 +179,7 @@ public class ActivateCommand extends GCCommand {
                     textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§cKlicken, um den Code dann zu kopieren.").create()));
 
                     gameChest.getDatabaseManager().getDatabaseActivate().createCode(code, DatabaseActivate.ActivatePurpose.PREMIUM, months);
-                    sender.sendMessage(gameChest.pr_activate+"§aErstellter Code für: §6"+months+"§a Monate Premium");
+                    sender.sendMessage(ChestPrefix.PREFIX_ACTIVATE+"§aErstellter Code für: §6"+months+"§a Monate Premium");
                     sender.sendMessage(textComponent);
                     return;
                 }
@@ -187,14 +188,14 @@ public class ActivateCommand extends GCCommand {
                     try {
                         coins = Long.parseLong(args[2]);
                     } catch (NumberFormatException ex) {
-                        sender.sendMessage(gameChest.pr_activate+"§c<months> = Zahl");
+                        sender.sendMessage(ChestPrefix.PREFIX_ACTIVATE+"§c<months> = Zahl");
                         return;
                     }
 
                     String code = "/"+UUID.randomUUID().toString().replace("-", "cC")+"=";
 
                     if(gameChest.getDatabaseManager().getDatabaseActivate().existsCode(code)) {
-                        sender.sendMessage(gameChest.pr_activate+"§cTry again! Error - Code already exists: §7"+code);
+                        sender.sendMessage(ChestPrefix.PREFIX_ACTIVATE+"§cTry again! Error - Code already exists: §7"+code);
                         return;
                     }
 
@@ -203,7 +204,7 @@ public class ActivateCommand extends GCCommand {
                     textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§cKlicken, um den Code dann zu kopieren.").create()));
 
                     gameChest.getDatabaseManager().getDatabaseActivate().createCode(code, DatabaseActivate.ActivatePurpose.COINS, coins);
-                    sender.sendMessage(gameChest.pr_activate+"§aErstellter Code für: §6"+coins+"§a Coins");
+                    sender.sendMessage(ChestPrefix.PREFIX_ACTIVATE+"§aErstellter Code für: §6"+coins+"§a Coins");
                     sender.sendMessage(textComponent);
                     return;
                 }
@@ -211,8 +212,8 @@ public class ActivateCommand extends GCCommand {
         }
 
 
-        sender.sendMessage(gameChest.pr_activate+"§c/activate create <premium|coins> <months|value>");
-        sender.sendMessage(gameChest.pr_activate+"§c/activate unusable <code>");
-        sender.sendMessage(gameChest.pr_activate+"§c/activate info <code>");
+        sender.sendMessage(ChestPrefix.PREFIX_ACTIVATE+"§c/activate create <premium|coins> <months|value>");
+        sender.sendMessage(ChestPrefix.PREFIX_ACTIVATE+"§c/activate unusable <code>");
+        sender.sendMessage(ChestPrefix.PREFIX_ACTIVATE+"§c/activate info <code>");
     }
 }

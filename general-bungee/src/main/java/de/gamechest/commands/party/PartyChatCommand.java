@@ -2,6 +2,7 @@ package de.gamechest.commands.party;
 
 import de.gamechest.GameChest;
 import de.gamechest.commands.base.GCCommand;
+import de.gamechest.common.ChestPrefix;
 import de.gamechest.party.Party;
 import de.gamechest.party.PartyManager;
 import net.md_5.bungee.api.CommandSender;
@@ -30,13 +31,13 @@ public class PartyChatCommand extends GCCommand {
         ProxiedPlayer player = (ProxiedPlayer) sender;
 
         if(!partyManager.isPlayerInAParty(player.getUniqueId())) {
-            player.sendMessage(gameChest.pr_party+"§cDu bist in keiner Party!");
+            player.sendMessage(ChestPrefix.PREFIX_MSG_PARTY+"§cDu bist in keiner Party!");
             return;
         }
         Party party = partyManager.getParty(player.getUniqueId());
 
         if(args.length == 0) {
-            player.sendMessage(gameChest.pr_party+"§c/p <Nachricht>");
+            player.sendMessage(ChestPrefix.PREFIX_MSG_PARTY+"§c/p <Nachricht>");
             return;
         }
 
@@ -46,7 +47,7 @@ public class PartyChatCommand extends GCCommand {
             message.append(arg);
         }
 
-        String prefix = gameChest.pr_msg_party+(party.getLeader().getUniqueId().equals(player.getUniqueId()) ? "§6" : "§a") + player.getName()+ " §8\u00BB §7";
+        String prefix = ChestPrefix.PREFIX_MSG_PARTY+(party.getLeader().getUniqueId().equals(player.getUniqueId()) ? "§6" : "§a") + player.getName()+ " §8\u00BB §7";
 
         for(ProxiedPlayer p : party.getMember()) {
             p.sendMessage(prefix+message);

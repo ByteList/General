@@ -2,9 +2,10 @@ package de.gamechest.commands;
 
 import de.gamechest.ConnectManager;
 import de.gamechest.GameChest;
-import de.gamechest.UUIDFetcher;
 import de.gamechest.commands.base.GCCommand;
+import de.gamechest.common.ChestPrefix;
 import de.gamechest.common.Rank;
+import de.gamechest.common.UUIDFetcher;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
@@ -37,31 +38,31 @@ public class GcgCommand extends GCCommand {
                 String value = args[1];
                 
                 if(value.equalsIgnoreCase(connectManager.getConnectState().toString())) {
-                    sender.sendMessage(gameChest.prefix+"§cDieser ConnectState ist bereits eingestellt!");
+                    sender.sendMessage(ChestPrefix.PREFIX+"§cDieser ConnectState ist bereits eingestellt!");
                     return;
                 }
 
                 if(value.toUpperCase().equalsIgnoreCase("open")) {
                     connectManager.setConnectState(ConnectManager.ConnectState.OPEN);
-                    sender.sendMessage(gameChest.prefix+"§7ConnectState auf §aOPEN §7geändert!");
+                    sender.sendMessage(ChestPrefix.PREFIX+"§7ConnectState auf §aOPEN §7geändert!");
                     return;
                 }
 
                 if(value.toUpperCase().equalsIgnoreCase("whitelist")) {
                     connectManager.setConnectState(ConnectManager.ConnectState.WHITELIST);
-                    sender.sendMessage(gameChest.prefix+"§7ConnectState auf §eWHITELIST §7geändert!");
+                    sender.sendMessage(ChestPrefix.PREFIX+"§7ConnectState auf §eWHITELIST §7geändert!");
                     return;
                 }
 
                 if(value.toUpperCase().equalsIgnoreCase("maintenance")) {
                     connectManager.setConnectState(ConnectManager.ConnectState.MAINTENANCE);
-                    sender.sendMessage(gameChest.prefix+"§7ConnectState auf §cMAINTENANCE §7geändert!");
+                    sender.sendMessage(ChestPrefix.PREFIX+"§7ConnectState auf §cMAINTENANCE §7geändert!");
                     return;
                 }
 
                 if(value.toUpperCase().equalsIgnoreCase("development")) {
                     connectManager.setConnectState(ConnectManager.ConnectState.DEVELOPMENT);
-                    sender.sendMessage(gameChest.prefix+"§7ConnectState auf §bDEVELOPMENT §7geändert!");
+                    sender.sendMessage(ChestPrefix.PREFIX+"§7ConnectState auf §bDEVELOPMENT §7geändert!");
                     return;
                 }
                 sender.sendMessage("§8\u00BB §c/gcg mode [open/whitelist/maintenance/development]");
@@ -73,11 +74,11 @@ public class GcgCommand extends GCCommand {
                 try {
                     plimit = Integer.parseInt(args[1]);
                 } catch (NumberFormatException ex) {
-                    sender.sendMessage(gameChest.prefix+"§c<Limit> = Zahl");
+                    sender.sendMessage(ChestPrefix.PREFIX+"§c<Limit> = Zahl");
                     return;
                 }
                 connectManager.setPlayerLimit(plimit);
-                sender.sendMessage(gameChest.prefix+"§7Playerlimit auf §e"+plimit+"§7 geändert!");
+                sender.sendMessage(ChestPrefix.PREFIX+"§7Playerlimit auf §e"+plimit+"§7 geändert!");
                 return;
             }
         }
@@ -89,12 +90,12 @@ public class GcgCommand extends GCCommand {
                     UUID uuid = UUIDFetcher.getUUID(name);
 
                     if(connectManager.getWhiteList().contains(uuid)) {
-                        sender.sendMessage(gameChest.prefix+"§c"+name+" steht schon auf der WhiteList");
+                        sender.sendMessage(ChestPrefix.PREFIX+"§c"+name+" steht schon auf der WhiteList");
                         return;
                     }
 
                     connectManager.addUuidToWhiteList(uuid);
-                    sender.sendMessage(gameChest.prefix+"§e"+name+" wurde zur WhiteList hinzugefügt");
+                    sender.sendMessage(ChestPrefix.PREFIX+"§e"+name+" wurde zur WhiteList hinzugefügt");
                     return;
                 }
                 if(args[1].equalsIgnoreCase("remove")) {
@@ -102,12 +103,12 @@ public class GcgCommand extends GCCommand {
                     UUID uuid = UUIDFetcher.getUUID(name);
 
                     if(!connectManager.getWhiteList().contains(uuid)) {
-                        sender.sendMessage(gameChest.prefix+"§c"+name+" steht nicht auf der WhiteList");
+                        sender.sendMessage(ChestPrefix.PREFIX+"§c"+name+" steht nicht auf der WhiteList");
                         return;
                     }
 
                     connectManager.removeUuidFromWhiteList(uuid);
-                    sender.sendMessage(gameChest.prefix+"§e"+name+" wurde von der WhiteList entfernt");
+                    sender.sendMessage(ChestPrefix.PREFIX+"§e"+name+" wurde von der WhiteList entfernt");
                     return;
                 }
             }
@@ -121,13 +122,13 @@ public class GcgCommand extends GCCommand {
                     motd.append(args[i]).append(" ");
                 }
                 connectManager.setMotd(mode, motd.toString());
-                sender.sendMessage(gameChest.prefix+"§eMotd für den Mode "+mode+" erfolgreich geändert:");
+                sender.sendMessage(ChestPrefix.PREFIX+"§eMotd für den Mode "+mode+" erfolgreich geändert:");
                 sender.sendMessage(motd.toString().replace("&", "§"));
                 return;
             }
         }
 
-        sender.sendMessage(gameChest.prefix+"§7Alle GCG-Befehle:");
+        sender.sendMessage(ChestPrefix.PREFIX+"§7Alle GCG-Befehle:");
         sender.sendMessage("§8\u00BB §c/gcg mode [open/whitelist/maintenance/development]");
         sender.sendMessage("§8\u00BB §c/gcg motd [mode] [Nachricht] - Farbcodes über: &");
         sender.sendMessage("§8\u00BB §c/gcg plimit <Limit>");

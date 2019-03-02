@@ -3,12 +3,13 @@ package de.gamechest.commands.report.bug;
 import com.google.common.collect.ImmutableSet;
 import de.gamechest.GameChest;
 import de.gamechest.commands.base.GCCommand;
+import de.gamechest.common.ChestPrefix;
+import de.gamechest.common.Rank;
 import de.gamechest.database.DatabaseManager;
 import de.gamechest.database.bug.BugReason;
 import de.gamechest.database.bug.BugState;
 import de.gamechest.database.bug.DatabaseBugreportObject;
 import de.gamechest.database.onlineplayer.DatabaseOnlinePlayerObject;
-import de.gamechest.common.Rank;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.TabExecutor;
@@ -35,14 +36,14 @@ public class BugReportCommand extends GCCommand implements TabExecutor {
             if (args.length == 1) {
                 if (args[0].equalsIgnoreCase("waiting")) {
                     if (!gameChest.hasRank(pp.getUniqueId(), Rank.DEVELOPER)) {
-                        sender.sendMessage(gameChest.prefix + "§cDu hast keine Berechtigung für diesen Befehl!");
+                        sender.sendMessage(ChestPrefix.PREFIX + "§cDu hast keine Berechtigung für diesen Befehl!");
                         return;
                     }
                     List<String> bugIds = new ArrayList<>();
                     bugIds.addAll(databaseManager.getDatabaseBugreport().getWaitingReports());
 
                     if (bugIds.size() == 0) {
-                        sender.sendMessage(gameChest.pr_bug + "§aEs existieren keine offenen Bugs!");
+                        sender.sendMessage(ChestPrefix.PREFIX_BUG_REPORT + "§aEs existieren keine offenen Bugs!");
                         return;
                     }
 
@@ -53,19 +54,19 @@ public class BugReportCommand extends GCCommand implements TabExecutor {
                     ids = ids + "#";
                     ids = ids.replace(", #", "");
 
-                    sender.sendMessage(gameChest.pr_bug + "§bOffene Bug-Reports: " + ids);
+                    sender.sendMessage(ChestPrefix.PREFIX_BUG_REPORT + "§bOffene Bug-Reports: " + ids);
                     return;
                 }
                 if (args[0].equalsIgnoreCase("all")) {
                     if (!gameChest.hasRank(pp.getUniqueId(), Rank.DEVELOPER)) {
-                        sender.sendMessage(gameChest.prefix + "§cDu hast keine Berechtigung für diesen Befehl!");
+                        sender.sendMessage(ChestPrefix.PREFIX + "§cDu hast keine Berechtigung für diesen Befehl!");
                         return;
                     }
                     List<String> bugIds = new ArrayList<>();
                     bugIds.addAll(databaseManager.getDatabaseBugreport().getBugreportIds());
 
                     if (bugIds.size() == 0) {
-                        sender.sendMessage(gameChest.pr_bug + "§aEs existieren keine Bugs!");
+                        sender.sendMessage(ChestPrefix.PREFIX_BUG_REPORT + "§aEs existieren keine Bugs!");
                         return;
                     }
 
@@ -76,7 +77,7 @@ public class BugReportCommand extends GCCommand implements TabExecutor {
                     ids = ids + "#";
                     ids = ids.replace(", #", "");
 
-                    sender.sendMessage(gameChest.pr_bug + "§bAlle Bug-Reports: " + ids);
+                    sender.sendMessage(ChestPrefix.PREFIX_BUG_REPORT + "§bAlle Bug-Reports: " + ids);
                     return;
                 }
             }
@@ -86,7 +87,7 @@ public class BugReportCommand extends GCCommand implements TabExecutor {
                     String bugId = args[1];
 
                     if (!databaseManager.getDatabaseBugreport().existsBugreport(bugId)) {
-                        sender.sendMessage(gameChest.prefix + "§cDieser Bug-Report existiert nicht!");
+                        sender.sendMessage(ChestPrefix.PREFIX + "§cDieser Bug-Report existiert nicht!");
                         return;
                     }
 
@@ -95,12 +96,12 @@ public class BugReportCommand extends GCCommand implements TabExecutor {
                     if (!gameChest.hasRank(pp.getUniqueId(), Rank.DEVELOPER)) {
                         hasRank = false;
                         if (!pp.getUniqueId().toString().equals(databaseManager.getDatabaseBugreport().getDatabaseElement(bugId, DatabaseBugreportObject.CREATED_BY).getAsString())) {
-                            sender.sendMessage(gameChest.prefix + "§cDieser Bug-Report wurde nicht von dir erstellt!");
+                            sender.sendMessage(ChestPrefix.PREFIX + "§cDieser Bug-Report wurde nicht von dir erstellt!");
                             return;
                         }
                     }
 
-                    pp.sendMessage(gameChest.pr_bug + "§bInfo über den Bug-Report §e" + bugId + "§b:");
+                    pp.sendMessage(ChestPrefix.PREFIX_BUG_REPORT + "§bInfo über den Bug-Report §e" + bugId + "§b:");
                     pp.sendMessage("§8\u00BB §7Grund: §a" + BugReason.valueOf(databaseManager.getDatabaseBugreport().getDatabaseElement(bugId, DatabaseBugreportObject.REASON).getAsString()).getBetterReason());
                     pp.sendMessage("§8\u00BB §7Server-Id: §a" + databaseManager.getDatabaseBugreport().getDatabaseElement(bugId, DatabaseBugreportObject.SERVER_ID).getAsString());
                     if (databaseManager.getDatabaseBugreport().getDatabaseElement(bugId, DatabaseBugreportObject.PREVIOUS_SERVER_ID).getObject() != null)
@@ -118,19 +119,19 @@ public class BugReportCommand extends GCCommand implements TabExecutor {
             if (args.length == 3) {
                 if (args[0].equalsIgnoreCase("edit")) {
                     if (!gameChest.equalsRank(pp.getUniqueId(), Rank.DEVELOPER)) {
-                        sender.sendMessage(gameChest.prefix + "§cDu hast keine Berechtigung für diesen Befehl!");
+                        sender.sendMessage(ChestPrefix.PREFIX + "§cDu hast keine Berechtigung für diesen Befehl!");
                         return;
                     }
                     String bugId = args[1];
                     if (!databaseManager.getDatabaseBugreport().existsBugreport(bugId)) {
-                        sender.sendMessage(gameChest.prefix + "§cDieser Bug-Report existiert nicht!");
+                        sender.sendMessage(ChestPrefix.PREFIX + "§cDieser Bug-Report existiert nicht!");
                         return;
                     }
 
                     String stateStr = args[2];
 
                     if (!BugState.getBugStateAsString().contains(stateStr)) {
-                        sender.sendMessage(gameChest.prefix + "§cDieser Bug-Status existiert nicht!");
+                        sender.sendMessage(ChestPrefix.PREFIX + "§cDieser Bug-Status existiert nicht!");
                         sender.sendMessage("§7Reasons: " + BugState.getBugStateAsString().toString());
                         return;
                     }
@@ -138,7 +139,7 @@ public class BugReportCommand extends GCCommand implements TabExecutor {
                     BugState bugState = BugState.getBugState(stateStr);
 
                     databaseManager.getDatabaseBugreport().setDatabaseObject(bugId, DatabaseBugreportObject.STATE, bugState.toString());
-                    sender.sendMessage(gameChest.prefix + "§7Bug-Report bearbeitet: " + bugState.getBetterString());
+                    sender.sendMessage(ChestPrefix.PREFIX + "§7Bug-Report bearbeitet: " + bugState.getBetterString());
                     return;
                 }
             }
@@ -154,7 +155,7 @@ public class BugReportCommand extends GCCommand implements TabExecutor {
                     reasons = reasons + "#";
                     reasons = reasons.replace(", #", "");
 
-                    sender.sendMessage(gameChest.prefix + "§cKein Bug-Grund!");
+                    sender.sendMessage(ChestPrefix.PREFIX + "§cKein Bug-Grund!");
                     sender.sendMessage("§8\u00BB §7Bug-Gründe: " + reasons);
                     return;
                 }
@@ -175,27 +176,27 @@ public class BugReportCommand extends GCCommand implements TabExecutor {
                         previousServerId = dbOPlayer.getDatabaseElement(DatabaseOnlinePlayerObject.PREVIOUS_SERVER_ID).getAsString();
 
                     databaseManager.getDatabaseBugreport().createBugreport(bugId, bugReason, serverId, extra, pp.getUniqueId(), previousServerId);
-                    sender.sendMessage(gameChest.pr_bug + "§aDein Bug-Report wurde erfolgreich erstellt!");
+                    sender.sendMessage(ChestPrefix.PREFIX_BUG_REPORT + "§aDein Bug-Report wurde erfolgreich erstellt!");
                     sender.sendMessage("§8\u00BB §7BugID: §e" + bugId);
                     sender.sendMessage("§8\u00BB §7Grund: §a" + bugReason.getBetterReason());
                     sender.sendMessage("§8\u00BB §7Deine Nachricht: §7" + extra);
                     sender.sendMessage("§8\u00BB §6Den Status kannst du unter §c/buginfo <BugId>§6 einsehen.");
                     for (ProxiedPlayer player : gameChest.getProxy().getPlayers()) {
                         if (gameChest.hasRank(player.getUniqueId(), Rank.DEVELOPER)) {
-                            player.sendMessage(gameChest.pr_bug + "§a" + sender.getName() + "§b hat einen Bug reportet! §7(§c" + bugId + "§7)");
+                            player.sendMessage(ChestPrefix.PREFIX_BUG_REPORT + "§a" + sender.getName() + "§b hat einen Bug reportet! §7(§c" + bugId + "§7)");
                         }
                     }
                 }, DatabaseOnlinePlayerObject.PREVIOUS_SERVER_ID);
 
                 return;
             }
-            sender.sendMessage(gameChest.prefix + "§7Bitte nutze diesen Befehl nur, um einen Bug zu reporten!");
-            sender.sendMessage(gameChest.prefix + "§c/bugreport <Grund> <Eigene Nachricht>");
+            sender.sendMessage(ChestPrefix.PREFIX + "§7Bitte nutze diesen Befehl nur, um einen Bug zu reporten!");
+            sender.sendMessage(ChestPrefix.PREFIX + "§c/bugreport <Grund> <Eigene Nachricht>");
             if (gameChest.hasRank(pp.getUniqueId(), Rank.DEVELOPER)) {
-                sender.sendMessage(gameChest.prefix + "§c/bugreport info <Bug-ID>");
-                sender.sendMessage(gameChest.prefix + "§c/bugreport edit <Bug-ID> <State>");
-                sender.sendMessage(gameChest.prefix + "§c/bugreport waiting");
-                sender.sendMessage(gameChest.prefix + "§c/bugreport all");
+                sender.sendMessage(ChestPrefix.PREFIX + "§c/bugreport info <Bug-ID>");
+                sender.sendMessage(ChestPrefix.PREFIX + "§c/bugreport edit <Bug-ID> <State>");
+                sender.sendMessage(ChestPrefix.PREFIX + "§c/bugreport waiting");
+                sender.sendMessage(ChestPrefix.PREFIX + "§c/bugreport all");
             }
             return;
         }

@@ -1,10 +1,11 @@
 package de.gamechest.commands;
 
 import de.gamechest.GameChest;
-import de.gamechest.UUIDFetcher;
 import de.gamechest.commands.base.GCCommand;
-import de.gamechest.database.DatabaseManager;
+import de.gamechest.common.ChestPrefix;
 import de.gamechest.common.Rank;
+import de.gamechest.common.UUIDFetcher;
+import de.gamechest.database.DatabaseManager;
 import de.gamechest.database.stats.clickattack.DatabaseClickAttack;
 import de.gamechest.database.stats.clickattack.DatabaseClickAttackObject;
 import de.gamechest.database.stats.deathrun.DatabaseDeathRun;
@@ -53,7 +54,7 @@ public class StatsCommand extends GCCommand {
 //            if(args[0].equalsIgnoreCase("jd") || args[0].equalsIgnoreCase("jumpduell")) {
 //                DatabaseJumpDuell database = databaseManager.getDatabaseJumpDuell();
 //                if(!database.existsPlayer(uuid)) {
-//                    sender.sendMessage(gameChest.pr_stats+"§cDu hast noch keine JumpDuell Runde gespielt.");
+//                    sender.sendMessage(ChestPrefix.PREFIX_STATS+"§cDu hast noch keine JumpDuell Runde gespielt.");
 //                    return;
 //                }
 //                int rank = database.getDatabaseElement(uuid, DatabaseJumpDuellObject.RANK).getAsInt();
@@ -67,7 +68,7 @@ public class StatsCommand extends GCCommand {
 //                int coins = database.getDatabaseElement(uuid, DatabaseJumpDuellObject.EARNED_COINS).getAsInt();
 //
 //
-//                sender.sendMessage(gameChest.pr_stats+"§eDeine JumpDuell Statistik:");
+//                sender.sendMessage(ChestPrefix.PREFIX_STATS+"§eDeine JumpDuell Statistik:");
 //                sender.sendMessage("§8\u00BB §7Position im Ranking: §6"+rank);
 //                sender.sendMessage("§8\u00BB §7Punkte: §6"+points);
 //                sender.sendMessage("§8\u00BB §7Gespielte Parkours: §6"+played);
@@ -109,18 +110,18 @@ public class StatsCommand extends GCCommand {
 ////                    try {
 ////                        rank = Integer.valueOf(value.replace("#", ""));
 ////                    } catch (Exception e) {
-////                        sender.sendMessage(gameChest.pr_stats + "§c[#Rang] muss eine Zahl sein §7(zB: #1)");
+////                        sender.sendMessage(ChestPrefix.PREFIX_STATS + "§c[#Rang] muss eine Zahl sein §7(zB: #1)");
 ////                        return;
 ////                    }
 ////                    if(rank > 0) {
 ////                        if (!Stats.getJumpDuell().existsRank(rank)) {
-////                            sender.sendMessage(gameChest.pr_stats + "§cDieser Platz ist nicht vergeben!");
+////                            sender.sendMessage(ChestPrefix.PREFIX_STATS + "§cDieser Platz ist nicht vergeben!");
 ////                            return;
 ////                        }
 ////                        uuid = Stats.getJumpDuell().getUuidFromRank(rank);
 ////                        name = gameChest.getSqlHandler().getLastName("UUID", uuid.toString());
 ////                    } else {
-////                        sender.sendMessage(gameChest.pr_stats+"§cRang muss größer als 0 sein!");
+////                        sender.sendMessage(ChestPrefix.PREFIX_STATS+"§cRang muss größer als 0 sein!");
 ////                        return;
 ////                    }
 ////                } else {
@@ -129,7 +130,7 @@ public class StatsCommand extends GCCommand {
 //
 //                DatabaseJumpDuell database = databaseManager.getDatabaseJumpDuell();
 //                if(!database.existsPlayer(uuid)) {
-//                    sender.sendMessage(gameChest.pr_stats+"§cDu hast noch keine JumpDuell Runde gespielt.");
+//                    sender.sendMessage(ChestPrefix.PREFIX_STATS+"§cDu hast noch keine JumpDuell Runde gespielt.");
 //                    return;
 //                }
 //                int rank = database.getDatabaseElement(uuid, DatabaseJumpDuellObject.RANK).getAsInt();
@@ -143,7 +144,7 @@ public class StatsCommand extends GCCommand {
 //                int coins = database.getDatabaseElement(uuid, DatabaseJumpDuellObject.EARNED_COINS).getAsInt();
 //
 //
-//                sender.sendMessage(gameChest.pr_stats+"§eJumpDuell Statistik von "+name+":");
+//                sender.sendMessage(ChestPrefix.PREFIX_STATS+"§eJumpDuell Statistik von "+name+":");
 //                sender.sendMessage("§8\u00BB §7Position im Ranking: §6"+rank);
 //                sender.sendMessage("§8\u00BB §7Punkte: §6"+points);
 //                sender.sendMessage("§8\u00BB §7Gespielte Parkours: §6"+played);
@@ -161,14 +162,14 @@ public class StatsCommand extends GCCommand {
         }
 
         if(gameChest.hasRank(uuid, Rank.SUPPORTER))
-            sender.sendMessage(gameChest.pr_stats+"§c/stats <ca/sd/dr> (Spieler)");
-        else sender.sendMessage(gameChest.pr_stats+"§c/stats <ca/sd/dr>");
+            sender.sendMessage(ChestPrefix.PREFIX_STATS+"§c/stats <ca/sd/dr> (Spieler)");
+        else sender.sendMessage(ChestPrefix.PREFIX_STATS+"§c/stats <ca/sd/dr>");
     }
 
     private void sendClickAttackStats(CommandSender sender, String name, UUID uuid) {
         DatabaseClickAttack database = databaseManager.getDatabaseClickAttack();
         if(!database.existsPlayer(uuid)) {
-            sender.sendMessage(gameChest.pr_stats+"§c"+(sender.getName().equalsIgnoreCase(name) ? "Du hast" : name+" hat")+" noch keine ClickAttack Runde gespielt.");
+            sender.sendMessage(ChestPrefix.PREFIX_STATS+"§c"+(sender.getName().equalsIgnoreCase(name) ? "Du hast" : name+" hat")+" noch keine ClickAttack Runde gespielt.");
             return;
         }
         int rank = database.getDatabaseElement(uuid, DatabaseClickAttackObject.RANK).getAsInt();
@@ -193,7 +194,7 @@ public class StatsCommand extends GCCommand {
             kd = "0.0";
         }
 
-        sender.sendMessage(gameChest.pr_stats+"§eClickAttack Statistik von "+name+":");
+        sender.sendMessage(ChestPrefix.PREFIX_STATS+"§eClickAttack Statistik von "+name+":");
         sender.sendMessage("§8\u00BB §7Position im Ranking: §6"+rank);
         sender.sendMessage("§8\u00BB §7Punkte: §6"+points);
         sender.sendMessage("§8\u00BB §7Spiele: §6"+played+"§7 (Gewonnen: §6"+wins+"§7 / Verloren: §6"+loses+"§7)");
@@ -206,7 +207,7 @@ public class StatsCommand extends GCCommand {
     private void sendDeathRunStats(CommandSender sender, String name, UUID uuid) {
         DatabaseDeathRun database = databaseManager.getDatabaseDeathRun();
         if(!database.existsPlayer(uuid)) {
-            sender.sendMessage(gameChest.pr_stats+"§c"+(sender.getName().equalsIgnoreCase(name) ? "Du hast" : name+" hat")+" noch keine DeathRun Runde gespielt.");
+            sender.sendMessage(ChestPrefix.PREFIX_STATS+"§c"+(sender.getName().equalsIgnoreCase(name) ? "Du hast" : name+" hat")+" noch keine DeathRun Runde gespielt.");
             return;
         }
         int rank = database.getDatabaseElement(uuid, DatabaseDeathRunObject.RANK).getAsInt();
@@ -219,7 +220,7 @@ public class StatsCommand extends GCCommand {
         int useditems = database.getDatabaseElement(uuid, DatabaseDeathRunObject.USED_ITEMS).getAsInt();
 
 
-        sender.sendMessage(gameChest.pr_stats+"§eDeathRun Statistik von "+name+":");
+        sender.sendMessage(ChestPrefix.PREFIX_STATS+"§eDeathRun Statistik von "+name+":");
         sender.sendMessage("§8\u00BB §7Position im Ranking: §6"+rank);
         sender.sendMessage("§8\u00BB §7Punkte: §6"+points);
         sender.sendMessage("§8\u00BB §7Spiele: §6"+played+"§7 (Gewonnen: §6"+wins+"§7 / Verloren: §6"+loses+"§7)");
@@ -231,7 +232,7 @@ public class StatsCommand extends GCCommand {
     private void sendShulkerDefenceStats(CommandSender sender, String name, UUID uuid) {
         DatabaseShulkerDefence database = databaseManager.getDatabaseShulkerDefence();
         if(!database.existsPlayer(uuid)) {
-            sender.sendMessage(gameChest.pr_stats+"§c"+(sender.getName().equalsIgnoreCase(name) ? "Du hast" : name+" hat")+" noch keine ShulkerDefence Runde gespielt.");
+            sender.sendMessage(ChestPrefix.PREFIX_STATS+"§c"+(sender.getName().equalsIgnoreCase(name) ? "Du hast" : name+" hat")+" noch keine ShulkerDefence Runde gespielt.");
             return;
         }
         int rank = database.getDatabaseElement(uuid, DatabaseShulkerDefenceObject.RANK).getAsInt();
@@ -256,7 +257,7 @@ public class StatsCommand extends GCCommand {
             kd = "0.0";
         }
 
-        sender.sendMessage(gameChest.pr_stats+"§eShulkerDefence Statistik von "+name+":");
+        sender.sendMessage(ChestPrefix.PREFIX_STATS+"§eShulkerDefence Statistik von "+name+":");
         sender.sendMessage("§8\u00BB §7Position im Ranking: §6"+rank);
         sender.sendMessage("§8\u00BB §7Punkte: §6"+points);
         sender.sendMessage("§8\u00BB §7Spiele: §6"+played+"§7 (Gewonnen: §6"+wins+"§7 / Verloren: §6"+loses+"§7)");
