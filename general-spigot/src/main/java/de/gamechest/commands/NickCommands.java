@@ -2,7 +2,7 @@ package de.gamechest.commands;
 
 import de.gamechest.GameChest;
 import de.gamechest.common.Rank;
-import de.gamechest.nick.Nick;
+import de.gamechest.common.spigot.SpigotChestNick;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 public class NickCommands implements CommandExecutor {
 
     private GameChest gameChest = GameChest.getInstance();
-    private Nick nick = gameChest.getNick();
+    private SpigotChestNick nick = gameChest.getNick();
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {

@@ -53,7 +53,7 @@ public class ChatLog {
             return;
         }
 
-        String id = GameChest.randomKey(7);
+        String id = GameChest.getInstance().randomKey(7);
 
         if(databaseChatlog.existsChatlog(id))
             id = "p"+id;
@@ -63,7 +63,7 @@ public class ChatLog {
     }
 
     public void createServerlog() {
-        String id = GameChest.randomKey(7);
+        String id = GameChest.getInstance().randomKey(7);
 
         if(databaseChatlog.existsChatlog(id))
             id = "s"+id;

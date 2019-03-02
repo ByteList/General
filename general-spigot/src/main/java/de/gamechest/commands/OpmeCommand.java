@@ -1,6 +1,7 @@
 package de.gamechest.commands;
 
 import de.gamechest.GameChest;
+import de.gamechest.common.ChestPrefix;
 import de.gamechest.database.DatabasePlayerObject;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -24,7 +25,7 @@ public class OpmeCommand implements CommandExecutor {
                 return;
             }
             player.setOp(true);
-            player.sendMessage(gameChest.prefix + "§7§oDu bist nun Operator!");
+            player.sendMessage(ChestPrefix.PREFIX + "§7§oDu bist nun Operator!");
         }, DatabasePlayerObject.OPERATOR);
         return true;
     }

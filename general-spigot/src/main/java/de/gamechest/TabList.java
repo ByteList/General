@@ -1,7 +1,7 @@
 package de.gamechest;
 
 import de.gamechest.common.Rank;
-import de.gamechest.nick.Nick;
+import de.gamechest.common.spigot.SpigotChestNick;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -27,7 +27,7 @@ public class TabList {
     public static void update(Player player, TabListMode tabListMode) {
         if(tabListMode.isRank()) {
             Rank rank;
-            Nick nick = GameChest.getInstance().getNick();
+            SpigotChestNick nick = GameChest.getInstance().getNick();
             if(nick.isNicked(player.getUniqueId()) || GameChest.getInstance().isRankToggled(player.getUniqueId())) {
                 rank = Rank.SPIELER;
             } else {
@@ -172,7 +172,7 @@ public class TabList {
             String suffix = "§r";
             if (tabListMode.isRank()) {
                 Rank rank;
-                Nick nick = GameChest.getInstance().getNick();
+                SpigotChestNick nick = GameChest.getInstance().getNick();
                 if (nick.isNicked(player.getUniqueId()) || GameChest.getInstance().isRankToggled(player.getUniqueId())) {
                     rank = Rank.SPIELER;
                 } else {

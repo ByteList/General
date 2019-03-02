@@ -2,6 +2,7 @@ package de.gamechest.commands;
 
 import de.bytelist.bytecloud.core.ByteCloudCore;
 import de.gamechest.GameChest;
+import de.gamechest.common.ChestPrefix;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -14,7 +15,7 @@ public class ServerIdCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
-        commandSender.sendMessage(GameChest.getInstance().prefix+"§6Deine aktuelle ServerID: §a"+
+        commandSender.sendMessage(ChestPrefix.PREFIX+"§6Deine aktuelle ServerID: §a"+
                 (GameChest.getInstance().isCloudEnabled() ? ByteCloudCore.getInstance().getCloudHandler().getServerId() : Bukkit.getServerName()));
         return true;
     }
