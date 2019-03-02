@@ -56,7 +56,11 @@ public class PlayerStatisticIncrementListener implements Listener {
             Document document = gameChest.getDatabaseManager().getDatabaseNetworkStats().
                     getDatabaseElement(player.getUniqueId(), DatabaseNetworkStatsObject.MINECRAFT).getAsDocument();
 
-            int value = document.getInteger(finalStatistic);
+            int value = 0;
+            if(document.containsKey(finalStatistic)) {
+                value = document.getInteger(finalStatistic);
+            }
+
             document.append(finalStatistic, value+add);
 
             gameChest.getDatabaseManager().getDatabaseNetworkStats().setDatabaseObject(player.getUniqueId(), DatabaseNetworkStatsObject.MINECRAFT, document);
