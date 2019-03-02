@@ -1,7 +1,6 @@
 package de.gamechest.commands.cloud;
 
 import de.bytelist.bytecloud.bungee.ByteCloudMaster;
-import de.bytelist.bytecloud.common.Cloud;
 import de.bytelist.bytecloud.database.DatabaseServer;
 import de.bytelist.bytecloud.database.DatabaseServerObject;
 import de.gamechest.GameChest;
@@ -41,7 +40,8 @@ public class ServerCommand extends GCCommand {
 
         if(args.length == 1) {
             if(args[0].equalsIgnoreCase("list")) {
-                sender.sendMessage(Cloud.PREFIX+"§7Server-List:");
+//                sender.sendMessage(Cloud.PREFIX+"§7Server-List:");
+                sender.sendMessage("§7Server-List:");
                 for(String serverId : byteCloudMaster.getCloudHandler().getServerInDatabase()) {
                     int port = databaseServer.getDatabaseElement(serverId, DatabaseServerObject.PORT).getAsInt();
                     if(sender instanceof ProxiedPlayer) {
@@ -98,7 +98,8 @@ public class ServerCommand extends GCCommand {
                 String serverId = byteCloudMaster.getCloudHandler().getUniqueServerId(args[1]);
                 
                 if(!databaseServer.existsServer(serverId)) {
-                    sender.sendMessage(Cloud.PREFIX+"§cKonnte keinen passenden Server finden!");
+//                    sender.sendMessage(Cloud.PREFIX+"§cKonnte keinen passenden Server finden!");
+                    sender.sendMessage("§cKonnte keinen passenden Server finden!");
                     return;
                 }
 
@@ -144,7 +145,8 @@ public class ServerCommand extends GCCommand {
 //                listSpectator.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(listS.toString()).create()));
 
                 sender.sendMessage("");
-                sender.sendMessage(Cloud.PREFIX+"§6Serverinformationen §7(§e"+serverId+"§7)§6:");
+                sender.sendMessage("§6Serverinformationen §7(§e"+serverId+"§7)§6:");
+//                sender.sendMessage(Cloud.PREFIX+"§6Serverinformationen §7(§e"+serverId+"§7)§6:");
                 sender.sendMessage("§8\u00BB §7Gruppe: §6"+group);
                 sender.sendMessage("§8\u00BB §7Server-Start: §e"+serverStart);
                 sender.sendMessage("§8\u00BB §7Join-Status: §a"+serverState);
@@ -155,7 +157,8 @@ public class ServerCommand extends GCCommand {
             }
         }
 
-        sender.sendMessage(Cloud.PREFIX+"§7Alle Server-Befehle:");
+        sender.sendMessage("§7Alle Server-Befehle:");
+//        sender.sendMessage(Cloud.PREFIX+"§7Alle Server-Befehle:");
         sender.sendMessage("§8\u00BB §c/server start <group>");
         sender.sendMessage("§8\u00BB §c/server stop <id>");
         sender.sendMessage("§8\u00BB §c/server info <id>");

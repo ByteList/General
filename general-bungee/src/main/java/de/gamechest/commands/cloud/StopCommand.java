@@ -5,7 +5,6 @@ import de.gamechest.GameChest;
 import de.gamechest.commands.base.GCCommand;
 import de.gamechest.common.Rank;
 import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 /**
@@ -32,23 +31,25 @@ public class StopCommand extends GCCommand {
                 return;
             }
 
-            ServerInfo currentServer = pp.getServer().getInfo();
+            sender.sendMessage("Not implemented yet.");
 
-            new Thread("Cloud-Stop-"+currentServer.getName()) {
-                @Override
-                public void run() {
-//                    while (true) {
-//                        if(currentServer.getPlayers().size() == 0) break;
+//            ServerInfo currentServer = pp.getServer().getInfo();
+//
+//                    new Thread("Cloud-Stop-"+currentServer.getName()) {
+//                        @Override
+//                        public void run() {
+////                    while (true) {
+////                        if(currentServer.getPlayers().size() == 0) break;
+////                    }
+//                    try {
+//                        Thread.sleep(2000L);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
 //                    }
-                    try {
-                        Thread.sleep(2000L);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-//                    PacketInStopServer packetInStopServer = new PacketInStopServer(currentServer.getName(), sender.getName());
-//                    byteCloudMaster.getBungeeClient().sendPacket(packetInStopServer);
-                }
-            }.start();
+////                    PacketInStopServer packetInStopServer = new PacketInStopServer(currentServer.getName(), sender.getName());
+////                    byteCloudMaster.getBungeeClient().sendPacket(packetInStopServer);
+//                }
+//            }.start();
         }
     }
 }
