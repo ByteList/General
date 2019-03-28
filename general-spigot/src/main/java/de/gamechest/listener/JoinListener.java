@@ -1,7 +1,7 @@
 package de.gamechest.listener;
 
-import de.bytelist.bytecloud.core.ByteCloudCore;
-import de.bytelist.bytecloud.database.DatabaseServerObject;
+import de.bytelist.bytecloud.common.server.CloudServer;
+import de.bytelist.bytecloud.common.spigot.SpigotCloud;
 import de.gamechest.BountifulAPI;
 import de.gamechest.GameChest;
 import de.gamechest.Skin;
@@ -25,7 +25,7 @@ import java.util.Calendar;
 
 /**
  * Created by ByteList on 09.04.2017.
- *
+ * <p>
  * Copyright by ByteList - https://bytelist.de/
  */
 public class JoinListener implements Listener {
@@ -37,52 +37,54 @@ public class JoinListener implements Listener {
         Player player = e.getPlayer();
         player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
 
-        if(Bukkit.getServerName().contains("nonBungee")) {
+        if (Bukkit.getServerName().contains("nonBungee")) {
             create(player);
         }
 
-        Bukkit.getScheduler().runTaskAsynchronously(gameChest, ()-> gameChest.getPacketInjector().addPlayer(player));
+        Bukkit.getScheduler().runTaskAsynchronously(gameChest, () -> gameChest.getPacketInjector().addPlayer(player));
 
-        Bukkit.getScheduler().runTaskAsynchronously(gameChest, ()-> {
+        Bukkit.getScheduler().runTaskAsynchronously(gameChest, () -> {
             String serverId = Bukkit.getServerName();
 
-            if(gameChest.isCloudEnabled()) {
-                String group = ByteCloudCore.getInstance().getCloudHandler().getDatabaseServerValue(
-                        ByteCloudCore.getInstance().getCloudHandler().getServerId(), DatabaseServerObject.GROUP).getAsString();
-                if(!group.equals("PERMANENT")) {
-                    serverId = group +"-" + ByteCloudCore.getInstance().getCloudHandler().getServerId().split("-")[1];
+            if (gameChest.isCloudEnabled()) {
+                CloudServer cloudServer = SpigotCloud.getInstance().getCloudAPI().getServer(SpigotCloud.getInstance().getServerId());
+
+                if (cloudServer.isServerPermanent()) {
+                    serverId = cloudServer.getServerId();
                 } else {
-                    serverId = ByteCloudCore.getInstance().getCloudHandler().getServerId();
+                    serverId = cloudServer.getServerGroup().getGroupName() + "-" + cloudServer.getServerId().split("-")[1];
                 }
+
             }
 
             BountifulAPI.sendTabTitle(player,
-                    " §6Game-ChestPrefix§f.§6de §8[§b1.9 §f§l- §c1.12§8]  \n"+
-                            "§fAktueller Server: §e"+ serverId,
-                    "§7Willkommen, §c"+player.getName()+"§7!\n"+
+                    " §6Game-ChestPrefix§f.§6de §8[§b1.9 §f§l- §c1.12§8]  \n" +
+                            "§fAktueller Server: §e" + serverId,
+                    "§7Willkommen, §c" + player.getName() + "§7!\n" +
                             "  §fInformationen findest du unter §a/help§f!  ");
             BountifulAPI.sendTitle(e.getPlayer(), 1, 2, 1, "§r", "§r");
         });
 
-        if(gameChest.getDatabaseManager().getDatabaseTerms().existsPlayer(player.getUniqueId()) &&
+        if (gameChest.getDatabaseManager().getDatabaseTerms().existsPlayer(player.getUniqueId()) &&
                 gameChest.getDatabaseManager().getDatabaseTerms().getDatabaseElement(player.getUniqueId(), DatabaseTermsObject.STATE).getAsInt() == 0) {
             return;
         }
         SpigotChestNick nick = gameChest.getNick();
 
-        if(nick.isNicked(player.getUniqueId())) {
+        if (nick.isNicked(player.getUniqueId())) {
             nick.nickOnConnect(player, nick.getNick(player.getUniqueId()));
         }
     }
 
 
     @Deprecated
-    public static void callFirstOnJoin(PlayerJoinEvent e) {}
-    
+    public static void callFirstOnJoin(PlayerJoinEvent e) {
+    }
+
     private void create(Player p) {
         DatabaseManager databaseManager = gameChest.getDatabaseManager();
 
-        if(!databaseManager.getDatabaseTerms().existsPlayer(p.getUniqueId())) {
+        if (!databaseManager.getDatabaseTerms().existsPlayer(p.getUniqueId())) {
             databaseManager.getDatabaseTerms().createPlayer(p.getUniqueId());
             return;
         }
@@ -94,12 +96,12 @@ public class JoinListener implements Listener {
             // checking name update
             DatabaseUuidBuffer databaseUuidBuffer = databaseManager.getDatabaseUuidBuffer();
             String lastName = null;
-            if(databasePlayer.getDatabaseElement(DatabasePlayerObject.LAST_NAME).getObject() != null)
+            if (databasePlayer.getDatabaseElement(DatabasePlayerObject.LAST_NAME).getObject() != null)
                 lastName = databasePlayer.getDatabaseElement(DatabasePlayerObject.LAST_NAME).getAsString();
 
-            if(lastName == null) {
+            if (lastName == null) {
                 databaseUuidBuffer.createPlayer(p.getName(), p.getUniqueId());
-            } else if(!lastName.equals(p.getName())) {
+            } else if (!lastName.equals(p.getName())) {
                 databaseUuidBuffer.removePlayer(lastName);
                 databaseUuidBuffer.createPlayer(p.getName(), p.getUniqueId());
             }
@@ -117,7 +119,7 @@ public class JoinListener implements Listener {
             String value = skin.getSkinValue();
             String signature = skin.getSkinSignature();
 
-            if(value != null && signature != null) {
+            if (value != null && signature != null) {
                 Document skinTextures = new Document();
                 skinTextures.put(DatabaseNickObject.SkinObject.VALUE.getName(), value);
                 skinTextures.put(DatabaseNickObject.SkinObject.SIGNATURE.getName(), signature);

@@ -5,10 +5,6 @@ import de.gamechest.commands.*;
 import de.gamechest.commands.ban.BanCommand;
 import de.gamechest.commands.ban.KickCommand;
 import de.gamechest.commands.ban.UnbanCommand;
-import de.gamechest.commands.cloud.GotoCommand;
-import de.gamechest.commands.cloud.JoinCommand;
-import de.gamechest.commands.cloud.ServerCommand;
-import de.gamechest.commands.cloud.StopCommand;
 import de.gamechest.commands.msg.MsgCommand;
 import de.gamechest.commands.msg.RCommand;
 import de.gamechest.commands.party.PartyChatCommand;
@@ -38,11 +34,6 @@ public class CommandHandler {
     public static void registerAllCommands() {
 
         GCCommand[] commands = {
-                new GotoCommand(),
-                new JoinCommand(),
-                new ServerCommand(),
-                new StopCommand(),
-
                 new BanCommand(),
                 new KickCommand(),
                 new UnbanCommand(),

@@ -2,6 +2,8 @@ package de.gamechest.party;
 
 import com.google.gson.JsonObject;
 import de.bytelist.bytecloud.bungee.ByteCloudMaster;
+import de.bytelist.bytecloud.common.bungee.BungeeCloud;
+import de.bytelist.bytecloud.common.server.CloudServer;
 import de.gamechest.GameChest;
 import de.gamechest.common.ChestPrefix;
 import de.gamechest.database.onlineplayer.DatabaseOnlinePlayerObject;
@@ -145,8 +147,8 @@ public class Party {
             JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty("packet", "PartyDelete");
             jsonObject.addProperty("partyId", partyId);
-            for(String lobby : ByteCloudMaster.getInstance().getCloudHandler().getServerInDatabase("LOBBY")) {
-                gameChest.getPacketHandler().sendPacket(lobby, jsonObject);
+            for (CloudServer lobbyServer : BungeeCloud.getInstance().getCloudAPI().getServerGroup("Lobby").getServers()) {
+                gameChest.getPacketHandler().sendPacket(lobbyServer.getServerId(), jsonObject);
             }
         }
         this.partyId = null;
