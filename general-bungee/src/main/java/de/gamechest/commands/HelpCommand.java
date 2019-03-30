@@ -43,7 +43,7 @@ public class HelpCommand extends GCCommand {
 //                sender.sendMessage("§8\u00BB §e/barrier §7- Erhalte eine Barriere");
 //                break;
             default:
-                sender.sendMessage(ChestPrefix.PREFIX + "§6Befehle des Game-ChestPrefix.de Netzwerkes: §7(1/1)");
+                sender.sendMessage(ChestPrefix.PREFIX + "§6Befehle des Game-Chest.de Netzwerkes: §7(1/1)");
                 sender.sendMessage("§8\u00BB §e/lobby §7- Kehre zur Lobby zurück");
                 sender.sendMessage("§8\u00BB §e/stats §7- Erfahre deine aktuellen Statistiken");
                 sender.sendMessage("§8\u00BB §e/msg §7- Schreibe mit anderen Spielern");
