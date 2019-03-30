@@ -2,7 +2,6 @@ package de.gamechest.listener;
 
 import de.bytelist.bytecloud.common.server.CloudServer;
 import de.bytelist.bytecloud.common.spigot.SpigotCloud;
-import de.bytelist.bytecloud.core.ByteCloudCore;
 import de.gamechest.BountifulAPI;
 import de.gamechest.GameChest;
 import de.gamechest.Skin;
@@ -49,10 +48,6 @@ public class JoinListener implements Listener {
 
             if (gameChest.isCloudEnabled()) {
                 CloudServer cloudServer = SpigotCloud.getInstance().getCloudAPI().getServer(SpigotCloud.getInstance().getCloudAPI().getCurrentServerId());
-
-                System.out.println("ByteCloudCore.getInstance().getServerId(): "+ByteCloudCore.getInstance().getServerId());
-                System.out.println("SpigotCloud.getInstance().getServerId(): "+SpigotCloud.getInstance().getServerId());
-                System.out.println("SpigotCloud.getInstance().getCloudAPI().getCurrentServerId(): "+SpigotCloud.getInstance().getCloudAPI().getCurrentServerId());
 
                 if (cloudServer.isServerPermanent()) {
                     serverId = cloudServer.getServerId();
