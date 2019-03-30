@@ -47,7 +47,7 @@ public class JoinListener implements Listener {
             String serverId = Bukkit.getServerName();
 
             if (gameChest.isCloudEnabled()) {
-                CloudServer cloudServer = SpigotCloud.getInstance().getCloudAPI().getServer(SpigotCloud.getInstance().getServerId());
+                CloudServer cloudServer = SpigotCloud.getInstance().getCloudAPI().getServer(SpigotCloud.getInstance().getCloudAPI().getCurrentServerId());
 
                 if (cloudServer.isServerPermanent()) {
                     serverId = cloudServer.getServerId();
@@ -58,7 +58,7 @@ public class JoinListener implements Listener {
             }
 
             BountifulAPI.sendTabTitle(player,
-                    " §6Game-ChestPrefix§f.§6de §8[§b1.9 §f§l- §c1.12§8]  \n" +
+                    " §6Game-Chest§f.§6de §8[§b1.9 §f§l- §c1.12§8]  \n" +
                             "§fAktueller Server: §e" + serverId,
                     "§7Willkommen, §c" + player.getName() + "§7!\n" +
                             "  §fInformationen findest du unter §a/help§f!  ");
