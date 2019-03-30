@@ -2,10 +2,12 @@ package de.gamechest;
 
 import com.google.gson.JsonObject;
 import com.voxelboxstudios.resilent.GCPacketClient;
+import de.bytelist.bytecloud.common.CloudPermissionCheck;
 import de.bytelist.bytecloud.core.ByteCloudCore;
 import de.gamechest.chatlog.ChatLog;
 import de.gamechest.coins.Coins;
 import de.gamechest.commands.*;
+import de.gamechest.common.Chest;
 import de.gamechest.common.ChestPrefix;
 import de.gamechest.common.Rank;
 import de.gamechest.common.spigot.SpigotChest;
@@ -111,6 +113,8 @@ public class GameChest extends JavaPlugin implements SpigotChestPlugin {
         for (Listener listener : listeners) {
             getServer().getPluginManager().registerEvents(listener, this);
         }
+
+        ByteCloudCore.getInstance().setPermissionCheck(new PermissionCheck());
 
         getServer().getConsoleSender().sendMessage(ChestPrefix.PREFIX + "§aEnabled!");
     }
@@ -233,5 +237,19 @@ public class GameChest extends JavaPlugin implements SpigotChestPlugin {
     @Override
     public void sendNoPermissionMessage(CommandSender sender) {
         sender.sendMessage("§cDu hast keine Berechtigung für diesen Befehl!");
+    }
+
+
+    public static class PermissionCheck implements CloudPermissionCheck<Player> {
+
+        @Override
+        public boolean hasPermission(String permission, Player checker) {
+            return GameChest.getInstance().hasRank(checker.getUniqueId(), Chest.getPermissionRank().getOrDefault(permission, Rank.DEVELOPER));
+        }
+
+        @Override
+        public String getNoPermissionMessage() {
+            return "§cDu hast keine Berechtigung für diesen Befehl!";
+        }
     }
 }
