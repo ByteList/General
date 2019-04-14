@@ -39,8 +39,7 @@ public class BugReportCommand extends GCCommand implements TabExecutor {
                         sender.sendMessage(ChestPrefix.PREFIX + "§cDu hast keine Berechtigung für diesen Befehl!");
                         return;
                     }
-                    List<String> bugIds = new ArrayList<>();
-                    bugIds.addAll(databaseManager.getDatabaseBugreport().getWaitingReports());
+                    List<String> bugIds = new ArrayList<>(databaseManager.getDatabaseBugreport().getWaitingReports());
 
                     if (bugIds.size() == 0) {
                         sender.sendMessage(ChestPrefix.PREFIX_BUG_REPORT + "§aEs existieren keine offenen Bugs!");
@@ -62,20 +61,19 @@ public class BugReportCommand extends GCCommand implements TabExecutor {
                         sender.sendMessage(ChestPrefix.PREFIX + "§cDu hast keine Berechtigung für diesen Befehl!");
                         return;
                     }
-                    List<String> bugIds = new ArrayList<>();
-                    bugIds.addAll(databaseManager.getDatabaseBugreport().getBugreportIds());
+                    List<String> bugIds = new ArrayList<>(databaseManager.getDatabaseBugreport().getBugreportIds());
 
                     if (bugIds.size() == 0) {
                         sender.sendMessage(ChestPrefix.PREFIX_BUG_REPORT + "§aEs existieren keine Bugs!");
                         return;
                     }
 
-                    String ids = "";
+                    StringBuilder ids = new StringBuilder();
                     for (String bugId : bugIds) {
-                        ids = ids + "§c" + bugId + " §7(§e" + BugReason.valueOf(databaseManager.getDatabaseBugreport().getDatabaseElement(bugId, DatabaseBugreportObject.REASON).getAsString()) + "§7)§8" + ", ";
+                        ids.append("§c").append(bugId).append(" §7(§e").append(BugReason.valueOf(databaseManager.getDatabaseBugreport().getDatabaseElement(bugId, DatabaseBugreportObject.REASON).getAsString())).append("§7)§8").append(", ");
                     }
-                    ids = ids + "#";
-                    ids = ids.replace(", #", "");
+                    ids.append("#");
+                    ids = new StringBuilder(ids.toString().replace(", #", ""));
 
                     sender.sendMessage(ChestPrefix.PREFIX_BUG_REPORT + "§bAlle Bug-Reports: " + ids);
                     return;
@@ -103,14 +101,14 @@ public class BugReportCommand extends GCCommand implements TabExecutor {
 
                     pp.sendMessage(ChestPrefix.PREFIX_BUG_REPORT + "§bInfo über den Bug-Report §e" + bugId + "§b:");
                     pp.sendMessage("§8\u00BB §7Grund: §a" + BugReason.valueOf(databaseManager.getDatabaseBugreport().getDatabaseElement(bugId, DatabaseBugreportObject.REASON).getAsString()).getBetterReason());
-                    pp.sendMessage("§8\u00BB §7Server-Id: §a" + databaseManager.getDatabaseBugreport().getDatabaseElement(bugId, DatabaseBugreportObject.SERVER_ID).getAsString());
+                    pp.sendMessage("§8\u00BB §7Server-ID: §a" + databaseManager.getDatabaseBugreport().getDatabaseElement(bugId, DatabaseBugreportObject.SERVER_ID).getAsString());
                     if (databaseManager.getDatabaseBugreport().getDatabaseElement(bugId, DatabaseBugreportObject.PREVIOUS_SERVER_ID).getObject() != null)
-                        pp.sendMessage("§8\u00BB §7Vorherige Server-Id: §e" + databaseManager.getDatabaseBugreport().getDatabaseElement(bugId, DatabaseBugreportObject.PREVIOUS_SERVER_ID).getAsString());
+                        pp.sendMessage("§8\u00BB §7Vorherige Server-ID: §e" + databaseManager.getDatabaseBugreport().getDatabaseElement(bugId, DatabaseBugreportObject.PREVIOUS_SERVER_ID).getAsString());
                     pp.sendMessage("§8\u00BB §7Extra Nachricht: §e" + databaseManager.getDatabaseBugreport().getDatabaseElement(bugId, DatabaseBugreportObject.EXTRA_MESSAGE).getAsString());
                     pp.sendMessage("§8\u00BB §7Bug-Status: " + BugState.valueOf(databaseManager.getDatabaseBugreport().getDatabaseElement(bugId, DatabaseBugreportObject.STATE).getAsString()).getBetterString());
                     pp.sendMessage("§8\u00BB §7Erstellt am: §e" + databaseManager.getDatabaseBugreport().getDatabaseElement(bugId, DatabaseBugreportObject.CREATE_DATE).getAsString());
                     if (hasRank) {
-                        pp.sendMessage("§8\u00BB §7Reporter: §9" + gameChest.getProxy().getPlayer(UUID.fromString(databaseManager.getDatabaseBugreport().getDatabaseElement(bugId, DatabaseBugreportObject.CREATED_BY).getAsString())));
+                        pp.sendMessage("§8\u00BB §7Erstellt von: §9" + gameChest.getProxy().getPlayer(UUID.fromString(databaseManager.getDatabaseBugreport().getDatabaseElement(bugId, DatabaseBugreportObject.CREATED_BY).getAsString())));
                     }
                     return;
                 }
@@ -148,12 +146,12 @@ public class BugReportCommand extends GCCommand implements TabExecutor {
                 String reasonStr = args[0];
 
                 if (!BugReason.getBetterBugReasonsAsString().contains(reasonStr)) {
-                    String reasons = "";
+                    StringBuilder reasons = new StringBuilder();
                     for (String rs : BugReason.getBetterBugReasonsAsString()) {
-                        reasons = reasons + "§e"+rs + "§7, ";
+                        reasons.append("§e").append(rs).append("§7, ");
                     }
-                    reasons = reasons + "#";
-                    reasons = reasons.replace(", #", "");
+                    reasons.append("#");
+                    reasons = new StringBuilder(reasons.toString().replace(", #", ""));
 
                     sender.sendMessage(ChestPrefix.PREFIX + "§cKein Bug-Grund!");
                     sender.sendMessage("§8\u00BB §7Bug-Gründe: " + reasons);
@@ -161,13 +159,13 @@ public class BugReportCommand extends GCCommand implements TabExecutor {
                 }
                 BugReason bugReason = BugReason.getBugReason(reasonStr);
                 databaseManager.getAsync().getOnlinePlayer(pp.getUniqueId(), dbOPlayer-> {
-                    String extra = "";
+                    StringBuilder extra = new StringBuilder();
 
                     for (int i = 1; i < args.length; i++) {
-                        extra = extra + args[i] + " ";
+                        extra.append(args[i]).append(" ");
                     }
-                    extra = extra + "#";
-                    extra = extra.replace(" #", "");
+                    extra.append("#");
+                    extra = new StringBuilder(extra.toString().replace(" #", ""));
 
                     String bugId = "#BR" + (databaseManager.getDatabaseBugreport().getReportedBugs() + 2);
                     String serverId = pp.getServer().getInfo().getName();
@@ -175,7 +173,7 @@ public class BugReportCommand extends GCCommand implements TabExecutor {
                     if (dbOPlayer.getDatabaseElement(DatabaseOnlinePlayerObject.PREVIOUS_SERVER_ID).getObject() != null)
                         previousServerId = dbOPlayer.getDatabaseElement(DatabaseOnlinePlayerObject.PREVIOUS_SERVER_ID).getAsString();
 
-                    databaseManager.getDatabaseBugreport().createBugreport(bugId, bugReason, serverId, extra, pp.getUniqueId(), previousServerId);
+                    databaseManager.getDatabaseBugreport().createBugreport(bugId, bugReason, serverId, extra.toString(), pp.getUniqueId(), previousServerId);
                     sender.sendMessage(ChestPrefix.PREFIX_BUG_REPORT + "§aDein Bug-Report wurde erfolgreich erstellt!");
                     sender.sendMessage("§8\u00BB §7BugID: §e" + bugId);
                     sender.sendMessage("§8\u00BB §7Grund: §a" + bugReason.getBetterReason());
@@ -210,16 +208,14 @@ public class BugReportCommand extends GCCommand implements TabExecutor {
         }
 
         Set<String> matches = new HashSet<>();
-        if (args.length == 1) {
-            String search = args[0].toLowerCase();
-            for (String bugReason : BugReason.getBetterBugReasonsAsString()) {
-                if(bugReason.toLowerCase().startsWith(search)) {
-                    matches.add(bugReason);
-                }
+        String search = args[0].toLowerCase();
+        for (String bugReason : BugReason.getBetterBugReasonsAsString()) {
+            if(bugReason.toLowerCase().startsWith(search)) {
+                matches.add(bugReason);
             }
-            if ("info".startsWith(search)) {
-                matches.add("info");
-            }
+        }
+        if ("info".startsWith(search)) {
+            matches.add("info");
         }
 
         return matches;

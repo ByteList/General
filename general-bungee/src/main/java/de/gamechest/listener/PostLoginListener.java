@@ -28,7 +28,7 @@ public class PostLoginListener implements Listener {
             return;
         }
 
-        if(gameChest.equalsRank(player.getUniqueId(), Rank.DEVELOPER)) {
+        if(gameChest.hasRank(player.getUniqueId(), Rank.DEVELOPER)) {
             int waiting = databaseManager.getDatabaseBugreport().getWaitingReports().size();
             if(waiting > 0) {
                 player.sendMessage(ChestPrefix.PREFIX_BUG_REPORT +"§bEs existieren §e"+waiting+"§b offene Bug-Reports!");
