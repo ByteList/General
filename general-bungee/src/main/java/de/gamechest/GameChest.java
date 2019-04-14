@@ -192,6 +192,15 @@ public class GameChest extends Plugin implements BungeeChestPlugin {
     }
 
     @Override
+    public String getPlayername(UUID uuid) {
+        DatabasePlayer dbPlayer = new DatabasePlayer(this.databaseManager, uuid, DatabasePlayerObject.LAST_NAME);
+        if(dbPlayer.existsPlayer()) {
+            return dbPlayer.getDatabaseElement(DatabasePlayerObject.LAST_NAME).getAsString();
+        }
+        return null;
+    }
+
+    @Override
     public void sendNoPermissionMessage(CommandSender sender) {
         sender.sendMessage("§cDu hast keine Berechtigung für diesen Befehl!");
     }

@@ -189,6 +189,15 @@ public class GameChest extends JavaPlugin implements SpigotChestPlugin {
         return getServer().getPluginManager().isPluginEnabled("ByteCloudAPI");
     }
 
+    @Override
+    public String getPlayername(UUID uuid) {
+        DatabasePlayer dbPlayer = new DatabasePlayer(this.databaseManager, uuid, DatabasePlayerObject.LAST_NAME);
+        if(dbPlayer.existsPlayer()) {
+            return dbPlayer.getDatabaseElement(DatabasePlayerObject.LAST_NAME).getAsString();
+        }
+        return null;
+    }
+
 //    public void addPlayerToCloudServer(Player player) {
 //        if (isCloudEnabled()) {
 //            if(this.nick.isNicked(player.getUniqueId()))
