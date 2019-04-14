@@ -4,3 +4,5 @@ author: ByteList
 website: https://bytelist.de/
 
 main: de.gamechest.GameChest
+
+softdepend: [ByteCloudAPI]
