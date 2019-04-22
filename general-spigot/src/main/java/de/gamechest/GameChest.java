@@ -29,9 +29,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
+import org.bukkit.metadata.Metadatable;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
@@ -246,6 +251,23 @@ public class GameChest extends JavaPlugin implements SpigotChestPlugin {
     @Override
     public void sendNoPermissionMessage(CommandSender sender) {
         sender.sendMessage("§cDu hast keine Berechtigung für diesen Befehl!");
+    }
+
+    @Override
+    public void setMetadata(Metadatable object, String key, Object value, Plugin plugin) {
+        object.setMetadata(key, new FixedMetadataValue(plugin,value));
+    }
+
+    @Override
+    public Object getMetadata(Metadatable object, String key, Plugin plugin) {
+        List<MetadataValue> values = object.getMetadata(key);
+        for (MetadataValue value : values) {
+            // Plugins are singleton objects, so using == is safe here
+            if (value.getOwningPlugin() == plugin) {
+                return value.value();
+            }
+        }
+        return null;
     }
 
 
