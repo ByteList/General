@@ -46,12 +46,12 @@ public class BugReportCommand extends GCCommand implements TabExecutor {
                         return;
                     }
 
-                    String ids = "";
+                    StringBuilder ids = new StringBuilder();
                     for (String bugId : bugIds) {
-                        ids = ids + "§c" + bugId + " §7(§e" + BugReason.valueOf(databaseManager.getDatabaseBugreport().getDatabaseElement(bugId, DatabaseBugreportObject.REASON).getAsString()) + "§7)§8" + ", ";
+                        ids.append("§c").append(bugId).append(" §7(§e").append(BugReason.valueOf(databaseManager.getDatabaseBugreport().getDatabaseElement(bugId, DatabaseBugreportObject.REASON).getAsString())).append("§7)§8").append(", ");
                     }
-                    ids = ids + "#";
-                    ids = ids.replace(", #", "");
+                    ids.append("#");
+                    ids = new StringBuilder(ids.toString().replace(", #", ""));
 
                     sender.sendMessage(ChestPrefix.PREFIX_BUG_REPORT + "§bOffene Bug-Reports: " + ids);
                     return;
@@ -116,7 +116,7 @@ public class BugReportCommand extends GCCommand implements TabExecutor {
 
             if (args.length == 3) {
                 if (args[0].equalsIgnoreCase("edit")) {
-                    if (!gameChest.equalsRank(pp.getUniqueId(), Rank.DEVELOPER)) {
+                    if (!gameChest.hasRank(pp.getUniqueId(), Rank.DEVELOPER)) {
                         sender.sendMessage(ChestPrefix.PREFIX + "§cDu hast keine Berechtigung für diesen Befehl!");
                         return;
                     }
@@ -203,21 +203,29 @@ public class BugReportCommand extends GCCommand implements TabExecutor {
 
     @Override
     public Iterable<String> onTabComplete(CommandSender sender, String[] args) {
+        Set<String> matches = new HashSet<>();
+
+        if(sender instanceof ProxiedPlayer) {
+            if(gameChest.hasRank(((ProxiedPlayer) sender).getUniqueId(), Rank.DEVELOPER)) {
+                matches.add("info");
+                matches.add("waiting");
+                matches.add("all");
+
+                if(args.length == 3) {
+                    return BugState.getBugStateAsString();
+                }
+            }
+        }
         if (args.length > 1 || args.length == 0) {
             return ImmutableSet.of();
         }
 
-        Set<String> matches = new HashSet<>();
         String search = args[0].toLowerCase();
         for (String bugReason : BugReason.getBetterBugReasonsAsString()) {
             if(bugReason.toLowerCase().startsWith(search)) {
                 matches.add(bugReason);
             }
         }
-        if ("info".startsWith(search)) {
-            matches.add("info");
-        }
-
         return matches;
     }
 }

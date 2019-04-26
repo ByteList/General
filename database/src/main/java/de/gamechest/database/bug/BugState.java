@@ -3,7 +3,6 @@ package de.gamechest.database.bug;
 import lombok.Getter;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by ByteList on 25.04.2017.
@@ -23,8 +22,8 @@ public enum BugState {
     }
 
 
-    public static List<String> getBugStateAsString() {
-        java.util.List<String> units = new ArrayList<>();
+    public static ArrayList<String> getBugStateAsString() {
+        ArrayList<String> units = new ArrayList<>();
         for (BugState unit : values()) {
             units.add(unit.toString());
         }
