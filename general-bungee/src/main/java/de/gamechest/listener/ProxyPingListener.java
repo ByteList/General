@@ -28,7 +28,7 @@ public class ProxyPingListener implements Listener {
 
         ConnectManager.ConnectState connectState = connectManager.getConnectState();
 
-        String firstLine = "§6Game-Chest§f.§6de §7\u00BB §eSurvival §f& §eSpielmodi §8[§b1.9 §f- §c1.12§8]\n";
+        String firstLine = "§6Game-Chest§f.§6de §7\u00BB §eSurvival §f& §eSpielmodi §8[§b1.9 §f- §c1.13.2§8]\n";
 
         /*
          * 315 - 1.11 | 210 - 1.10 | 107 - 1.9

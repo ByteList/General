@@ -58,7 +58,7 @@ public class JoinListener implements Listener {
             }
 
             BountifulAPI.sendTabTitle(player,
-                    " §6Game-Chest§f.§6de §8[§b1.9 §f§l- §c1.12§8]  \n" +
+                    " §6Game-Chest§f.§6de §8[§b1.9 §f§l- §c1.13.2§8]  \n" +
                             "§fAktueller Server: §e" + serverId,
                     "§7Willkommen, §c" + player.getName() + "§7!\n" +
                             "  §fInformationen findest du unter §a/help§f!  ");
