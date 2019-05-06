@@ -167,7 +167,8 @@ public class ActivateCommand extends GCCommand {
                         return;
                     }
 
-                    String code = "/"+UUID.randomUUID().toString().replace("-", "cP")+"=";
+                    String code = gameChest.randomKey(4)+"-"+gameChest.randomKey(4)+"-"+gameChest.randomKey(4)+"-"+gameChest.randomKey(4);
+                    code = code.toUpperCase();
 
                     if(gameChest.getDatabaseManager().getDatabaseActivate().existsCode(code)) {
                         sender.sendMessage(ChestPrefix.PREFIX_ACTIVATE+"§cTry again! Error - Code already exists: §7"+code);
@@ -192,7 +193,8 @@ public class ActivateCommand extends GCCommand {
                         return;
                     }
 
-                    String code = "/"+UUID.randomUUID().toString().replace("-", "cC")+"=";
+                    String code = gameChest.randomKey(4)+"-"+gameChest.randomKey(4)+"-"+gameChest.randomKey(4)+"-"+gameChest.randomKey(4);
+                    code = code.toUpperCase();
 
                     if(gameChest.getDatabaseManager().getDatabaseActivate().existsCode(code)) {
                         sender.sendMessage(ChestPrefix.PREFIX_ACTIVATE+"§cTry again! Error - Code already exists: §7"+code);
