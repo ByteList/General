@@ -70,7 +70,7 @@ public class GcgCommand extends GCCommand {
             }
 
             if(args[0].equalsIgnoreCase("plimit")) {
-                Integer plimit;
+                int plimit;
                 try {
                     plimit = Integer.parseInt(args[1]);
                 } catch (NumberFormatException ex) {
@@ -87,7 +87,11 @@ public class GcgCommand extends GCCommand {
             if(args[0].equalsIgnoreCase("whitelist")) {
                 if(args[1].equalsIgnoreCase("add")) {
                     String name = args[2];
-                    UUID uuid = UUIDFetcher.getUUID(name);
+                    UUID uuid = getUUID(name);
+                    if(uuid == null) {
+                        sender.sendMessage(ChestPrefix.PREFIX+"§cKonnte den Spieler nicht in der GameChest & Mojang Datenbank finden.");
+                        return;
+                    }
 
                     if(connectManager.getWhiteList().contains(uuid)) {
                         sender.sendMessage(ChestPrefix.PREFIX+"§c"+name+" steht schon auf der WhiteList");
@@ -100,7 +104,11 @@ public class GcgCommand extends GCCommand {
                 }
                 if(args[1].equalsIgnoreCase("remove")) {
                     String name = args[2];
-                    UUID uuid = UUIDFetcher.getUUID(name);
+                    UUID uuid = getUUID(name);
+                    if(uuid == null) {
+                        sender.sendMessage(ChestPrefix.PREFIX+"§cKonnte den Spieler nicht in der GameChest & Mojang Datenbank finden.");
+                        return;
+                    }
 
                     if(!connectManager.getWhiteList().contains(uuid)) {
                         sender.sendMessage(ChestPrefix.PREFIX+"§c"+name+" steht nicht auf der WhiteList");
@@ -134,5 +142,15 @@ public class GcgCommand extends GCCommand {
         sender.sendMessage("§8\u00BB §c/gcg plimit <Limit>");
         sender.sendMessage("§8\u00BB §c/gcg whitelist add <Player>");
         sender.sendMessage("§8\u00BB §c/gcg whitelist remove <Player>");
+    }
+
+    private UUID getUUID(String name) {
+        try {
+            return UUIDFetcher.getUUID(name);
+        } catch (Exception ex) {
+            System.out.println("Couldn't find player \""+name+"\":");
+            ex.printStackTrace();
+            return null;
+        }
     }
 }
