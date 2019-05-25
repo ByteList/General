@@ -1,6 +1,7 @@
 package de.gamechest.nick;
 
 import com.mojang.authlib.GameProfile;
+import de.gamechest.GameChest;
 import de.gamechest.reflector.Reflection;
 import net.minecraft.server.v1_9_R2.PacketPlayOutEntityDestroy;
 import net.minecraft.server.v1_9_R2.PacketPlayOutEntityTeleport;
@@ -72,10 +73,11 @@ class NickPackets {
             Reflection.sendListPacket(players, teleport);
         }
 
-        players.forEach(player -> {
-            player.showPlayer(p);
-            p.showPlayer(player);
-        });
+        Bukkit.getScheduler().runTaskLater(GameChest.getInstance(), ()->
+                players.forEach(player -> {
+                    player.showPlayer(p);
+                    p.showPlayer(player);
+                }), 15L);
 
         System.out.println("[GCG/ChestNick] Player " + p.getCustomName() + " is now nicked as " + nickname);
     }
@@ -130,10 +132,11 @@ class NickPackets {
 
         Reflection.sendListPacket(players, teleport);
 
+        Bukkit.getScheduler().runTaskLater(GameChest.getInstance(), ()->
         players.forEach(player -> {
             player.showPlayer(p);
             p.showPlayer(player);
-        });
+        }), 15L);
 
         System.out.println("[GCG/ChestNick] Player " + p.getName() + " is now unnicked");
     }
