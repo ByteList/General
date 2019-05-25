@@ -101,6 +101,9 @@ class NickPackets {
         PacketPlayOutNamedEntitySpawn spawn = new PacketPlayOutNamedEntitySpawn(cp.getHandle());
         Reflection.sendListPacket(players, spawn);
 
+        PacketPlayOutEntityTeleport teleport = new PacketPlayOutEntityTeleport(cp.getHandle());
+        Reflection.sendListPacket(players, teleport);
+
         players.forEach(player -> {
             player.showPlayer(p);
             p.showPlayer(player);
