@@ -91,7 +91,11 @@ public class FakePlayer {
         watcher.register(new DataWatcherObject<>(12, DataWatcherRegistry.a), (byte) 0xFF);
         set(packet, "h", watcher);
         addToTabList();
+
+        PacketPlayOutEntityTeleport teleportPacket = new PacketPlayOutEntityTeleport(this.entityFakePlayer);
+
         sendPacket(packet);
+        sendPacket(teleportPacket);
         this.spawned = true;
     }
 
