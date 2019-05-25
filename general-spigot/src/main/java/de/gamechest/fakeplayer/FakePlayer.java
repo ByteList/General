@@ -2,6 +2,7 @@ package de.gamechest.fakeplayer;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import de.gamechest.reflector.Reflection;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.server.v1_9_R2.*;
@@ -93,6 +94,21 @@ public class FakePlayer {
         addToTabList();
 
         PacketPlayOutEntityTeleport teleportPacket = new PacketPlayOutEntityTeleport(this.entityFakePlayer);
+        PacketPlayOutEntityTeleport teleport = new PacketPlayOutEntityTeleport();
+        float pitch = location.getPitch(), yaw = location.getYaw();
+        double x = location.getX(), y = location.getY(), z = location.getZ();
+        double yd = -Math.sin(Math.toRadians(pitch));
+        double xz = Math.cos(Math.toRadians(pitch));
+        double xd = -xz * Math.sin(Math.toRadians(yaw));
+        double zd = xz * Math.cos(Math.toRadians(yaw));
+
+        Reflection.setValue(teleport, "a", this.entityFakePlayer.getId());
+        Reflection.setValue(teleport, "b", x + (xd * 2));
+        Reflection.setValue(teleport, "c", y + (yd * 2));
+        Reflection.setValue(teleport, "d", z + (zd * 2));
+        Reflection.setValue(teleport, "g", false);
+
+        sendPacket(teleport);
 
         sendPacket(packet);
         sendPacket(teleportPacket);

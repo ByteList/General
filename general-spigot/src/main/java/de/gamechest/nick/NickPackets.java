@@ -55,7 +55,20 @@ class NickPackets {
             PacketPlayOutNamedEntitySpawn spawn = new PacketPlayOutNamedEntitySpawn(cp.getHandle());
             Reflection.sendListPacket(players, spawn);
 
-            PacketPlayOutEntityTeleport teleport = new PacketPlayOutEntityTeleport(cp.getHandle());
+            PacketPlayOutEntityTeleport teleport = new PacketPlayOutEntityTeleport();
+            float pitch = cp.getLocation().getPitch(), yaw = cp.getLocation().getYaw();
+            double x = cp.getLocation().getX(), y = cp.getLocation().getY(), z = cp.getLocation().getZ();
+            double yd = -Math.sin(Math.toRadians(pitch));
+            double xz = Math.cos(Math.toRadians(pitch));
+            double xd = -xz * Math.sin(Math.toRadians(yaw));
+            double zd = xz * Math.cos(Math.toRadians(yaw));
+
+            Reflection.setValue(teleport, "a", cp.getHandle().getId());
+            Reflection.setValue(teleport, "b", x + (xd * 2));
+            Reflection.setValue(teleport, "c", y + (yd * 2));
+            Reflection.setValue(teleport, "d", z + (zd * 2));
+            Reflection.setValue(teleport, "g", false);
+
             Reflection.sendListPacket(players, teleport);
         }
 
@@ -101,7 +114,20 @@ class NickPackets {
         PacketPlayOutNamedEntitySpawn spawn = new PacketPlayOutNamedEntitySpawn(cp.getHandle());
         Reflection.sendListPacket(players, spawn);
 
-        PacketPlayOutEntityTeleport teleport = new PacketPlayOutEntityTeleport(cp.getHandle());
+        PacketPlayOutEntityTeleport teleport = new PacketPlayOutEntityTeleport();
+        float pitch = cp.getLocation().getPitch(), yaw = cp.getLocation().getYaw();
+        double x = cp.getLocation().getX(), y = cp.getLocation().getY(), z = cp.getLocation().getZ();
+        double yd = -Math.sin(Math.toRadians(pitch));
+        double xz = Math.cos(Math.toRadians(pitch));
+        double xd = -xz * Math.sin(Math.toRadians(yaw));
+        double zd = xz * Math.cos(Math.toRadians(yaw));
+
+        Reflection.setValue(teleport, "a", cp.getHandle().getId());
+        Reflection.setValue(teleport, "b", x + (xd * 2));
+        Reflection.setValue(teleport, "c", y + (yd * 2));
+        Reflection.setValue(teleport, "d", z + (zd * 2));
+        Reflection.setValue(teleport, "g", false);
+
         Reflection.sendListPacket(players, teleport);
 
         players.forEach(player -> {
