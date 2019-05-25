@@ -3,6 +3,7 @@ package de.gamechest.nick;
 import com.mojang.authlib.GameProfile;
 import de.gamechest.reflector.Reflection;
 import net.minecraft.server.v1_9_R2.PacketPlayOutEntityDestroy;
+import net.minecraft.server.v1_9_R2.PacketPlayOutEntityTeleport;
 import net.minecraft.server.v1_9_R2.PacketPlayOutNamedEntitySpawn;
 import net.minecraft.server.v1_9_R2.PacketPlayOutPlayerInfo;
 import org.bukkit.Bukkit;
@@ -53,6 +54,9 @@ class NickPackets {
             nick.updateSkin(p);
             PacketPlayOutNamedEntitySpawn spawn = new PacketPlayOutNamedEntitySpawn(cp.getHandle());
             Reflection.sendListPacket(players, spawn);
+
+            PacketPlayOutEntityTeleport teleport = new PacketPlayOutEntityTeleport(cp.getHandle());
+            Reflection.sendListPacket(players, teleport);
         }
 
         players.forEach(player -> {
