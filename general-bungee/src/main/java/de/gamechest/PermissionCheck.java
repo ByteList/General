@@ -1,6 +1,5 @@
 package de.gamechest;
 
-import de.bytelist.bytecloud.common.CloudPermissionCheck;
 import de.gamechest.common.Chest;
 import de.gamechest.common.Rank;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -10,7 +9,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
  * <p>
  * Copyright by ByteList - https://bytelist.de/
  */
-public class PermissionCheck implements CloudPermissionCheck<ProxiedPlayer> {
+public class PermissionCheck implements de.bytelist.bytecloud.common.CloudPermissionCheck<ProxiedPlayer> {
 
     @Override
     public boolean hasPermission(String permission, ProxiedPlayer checker) {
