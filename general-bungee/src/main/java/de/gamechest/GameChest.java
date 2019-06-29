@@ -2,10 +2,8 @@ package de.gamechest;
 
 import com.voxelboxstudios.resilent.GCPacketServer;
 import de.bytelist.bytecloud.bungee.ByteCloudMaster;
-import de.bytelist.bytecloud.common.CloudPermissionCheck;
 import de.gamechest.coins.Coins;
 import de.gamechest.commands.base.CommandHandler;
-import de.gamechest.common.Chest;
 import de.gamechest.common.ChestPrefix;
 import de.gamechest.common.Rank;
 import de.gamechest.common.bungee.BungeeChest;
@@ -106,7 +104,9 @@ public class GameChest extends Plugin implements BungeeChestPlugin {
         for (Listener listener : listeners)
             getProxy().getPluginManager().registerListener(this, listener);
 
-        ByteCloudMaster.getInstance().setPermissionCheck(new PermissionCheck());
+        if(this.isCloudEnabled()) {
+            ByteCloudMaster.getInstance().setPermissionCheck(new PermissionCheck());
+        }
 
         getProxy().getConsole().sendMessage(ChestPrefix.PREFIX + "§aEnabled!");
     }
@@ -241,20 +241,6 @@ public class GameChest extends Plugin implements BungeeChestPlugin {
     public void sendNoPermissionMessage(CommandSender sender) {
         sender.sendMessage("§cDu hast keine Berechtigung für diesen Befehl!");
     }
-
-    public static class PermissionCheck implements CloudPermissionCheck<ProxiedPlayer> {
-
-        @Override
-        public boolean hasPermission(String permission, ProxiedPlayer checker) {
-            return GameChest.getInstance().hasRank(checker.getUniqueId(), Chest.getPermissionRank().getOrDefault(permission, Rank.DEVELOPER));
-        }
-
-        @Override
-        public String getNoPermissionMessage() {
-            return "§cDu hast keine Berechtigung für diesen Befehl!";
-        }
-    }
-
 //    private void insertNicks() {
 //        new Thread("Init Nicks Thread") {
 //            @Override
