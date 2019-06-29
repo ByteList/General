@@ -120,7 +120,9 @@ public class GameChest extends Plugin implements BungeeChestPlugin {
 
     private void initConfig() {
         try {
-            File file = new File("./plugins/GameChest/", "config.yml");
+            File file = new File(this.getDataFolder(), "config.yml");
+
+            this.getDataFolder().mkdirs();
 
             if (file.exists()) {
                 this.configuration = ConfigurationProvider.getProvider(YamlConfiguration.class).load(file);
@@ -136,7 +138,7 @@ public class GameChest extends Plugin implements BungeeChestPlugin {
 
     public void saveConfig() {
         try {
-            ConfigurationProvider.getProvider(YamlConfiguration.class).save(this.configuration, new File("./plugins/GameChest/", "config.yml"));
+            ConfigurationProvider.getProvider(YamlConfiguration.class).save(this.configuration, new File(this.getDataFolder(), "config.yml"));
         } catch (IOException e) {
             e.printStackTrace();
         }

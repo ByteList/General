@@ -139,7 +139,9 @@ public class GameChest extends JavaPlugin implements SpigotChestPlugin {
     }
 
     private void initConfig() {
-        File file = new File("./plugins/GameChest/", "config.yml");
+        File file = new File(this.getDataFolder(), "config.yml");
+
+        this.getDataFolder().mkdirs();
         this.configuration = YamlConfiguration.loadConfiguration(file);
         this.configuration.options().copyDefaults(true);
         this.configuration.setDefaults(YamlConfiguration.loadConfiguration(
