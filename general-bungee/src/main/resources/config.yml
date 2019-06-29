@@ -1,0 +1,20 @@
+version: "1.2-bungee"
+database:
+  mongodb:
+    host: "game-chest.de"
+    port: 27017
+    database: "server"
+    user: ""
+    password: ""
+connection:
+  state: "DEVELOPMENT"
+  player-limit: 150
+  event-server: "---"
+motd:
+  open: "&cWartungsmodus &7| &cTwitter: @GameChestDE"
+  whitelist: "&cWartungsmodus &7| &cTwitter: @GameChestDE"
+  maintenance: "&cWartungsmodus &7| &cTwitter: @GameChestDE"
+  development: "&cWartungsmodus &7| &cTwitter: @GameChestDE"
+whitelist:
+- b0c1f5be-093b-429c-9bb5-18801a10c32a #ByteList
+- ecce8108-7c65-4211-b5dd-a76a35abb578 #ConsolemasterMC

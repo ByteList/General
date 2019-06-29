@@ -1,11 +1,5 @@
 package de.gamechest;
 
-import net.md_5.bungee.config.Configuration;
-import net.md_5.bungee.config.ConfigurationProvider;
-import net.md_5.bungee.config.YamlConfiguration;
-
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -16,116 +10,63 @@ import java.util.UUID;
  */
 public class ConnectManager {
 
-    private final File dir = new File("plugins/", "GCGeneral");
-    private final File file = new File(dir, "config.yml");
-    private Configuration cfg;
-
-    public ConnectManager() {
-        try {
-            if(!dir.exists()) dir.mkdirs();
-            if (!file.exists()) {
-                file.createNewFile();
-                cfg = ConfigurationProvider.getProvider(YamlConfiguration.class).load(file);
-
-                List<String> whiteList = new ArrayList<>();
-                whiteList.add("b0c1f5be-093b-429c-9bb5-18801a10c32a"); //Ich
-                whiteList.add("ecce8108-7c65-4211-b5dd-a76a35abb578"); //Fabi
-                whiteList.add("15dab4c9-aa26-44ea-a172-1fa8596ca7f3"); //Phil
-                whiteList.add("8aed50f3-d617-49ab-89ab-3bc83101c58b"); //Felix
-
-                cfg.set("ConnectState", ConnectState.DEVELOPMENT.toString());
-                cfg.set("Motd", "&cWartungsmodus");
-                cfg.set("PlayerLimit", 150);
-                cfg.set("WhiteList", whiteList);
-                cfg.set("EventServer", "---");
-
-                ConfigurationProvider.getProvider(YamlConfiguration.class).save(cfg, file);
-            } else
-                cfg = ConfigurationProvider.getProvider(YamlConfiguration.class).load(file);
-        } catch (IOException ex) {
-            cfg = null;
-            ex.printStackTrace();
-        }
-
-    }
+    private final GameChest gameChest = GameChest.getInstance();
 
     public void setConnectState(ConnectState connectState) {
-        cfg.set("ConnectState", connectState.toString());
-        try {
-            ConfigurationProvider.getProvider(YamlConfiguration.class).save(cfg, file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        gameChest.getConfiguration().set("connection.state", connectState.toString());
+        gameChest.saveConfig();
     }
 
     public ConnectState getConnectState() {
-        return ConnectState.valueOf(cfg.getString("ConnectState").toUpperCase());
+        return ConnectState.valueOf(gameChest.getConfiguration().getString("connection.state").toUpperCase());
     }
 
     public void setPlayerLimit(int limit) {
-        cfg.set("PlayerLimit", limit);
-        try {
-            ConfigurationProvider.getProvider(YamlConfiguration.class).save(cfg, file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        gameChest.getConfiguration().set("connection.player-limit", limit);
+        gameChest.saveConfig();
     }
 
     public int getPlayerLimit() {
-        return cfg.getInt("PlayerLimit");
+        return gameChest.getConfiguration().getInt("connection.player-limit");
     }
 
     public void setMotd(String mode, String motd) {
-        cfg.set("Motd."+mode, motd);
-        try {
-            ConfigurationProvider.getProvider(YamlConfiguration.class).save(cfg, file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        gameChest.getConfiguration().set("motd."+mode.toLowerCase(), motd);
+        gameChest.saveConfig();
     }
 
     public String getMotd(String mode) {
-        return cfg.getString("Motd."+mode);
+        return gameChest.getConfiguration().getString("motd."+mode.toLowerCase());
     }
 
     public void addUuidToWhiteList(UUID uuid) {
         if(!getWhiteList().contains(uuid)) {
-            List<String> uuids = new ArrayList<>();
-            uuids.addAll(cfg.getStringList("WhiteList"));
-            uuids.add(uuid.toString());
-            cfg.set("WhiteList", uuids);
-            try {
-                ConfigurationProvider.getProvider(YamlConfiguration.class).save(cfg, file);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            List<String> whitelist = new ArrayList<>(gameChest.getConfiguration().getStringList("whitelist"));
+            whitelist.add(uuid.toString());
+            gameChest.getConfiguration().set("whitelist", whitelist);
+            gameChest.saveConfig();
         }
     }
 
     public void removeUuidFromWhiteList(UUID uuid) {
         if(getWhiteList().contains(uuid)) {
-            List<String> uuids = new ArrayList<>();
-            uuids.addAll(cfg.getStringList("WhiteList"));
-            uuids.remove(uuid.toString());
-            cfg.set("WhiteList", uuids);
-            try {
-                ConfigurationProvider.getProvider(YamlConfiguration.class).save(cfg, file);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            List<String> whitelist = new ArrayList<>(gameChest.getConfiguration().getStringList("whitelist"));
+            whitelist.remove(uuid.toString());
+            gameChest.getConfiguration().set("whitelist", whitelist);
+            gameChest.saveConfig();
         }
     }
 
     public Collection<UUID> getWhiteList() {
-        Collection<UUID> uuids = new ArrayList<>();
-        for(String uuid : cfg.getStringList("WhiteList"))
-            uuids.add(UUID.fromString(uuid));
+        Collection<UUID> whitelist = new ArrayList<>();
+        for(String uuid : gameChest.getConfiguration().getStringList("whitelist"))
+            whitelist.add(UUID.fromString(uuid));
 
-        return uuids;
+        return whitelist;
     }
 
     public String getEventServer() {
-        return  cfg.getString("EventServer");
+        return  gameChest.getConfiguration().getString("connection.event-server");
     }
 
     public enum ConnectState {

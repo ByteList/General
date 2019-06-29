@@ -1,0 +1,8 @@
+version: "1.2-spigot"
+database:
+  mongodb:
+    host: "game-chest.de"
+    port: 27017
+    database: "server"
+    user: ""
+    password: ""

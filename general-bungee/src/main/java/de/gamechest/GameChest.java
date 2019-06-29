@@ -25,7 +25,13 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
+import net.md_5.bungee.config.Configuration;
+import net.md_5.bungee.config.ConfigurationProvider;
+import net.md_5.bungee.config.YamlConfiguration;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -41,6 +47,8 @@ public class GameChest extends Plugin implements BungeeChestPlugin {
     @Getter
     private String version = "unknown";
 
+    @Getter
+    private Configuration configuration;
     @Getter
     private DatabaseManager databaseManager;
     @Getter
@@ -70,9 +78,10 @@ public class GameChest extends Plugin implements BungeeChestPlugin {
         // 2.0.23:00342580cc947e7bf8d1eeb7fb8650ab456dc3e2
         String[] v = this.getClass().getPackage().getImplementationVersion().split(":");
         // 2.0.23:0034258
-        version = v[0]+":"+v[1].substring(0, 7);
+        version = v[0] + ":" + v[1].substring(0, 7);
 
-        initDatabase();
+        this.initConfig();
+        this.initDatabase();
 
         this.nick = new Nick();
         this.coins = new Coins();
@@ -109,9 +118,35 @@ public class GameChest extends Plugin implements BungeeChestPlugin {
         getProxy().getConsole().sendMessage(ChestPrefix.PREFIX + "§cDisabled!");
     }
 
+    private void initConfig() {
+        try {
+            File file = new File("./plugins/GameChest/", "config.yml");
+
+            if (file.exists()) {
+                this.configuration = ConfigurationProvider.getProvider(YamlConfiguration.class).load(file);
+            } else {
+                this.configuration = ConfigurationProvider.getProvider(YamlConfiguration.class).load(
+                        new InputStreamReader(getClass().getClassLoader().getResourceAsStream("config.yml")));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        this.saveConfig();
+    }
+
+    public void saveConfig() {
+        try {
+            ConfigurationProvider.getProvider(YamlConfiguration.class).save(this.configuration, new File("./plugins/GameChest/", "config.yml"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void initDatabase() {
         try {
-            this.databaseManager = new DatabaseManager("game-chest.de", 27017, "server-gc", "Passwort007", "server");
+            this.databaseManager = new DatabaseManager(this.configuration.getString("database.mongodb.host"),
+                    this.configuration.getInt("database.mongodb.port"), this.configuration.getString("database.mongodb.user"),
+                    this.configuration.getString("database.mongodb.password"), this.configuration.getString("database.mongodb.database"));
             this.databaseManager.init();
             getProxy().getConsole().sendMessage(ChestPrefix.PREFIX + "§eDatabase - §aConnected!");
         } catch (Exception ex) {
@@ -194,7 +229,7 @@ public class GameChest extends Plugin implements BungeeChestPlugin {
     @Override
     public String getPlayername(UUID uuid) {
         DatabasePlayer dbPlayer = new DatabasePlayer(this.databaseManager, uuid, DatabasePlayerObject.LAST_NAME);
-        if(dbPlayer.existsPlayer()) {
+        if (dbPlayer.existsPlayer()) {
             return dbPlayer.getDatabaseElement(DatabasePlayerObject.LAST_NAME).getAsString();
         }
         return null;

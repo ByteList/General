@@ -1,5 +1,6 @@
 package de.gamechest;
 
+import com.google.common.base.Charsets;
 import com.google.gson.JsonObject;
 import com.voxelboxstudios.resilent.GCPacketClient;
 import de.bytelist.bytecloud.common.CloudPermissionCheck;
@@ -27,6 +28,7 @@ import de.gamechest.stats.Stats;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -35,6 +37,9 @@ import org.bukkit.metadata.Metadatable;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -54,6 +59,8 @@ public class GameChest extends JavaPlugin implements SpigotChestPlugin {
     @Getter
     private static GameChest instance;
 
+    @Getter
+    private YamlConfiguration configuration;
     @Getter
     private DatabaseManager databaseManager;
     @Getter
@@ -81,6 +88,7 @@ public class GameChest extends JavaPlugin implements SpigotChestPlugin {
         // 2.0.23:0034258
         this.version = v[0] + ":" + v[1].substring(0, 7);
 
+        this.initConfig();
         this.initDatabase();
 
         this.stats = new Stats();
@@ -130,9 +138,24 @@ public class GameChest extends JavaPlugin implements SpigotChestPlugin {
         getServer().getConsoleSender().sendMessage(ChestPrefix.PREFIX + "§cDisabled!");
     }
 
+    private void initConfig() {
+        File file = new File("./plugins/GameChest/", "config.yml");
+        this.configuration = YamlConfiguration.loadConfiguration(file);
+        this.configuration.options().copyDefaults(true);
+        this.configuration.setDefaults(YamlConfiguration.loadConfiguration(
+                new InputStreamReader(getClass().getClassLoader().getResourceAsStream("config.yml"), Charsets.UTF_8)));
+        try {
+            this.configuration.save(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void initDatabase() {
         try {
-            this.databaseManager = new DatabaseManager("game-chest.de", 27017, "server-gc", "Passwort007", "server");
+            this.databaseManager = new DatabaseManager(this.configuration.getString("database.mongodb.host"),
+                    this.configuration.getInt("database.mongodb.port"), this.configuration.getString("database.mongodb.user"),
+                    this.configuration.getString("database.mongodb.password"), this.configuration.getString("database.mongodb.database"));
             this.databaseManager.init();
             getServer().getConsoleSender().sendMessage(ChestPrefix.PREFIX + "§eDatabase - §aConnected!");
         } catch (Exception ex) {
