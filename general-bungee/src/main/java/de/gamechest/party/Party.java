@@ -1,7 +1,6 @@
 package de.gamechest.party;
 
 import com.google.gson.JsonObject;
-import de.bytelist.bytecloud.bungee.ByteCloudMaster;
 import de.bytelist.bytecloud.common.bungee.BungeeCloud;
 import de.bytelist.bytecloud.common.server.CloudServer;
 import de.gamechest.GameChest;
