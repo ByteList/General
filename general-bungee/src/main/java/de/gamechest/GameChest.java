@@ -241,6 +241,11 @@ public class GameChest extends Plugin implements BungeeChestPlugin {
     public void sendNoPermissionMessage(CommandSender sender) {
         sender.sendMessage("§cDu hast keine Berechtigung für diesen Befehl!");
     }
+
+    @Override
+    public Plugin getPlugin() {
+        return this;
+    }
 //    private void insertNicks() {
 //        new Thread("Init Nicks Thread") {
 //            @Override

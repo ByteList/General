@@ -294,4 +294,9 @@ public class GameChest extends JavaPlugin implements SpigotChestPlugin {
         }
         return null;
     }
+
+    @Override
+    public JavaPlugin getPlugin() {
+        return this;
+    }
 }
